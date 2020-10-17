@@ -32,6 +32,7 @@ namespace Net.Business.Services
             services.ConfigureIISIntegration();
             services.ConfigureSQLConnection();
 
+            // Para obtener datos de los header
             services.AddSingleton<Microsoft.AspNetCore.Http.IHttpContextAccessor, Microsoft.AspNetCore.Http.HttpContextAccessor>();
 
             //Autenticacion
