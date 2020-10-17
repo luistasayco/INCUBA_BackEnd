@@ -1,0 +1,90 @@
+﻿using Net.Connection.Attributes;
+using System;
+using System.Collections.Generic;
+using System.Data;
+
+namespace Net.Business.Entities
+{
+    public class BE_TxRegistroEquipo : EntityBase
+    {
+        /// <summary>
+        /// Id
+        /// </summary>
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int? IdRegistroEquipo { get; set; }
+        /// <summary>
+        /// Id
+        /// </summary>
+        [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
+        public DateTime? FecRegistro { get; set; }
+        /// <summary>
+        /// Id
+        /// </summary>
+        [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
+        public DateTime? FecHoraRegistro { get; set; }
+        /// <summary>
+        /// CodigoEmpresa
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
+        public string CodigoEmpresa { get; set; }
+        /// <summary>
+        /// DescripcionEmpresa
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string DescripcionEmpresa { get; set; }
+        /// <summary>
+        /// CodigoPlanta
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
+        public string CodigoPlanta { get; set; }
+        /// <summary>
+        /// DescripcionPlanta
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string DescripcionPlanta { get; set; }
+        /// <summary>
+        /// IdModelo
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
+        public string CodigoModelo { get; set; }
+        /// <summary>
+        /// DescripcionModelo
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string DescripcionModelo { get; set; }
+        /// <summary>
+        /// Id
+        /// </summary>
+        [DBParameter(SqlDbType.Text, 0, ActionType.Everything)]
+        public string FirmaIncuba { get; set; }
+        /// <summary>
+        /// Id
+        /// </summary>
+        [DBParameter(SqlDbType.Text, 0, ActionType.Everything)]
+        public string FirmaPlanta { get; set; }
+        /// <summary>
+        /// Id
+        /// </summary>
+        [DBParameter(SqlDbType.Bit, 0, ActionType.Everything)]
+        public Boolean? FlgCerrado { get; set; }
+        /// <summary>
+        /// Fecha inicio de registro - filtro
+        /// </summary>
+        [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
+        public DateTime? FecRegistroInicio { get; set; }
+        /// <summary>
+        /// Fecha fin de registro - filtro
+        /// </summary>
+        [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
+        public DateTime? FecRegistroFin { get; set; }
+        public List<BE_TxRegistroEquipoDetalle1> TxRegistroEquipoDetalle1 { get; set; }
+        public List<BE_TxRegistroEquipoDetalle2> TxRegistroEquipoDetalle2 { get; set; }
+        public List<BE_TxRegistroEquipoDetalle2> TxRegistroEquipoDetalle2NoPredeterminado { get; set; }
+        public List<BE_TxRegistroEquipoDetalle3> TxRegistroEquipoDetalle3 { get; set; }
+        public List<BE_TxRegistroEquipoDetalle4> TxRegistroEquipoDetalle4 { get; set; }
+        public List<BE_TxRegistroEquipoDetalle5> TxRegistroEquipoDetalle5 { get; set; }
+        public List<BE_TxRegistroEquipoDetalle6> TxRegistroEquipoDetalle6 { get; set; }
+        public List<BE_TxRegistroEquipoDetalle6> TxRegistroEquipoDetalle6Repuestos { get; set; }
+        public List<BE_TxRegistroEquipoDetalle7> TxRegistroEquipoDetalle7 { get; set; }
+    }
+}

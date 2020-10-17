@@ -1,0 +1,494 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ApiIncuba</name>
+    </assembly>
+    <members>
+        <member name="M:Net.Business.Services.Controllers.CalidadController.GetAll(Net.Business.DTO.DtoFindCalidad)">
+            <summary>
+            Obtener lista de calidad
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de Calidad registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.CalidadController.GetbyId(System.Int32)">
+            <summary>
+            Obtener una calidad individual
+            </summary>
+            <param name="id">Id de Calidad</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.CalidadController.Create(Net.Business.DTO.DtoInsertCalidad)">
+            <summary>
+            Crear una nueva calidad
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.CalidadController.Update(Net.Business.DTO.DtoUpdateCalidad)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.CalidadController.Delete(Net.Business.DTO.DtoDeleteCalidad)">
+             <summary>
+             Eliminar logicamente una calidad
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.CondicionLimpiezaController.GetAll(Net.Business.DTO.DtoFindCondicionLimpieza)">
+            <summary>
+            Obtener lista de Condicion Limpieza
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.CondicionLimpiezaController.GetbyId(System.Int32)">
+            <summary>
+            Obtener un Condicion Limpieza individual
+            </summary>
+            <param name="id">Id</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.CondicionLimpiezaController.Create(Net.Business.DTO.DtoInsertCondicionLimpieza)">
+            <summary>
+            Crear un nuevo Condicion Limpieza
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.CondicionLimpiezaController.Update(Net.Business.DTO.DtoUpdateCondicionLimpieza)">
+            <summary>
+            Actualizar un mantenimiento existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.CondicionLimpiezaController.Delete(Net.Business.DTO.DtoDeleteCondicionLimpieza)">
+             <summary>
+             Eliminar registro de mantenimiento
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.EmpresaController.GetAll(Net.Business.DTO.DtoFindEmpresa)">
+            <summary>
+            Obtener lista de Empresa
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.EquipoController.GetAll(Net.Business.DTO.DtoFindGeneral)">
+            <summary>
+            Obtener lista de equipo
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.EquipoPorModeloController.GetAllSeleccionado(Net.Business.DTO.DtoFindEquipoPorModelo)">
+            <summary>
+            Obtener lista de equipos por seleccionar
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista de equipos faltantes por seleccionar</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.MantenimientoController.GetAll(Net.Business.DTO.DtoFindMantenimiento)">
+            <summary>
+            Obtener lista de mantenimiento
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.MantenimientoController.GetbyId(System.Int32)">
+            <summary>
+            Obtener un mantenimiento individual
+            </summary>
+            <param name="id">Id</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.MantenimientoController.Create(Net.Business.DTO.DtoInsertMantenimiento)">
+            <summary>
+            Crear un nuevo mantenimiento
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.MantenimientoController.Update(Net.Business.DTO.DtoUpdateMantenimiento)">
+            <summary>
+            Actualizar un mantenimiento existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.MantenimientoController.Delete(Net.Business.DTO.DtoDeleteMantenimiento)">
+             <summary>
+             Eliminar registro de mantenimiento
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.MantenimientoPorModeloController.GetAll(Net.Business.DTO.DtoFindMantenimientoPorModelo)">
+            <summary>
+            Obtener lista de Mantenimiento Por Modelo
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.MantenimientoPorModeloController.GetAllSeleccionado(Net.Business.DTO.DtoFindMantenimientoPorModelo)">
+            <summary>
+            Obtener lista de Mantenimiento Por Modelo
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.MantenimientoPorModeloController.GetAllPorSeleccionar(Net.Business.DTO.DtoFindMantenimientoPorModelo)">
+            <summary>
+            Obtener lista de Mantenimiento Por Modelo
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.MantenimientoPorModeloController.Create(System.Collections.Generic.List{Net.Business.DTO.DtoInsertMantenimientoPorModelo})">
+            <summary>
+            Crear un nuevo Mantenimiento Por Modelo
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.MantenimientoPorModeloController.Delete(System.Collections.Generic.List{Net.Business.DTO.DtoDeleteMantenimientoPorModelo})">
+             <summary>
+             Eliminar registro de Mantenimiento Por Modelo 
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.ModeloController.GetAll(Net.Business.DTO.DtoFindModelo)">
+            <summary>
+            Obtener lista de modelo
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.PlantaController.GetAllPlantaPorEmpesa(Net.Business.DTO.DtoFindPlanta)">
+            <summary>
+            Obtener lista de Planta
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.ProcesoController.GetAll(Net.Business.DTO.DtoFindProceso)">
+            <summary>
+            Obtener lista de Proceso
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de Calidad registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.ProcesoController.GetbyId(System.Int32)">
+            <summary>
+            Obtener una Proceso individual
+            </summary>
+            <param name="id">Id de Calidad</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.ProcesoController.Create(Net.Business.DTO.DtoInsertProceso)">
+            <summary>
+            Crear un nuevo proceso
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.ProcesoController.Update(Net.Business.DTO.DtoUpdateProceso)">
+            <summary>
+            Actualizar una proceso existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.ProcesoController.Delete(Net.Business.DTO.DtoDeleteProceso)">
+             <summary>
+             Eliminar logicamente una proceso
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.ProcesoDetalleController.GetAll(Net.Business.DTO.DtoFindProcesoDetalle)">
+            <summary>
+            Obtener lista de proceso
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de Calidad registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.ProcesoDetalleController.GetbyId(System.Int32)">
+            <summary>
+            Obtener una proceso individual
+            </summary>
+            <param name="id">Id de Calidad</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.ProcesoDetalleController.Create(Net.Business.DTO.DtoInsertProcesoDetalle)">
+            <summary>
+            Crear una nueva ProcesoDetalle
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.ProcesoDetalleController.Update(Net.Business.DTO.DtoUpdateProcesoDetalle)">
+            <summary>
+            Actualizar una ProcesoDetalle existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.ProcesoDetalleController.Delete(Net.Business.DTO.DtoDeleteProcesoDetalle)">
+             <summary>
+             Eliminar logicamente una ProcesoDetalle
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.RepuestoPorModeloController.GetAll(Net.Business.DTO.DtoFindRepuestoPorModelo)">
+            <summary>
+            Obtener lista de Repuesto Por Modelo
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de Calidad registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.RepuestoPorModeloController.GetAllSeleccionado(Net.Business.DTO.DtoFindRepuestoPorModelo)">
+            <summary>
+            Obtener lista de Repuesto Por Modelo
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de Calidad registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.RepuestoPorModeloController.GetAllPorSeleccionar(Net.Business.DTO.DtoFindRepuestoPorModelo)">
+            <summary>
+            Obtener lista de Repuesto Por Modelo
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de Calidad registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.RepuestoPorModeloController.Create(System.Collections.Generic.List{Net.Business.DTO.DtoInsertRepuestoPorModelo})">
+            <summary>
+            Crear una nueva Repuesto Por Modelo
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.RepuestoPorModeloController.Delete(System.Collections.Generic.List{Net.Business.DTO.DtoDeleteRepuestoPorModelo})">
+             <summary>
+             Eliminar logicamente una Repuesto Por Modelo
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.RequerimientoEquipoController.GetAll(Net.Business.DTO.DtoFindRequerimientoEquipo)">
+            <summary>
+            Obtener lista de RequerimientoEquipo
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.RequerimientoEquipoController.GetbyId(System.Int32)">
+            <summary>
+            Obtener un RequerimientoEquipo
+            </summary>
+            <param name="id">Id</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.RequerimientoEquipoController.Create(Net.Business.DTO.DtoInsertRequerimientoEquipo)">
+            <summary>
+            Crear un nuevo RequerimientoEquipo
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.RequerimientoEquipoController.Update(Net.Business.DTO.DtoUpdateRequerimientoEquipo)">
+            <summary>
+            Actualizar un RequerimientoEquipo
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.RequerimientoEquipoController.Delete(Net.Business.DTO.DtoDeleteRequerimientoEquipo)">
+             <summary>
+             Eliminar registro de RequerimientoEquipo
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroEquipoController.GetAll(Net.Business.DTO.DtoFindTxRegistroEquipo)">
+            <summary>
+            Obtener lista de registro de equipo
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroEquipoController.GetNewObject(Net.Business.DTO.DtoFindGeneral)">
+            <summary>
+            Obtener un nuevo modelo para registrar
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroEquipoController.GetByIdTxRegistroEquipo(System.Int32)">
+            <summary>
+            Obtener un TxRegistro Equipo
+            </summary>
+            <param name="id">Id</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroEquipoController.Create(Net.Business.DTO.DtoInsertTxRegistroEquipo)">
+            <summary>
+            Crear un informe de registro de equipo
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroEquipoController.Update(Net.Business.DTO.DtoUpdateTxRegistroEquipo)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroEquipoController.UpdateStatus(Net.Business.DTO.DtoUpdateStatusTxRegistroEquipo)">
+            <summary>
+            Actualizar un registro existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroEquipoController.Delete(Net.Business.DTO.DtoDeleteTxRegistroEquipo)">
+             <summary>
+             Eliminar registro de Mantenimiento Por Modelo 
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+    </members>
+</doc>
