@@ -1,4 +1,5 @@
 ﻿using Net.Business.Entities;
+using System;
 
 namespace Net.Business.DTO
 {

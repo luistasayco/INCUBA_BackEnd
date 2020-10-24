@@ -447,7 +447,7 @@
             <summary>
             Obtener un TxRegistro Equipo
             </summary>
-            <param name="id">Id</param>
+            <param name="id">Id</param>g
             <returns>Devuelve un solo registro</returns>
             <response code="200">Devuelve el listado completo </response>
             <response code="404">Si no existen datos</response>  
@@ -489,6 +489,15 @@
             <response code="204">Eliminado Satisfactoriamente</response>
             <response code="400">Si el objeto enviado es nulo o invalido</response>
             <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroEquipoController.GetGeneraPdfByIdTxRegistroEquipo(System.Int32)">
+            <summary>
+            Obtener un TxRegistro Equipo
+            </summary>
+            <param name="id">Id</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
         </member>
     </members>
 </doc>

@@ -1,6 +1,7 @@
 ﻿using Net.Business.Entities;
 using Net.Connection;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Net.Data
@@ -14,5 +15,6 @@ namespace Net.Data
         Task Update(BE_TxRegistroEquipo entidad);
         Task UpdateStatus(BE_TxRegistroEquipo entidad);
         Task Delete(BE_TxRegistroEquipo entidad);
+        Task<MemoryStream> GenerarPDF(BE_TxRegistroEquipo entidad);
     }
 }

@@ -5,8 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="iTextSharp.LGPLv2.Core" Version="1.6.9" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Net.Business.Entities\Net.Business.Entities.csproj" />
     <ProjectReference Include="..\Net.Connection\Net.Connection.csproj" />
+    <ProjectReference Include="..\Net.CrossCotting\Net.CrossCotting.csproj" />
   </ItemGroup>
 
 </Project>

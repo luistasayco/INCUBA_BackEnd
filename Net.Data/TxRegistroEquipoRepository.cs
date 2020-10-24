@@ -1,12 +1,14 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Microsoft.Data.SqlClient;
 using Net.Business.Entities;
 using Net.Connection;
+using Net.CrossCotting;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -36,6 +38,9 @@ namespace Net.Data
         const string SP_GET_ID_DETALLE_6Repuesto = DB_ESQUEMA + "INC_GetTxRegistroEquipoDetalle6RepuestoPorId";
         const string SP_GET_ID_DETALLE_6 = DB_ESQUEMA + "INC_GetTxRegistroEquipoDetalle6PorId";
         const string SP_GET_ID_DETALLE_7 = DB_ESQUEMA + "INC_GetTxRegistroEquipoDetalle7PorId";
+
+        const string SP_GET_ID_DETALLE_1_PDF = DB_ESQUEMA + "INC_GetTxRegistroEquipoDetalle1PorIdPDF";
+        const string SP_GET_ID_DETALLE_2_PDF = DB_ESQUEMA + "INC_GetTxRegistroEquipoDetalle2PorIdPDF";
 
         const string SP_INSERT = DB_ESQUEMA + "INC_SetTxRegistroEquipoInsert";
         const string SP_INSERT_DETALLE_1 = DB_ESQUEMA + "INC_SetxRegistroEquipoDetalle1Merge";
@@ -114,6 +119,27 @@ namespace Net.Data
             });
             return objListPrincipal;
         }
+
+        private BE_TxRegistroEquipo GetByIdPDF(BE_TxRegistroEquipo entidad)
+        {
+            BE_TxRegistroEquipo p = context.ExecuteSqlViewId<BE_TxRegistroEquipo>(SP_GET_ID, entidad);
+            if (p != null)
+            {
+                p.TxRegistroEquipoDetalle1 = context.ExecuteSqlViewFindByCondition<BE_TxRegistroEquipoDetalle1>(SP_GET_ID_DETALLE_1, entidad).ToList();
+                p.TxRegistroEquipoDetalle2 = context.ExecuteSqlViewFindByCondition<BE_TxRegistroEquipoDetalle2>(SP_GET_ID_DETALLE_2, entidad).ToList();
+                p.TxRegistroEquipoDetalle3 = context.ExecuteSqlViewFindByCondition<BE_TxRegistroEquipoDetalle3>(SP_GET_ID_DETALLE_3, entidad).ToList();
+                p.TxRegistroEquipoDetalle4 = context.ExecuteSqlViewFindByCondition<BE_TxRegistroEquipoDetalle4>(SP_GET_ID_DETALLE_4, entidad).ToList();
+                p.TxRegistroEquipoDetalle5 = context.ExecuteSqlViewFindByCondition<BE_TxRegistroEquipoDetalle5>(SP_GET_ID_DETALLE_5, entidad).ToList();
+                p.TxRegistroEquipoDetalle6 = context.ExecuteSqlViewFindByCondition<BE_TxRegistroEquipoDetalle6>(SP_GET_ID_DETALLE_6, entidad).ToList();
+                p.TxRegistroEquipoDetalle6Repuestos = context.ExecuteSqlViewFindByCondition<BE_TxRegistroEquipoDetalle6>(SP_GET_ID_DETALLE_6Repuesto, entidad).ToList();
+                p.TxRegistroEquipoDetalle7 = context.ExecuteSqlViewFindByCondition<BE_TxRegistroEquipoDetalle7>(SP_GET_ID_DETALLE_7, entidad).ToList();
+            }
+            else
+            {
+                p = new BE_TxRegistroEquipo();
+            }
+            return p;
+        }
         public async Task<int> Create(BE_TxRegistroEquipo value)
         {
             try
@@ -139,9 +165,14 @@ namespace Net.Data
                                 cmd.Parameters.Add(new SqlParameter("@CodigoEmpresa", value.CodigoEmpresa));
                                 cmd.Parameters.Add(new SqlParameter("@CodigoPlanta", value.CodigoPlanta));
                                 cmd.Parameters.Add(new SqlParameter("@CodigoModelo", value.CodigoModelo));
+                                cmd.Parameters.Add(new SqlParameter("@FecRegistro", value.FecRegistro));
                                 cmd.Parameters.Add(new SqlParameter("@FirmaIncuba", value.FirmaIncuba));
                                 cmd.Parameters.Add(new SqlParameter("@FirmaPlanta", value.FirmaPlanta));
+                                cmd.Parameters.Add(new SqlParameter("@IdUsuarioCierre", value.IdUsuarioCierre));
+                                cmd.Parameters.Add(new SqlParameter("@FecCierre", value.FecCierre));
                                 cmd.Parameters.Add(new SqlParameter("@FlgCerrado", value.FlgCerrado));
+                                cmd.Parameters.Add(new SqlParameter("@ResponsableIncuba", value.ResponsableIncuba));
+                                cmd.Parameters.Add(new SqlParameter("@ResponsablePlanta", value.ResponsablePlanta));
                                 cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
                                 cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
 
@@ -391,5 +422,483 @@ namespace Net.Data
         {
             return Task.Run(() => Delete(entidad, SP_DELETE));
         }
+        public Task<MemoryStream> GenerarPDF(BE_TxRegistroEquipo entidad)
+        {
+            BE_TxRegistroEquipo item = GetByIdPDF(entidad);
+
+            return Task.Run(() =>
+            {
+                Document doc = new Document();
+                doc.SetPageSize(PageSize.Letter);
+                // points to cm
+                doc.SetMargins(28.34f, 28.34f, 50f, 60f);
+                MemoryStream ms = new MemoryStream();
+                PdfWriter write = PdfWriter.GetInstance(doc, ms);
+                doc.AddAuthor("Luis Tasayco");
+                doc.AddTitle("SBA");
+
+                var pe = new PageEventHelper();
+                write.PageEvent = pe;
+                // Colocamos la fuente que deseamos que tenga el documento
+                BaseFont helvetica = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1250, true);
+                // Titulo
+                iTextSharp.text.Font titulo = new iTextSharp.text.Font(helvetica, 20f, iTextSharp.text.Font.BOLD, new BaseColor(103, 93, 152));
+                iTextSharp.text.Font subTitulo = new iTextSharp.text.Font(helvetica, 14f, iTextSharp.text.Font.BOLD, new BaseColor(103, 93, 152));
+                iTextSharp.text.Font parrafoBlanco = new iTextSharp.text.Font(helvetica, 10f, iTextSharp.text.Font.BOLD, BaseColor.White);
+                iTextSharp.text.Font parrafoNegro = new iTextSharp.text.Font(helvetica, 10f, iTextSharp.text.Font.NORMAL, BaseColor.Black);
+                pe.HeaderLeft = " ";
+                pe.HeaderFont = parrafoBlanco;
+                pe.HeaderRight = " ";
+                doc.Open();
+
+                doc.Add(new Phrase("INFORME DE INSCRIPCIÓN DE EQUIPOS", titulo));
+
+                doc.Add(new Phrase(" "));
+                doc.Add(new Phrase(" "));
+
+                var tbl = new PdfPTable(new float[] { 25f, 43f, 12f, 20f }) { WidthPercentage = 100 };
+                var c1 = new PdfPCell(new Phrase("Compañia", parrafoNegro)) { Border = 0, PaddingBottom = 5f };
+                var c2 = new PdfPCell(new Phrase(item.DescripcionEmpresa, parrafoNegro)) { Border = 0, PaddingBottom = 5f };
+                var c3 = new PdfPCell(new Phrase("Fecha/Hora", parrafoNegro)) { Border = 0, PaddingBottom = 5f };
+                var c4 = new PdfPCell(new Phrase(item.FecHoraRegistro.ToString(), parrafoNegro)) { Border = 0, PaddingBottom = 5f };
+                tbl.AddCell(c1);
+                tbl.AddCell(c2);
+                tbl.AddCell(c3);
+                tbl.AddCell(c4);
+
+                c1.Phrase = new Phrase("Planta de Incubación", parrafoNegro);
+                c2.Phrase = new Phrase(item.DescripcionPlanta, parrafoNegro);
+                c3.Phrase = new Phrase("Modelo", parrafoNegro);
+                c4.Phrase = new Phrase(item.DescripcionModelo, parrafoNegro);
+                tbl.AddCell(c1);
+                tbl.AddCell(c2);
+                tbl.AddCell(c3);
+                tbl.AddCell(c4);
+                doc.Add(tbl);
+
+                tbl = new PdfPTable(new float[] { 25f, 75f }) { WidthPercentage = 100 };
+                c1.Phrase = new Phrase("Dirección", parrafoNegro);
+                c2.Phrase = new Phrase(" ", parrafoNegro);
+                tbl.AddCell(c1);
+                tbl.AddCell(c2);
+
+                c1.Phrase = new Phrase("Jefe de Planta", parrafoNegro);
+                c2.Phrase = new Phrase(item.ResponsablePlanta, parrafoNegro);
+                tbl.AddCell(c1);
+                tbl.AddCell(c2);
+
+                c1.Phrase = new Phrase("Encargado de Planta", parrafoNegro);
+                c2.Phrase = new Phrase(item.ResponsablePlanta, parrafoNegro);
+                tbl.AddCell(c1);
+                tbl.AddCell(c2);
+
+                doc.Add(tbl);
+
+                doc.Add(new Phrase("\n"));
+
+                doc.Add(new Phrase("A. Detalles de Mantenimiento y Funcionamiento de equipos", subTitulo));
+
+                doc.Add(new Phrase(" "));
+
+
+                // Obtenemos un Item Para saber cuantas maquinas existe
+                var itemUnico = item.TxRegistroEquipoDetalle1.FirstOrDefault();
+
+
+                // Contamos la cantidad de item que tiene
+                int CountItemHeader = item.TxRegistroEquipoDetalle1.FindAll(x => x.Descripcion == itemUnico.Descripcion).Count;
+
+                var listDetalle1Header = item.TxRegistroEquipoDetalle1.FindAll(x => x.Descripcion == itemUnico.Descripcion);
+
+                tbl = new PdfPTable(CountItemHeader + 7) { WidthPercentage = 100 };
+                PdfPCell CellMaster = new PdfPCell();
+
+                int xFila = 1;
+
+                foreach (var detalle1 in listDetalle1Header)
+                {
+                    if (xFila == 1)
+                    {
+                        CellMaster = new PdfPCell(new Phrase("Item", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        CellMaster.Rotation = 90;
+                        tbl.AddCell(CellMaster);
+                        CellMaster = new PdfPCell(new Phrase("Descripción", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        CellMaster.Colspan = 6;
+                        tbl.AddCell(CellMaster);
+                    }
+
+                    CellMaster = new PdfPCell(new Phrase(detalle1.CodigoEquipo, parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    CellMaster.Rotation = 90;
+                    tbl.AddCell(CellMaster);
+
+                    xFila = xFila + 1;
+                }
+
+                xFila = 1;
+
+                foreach (var detalle1 in item.TxRegistroEquipoDetalle1)
+                {
+                    
+                    if (xFila == 1)
+                    {
+                        CellMaster = new PdfPCell(new Phrase("1", parrafoNegro)) {  HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        tbl.AddCell(CellMaster);
+                        CellMaster = new PdfPCell(new Phrase(detalle1.Descripcion, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        CellMaster.Colspan = 6;
+                        CellMaster.FixedHeight = 25f;
+                        tbl.AddCell(CellMaster);
+                    }
+
+                    CellMaster = new PdfPCell(new Phrase(detalle1.FlgValor ? "X" : "", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    CellMaster.Rotation = 0;
+                    tbl.AddCell(CellMaster);
+
+                    if (xFila == CountItemHeader)
+                    {
+                        xFila = 0;
+                    }
+
+                    xFila = xFila + 1;
+                }
+
+                doc.Add(tbl);
+
+                doc.Add(new Phrase("\n"));
+
+                doc.Add(new Phrase("B. Check list de componentes", subTitulo));
+
+                doc.Add(new Phrase(" "));
+
+                tbl = new PdfPTable(CountItemHeader + 11) { WidthPercentage = 100 };
+                CellMaster = new PdfPCell();
+
+                xFila = 1;
+
+                var itemRepuesto = item.TxRegistroEquipoDetalle2.FirstOrDefault().CodigoRepuesto;
+
+                List<BE_TxRegistroEquipoDetalle2> listHeader2 = item.TxRegistroEquipoDetalle2.FindAll(x => x.CodigoRepuesto == itemRepuesto);
+
+                foreach (var detalle2 in listHeader2)
+                {
+                    if (xFila == 1)
+                    {
+                        CellMaster = new PdfPCell(new Phrase("Item", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        CellMaster.Rotation = 90;
+                        tbl.AddCell(CellMaster);
+                        CellMaster = new PdfPCell(new Phrase("Código", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        CellMaster.Colspan = 2;
+                        tbl.AddCell(CellMaster);
+                        CellMaster = new PdfPCell(new Phrase("Descripción", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        CellMaster.Colspan = 6;
+                        tbl.AddCell(CellMaster);
+                        CellMaster = new PdfPCell(new Phrase("M/P", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        CellMaster.Rotation = 90;
+                        tbl.AddCell(CellMaster);
+                        CellMaster = new PdfPCell(new Phrase("R/F/C", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        CellMaster.Rotation = 90;
+                        tbl.AddCell(CellMaster);
+                    }
+
+                    CellMaster = new PdfPCell(new Phrase(detalle2.CodigoEquipo, parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    CellMaster.Rotation = 90;
+                    tbl.AddCell(CellMaster);
+
+                    xFila = xFila + 1;
+                }
+
+                xFila = 1;
+
+                foreach (var detalle2 in item.TxRegistroEquipoDetalle2)
+                {
+                    if (xFila == 1)
+                    {
+                        CellMaster = new PdfPCell(new Phrase("1", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        tbl.AddCell(CellMaster);
+                        CellMaster = new PdfPCell(new Phrase(detalle2.CodigoRepuesto, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        CellMaster.Colspan = 2;
+                        tbl.AddCell(CellMaster);
+                        CellMaster = new PdfPCell(new Phrase(detalle2.Descripcion, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        CellMaster.Colspan = 6;
+                        CellMaster.FixedHeight = 25f;
+                        tbl.AddCell(CellMaster);
+                        CellMaster = new PdfPCell(new Phrase(detalle2.Mp, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        tbl.AddCell(CellMaster);
+                        CellMaster = new PdfPCell(new Phrase(detalle2.Rfc, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        tbl.AddCell(CellMaster);
+                    }
+
+                    CellMaster = new PdfPCell(new Phrase(detalle2.FlgValor ? "X" : "", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    CellMaster.Rotation = 0;
+                    tbl.AddCell(CellMaster);
+
+                    if (xFila == CountItemHeader)
+                    {
+                        xFila = 0;
+                    }
+
+                    xFila = xFila + 1;
+                }
+
+                doc.Add(tbl);
+
+                doc.Add(new Phrase(" "));
+
+                doc.Add(new Phrase("Resumen de mantenimiento", subTitulo));
+
+                doc.Add(new Phrase(" "));
+
+                tbl = new PdfPTable(new float[] { 5f, 15f, 15f, 65f }) { WidthPercentage = 100 };
+                CellMaster = new PdfPCell();
+
+                CellMaster = new PdfPCell(new Phrase("Item", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+                CellMaster = new PdfPCell(new Phrase("Código", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+                CellMaster = new PdfPCell(new Phrase("Activo", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+                CellMaster = new PdfPCell(new Phrase("Observación", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+
+                foreach (var detalle5 in item.TxRegistroEquipoDetalle5)
+                {
+                    CellMaster = new PdfPCell(new Phrase("1", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                    CellMaster = new PdfPCell(new Phrase(detalle5.CodigoRepuesto, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                    CellMaster = new PdfPCell(new Phrase(detalle5.CodigoEquipo, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                    CellMaster = new PdfPCell(new Phrase(detalle5.Observacion, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                }
+
+                doc.Add(tbl);
+
+                doc.Add(new Phrase("\n"));
+
+                doc.Add(new Phrase("C. Requerimientos para los equipos y condiciones de limpieza", subTitulo));
+
+                doc.Add(new Phrase(" "));
+
+                tbl = new PdfPTable(new float[] { 8f, 72f, 10f, 10f }) { WidthPercentage = 80f };
+                CellMaster = new PdfPCell();
+
+                CellMaster = new PdfPCell(new Phrase("Item", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+                CellMaster = new PdfPCell(new Phrase("Requerimientos para los equipos", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+                CellMaster = new PdfPCell(new Phrase("SI", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+                CellMaster = new PdfPCell(new Phrase("NO", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+
+                foreach (var detalle4 in item.TxRegistroEquipoDetalle4)
+                {
+                    CellMaster = new PdfPCell(new Phrase("1", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                    CellMaster = new PdfPCell(new Phrase(detalle4.Descripcion, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                    CellMaster = new PdfPCell(new Phrase(detalle4.FlgValor ? "X" : "", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                    CellMaster = new PdfPCell(new Phrase(!detalle4.FlgValor ? "X" : "", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                }
+
+                doc.Add(tbl);
+
+                doc.Add(new Phrase(" "));
+
+                tbl = new PdfPTable(new float[] { 8f, 72f, 10f, 10f }) { WidthPercentage = 80f };
+                CellMaster = new PdfPCell();
+
+                CellMaster = new PdfPCell(new Phrase("Item", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+                CellMaster = new PdfPCell(new Phrase("Limpieza y esterilización", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+                CellMaster = new PdfPCell(new Phrase("SI", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+                CellMaster = new PdfPCell(new Phrase("NO", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+
+                foreach (var detalle3 in item.TxRegistroEquipoDetalle3)
+                {
+                    CellMaster = new PdfPCell(new Phrase("1", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                    CellMaster = new PdfPCell(new Phrase(detalle3.Descripcion, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                    CellMaster = new PdfPCell(new Phrase(detalle3.FlgValor ? "X" : "", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                    CellMaster = new PdfPCell(new Phrase(!detalle3.FlgValor ? "X" : "", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                }
+
+                doc.Add(tbl);
+
+                doc.Add(new Phrase("\n"));
+
+                doc.Add(new Phrase("D. Inventario de consumibles y repuestos", subTitulo));
+
+                doc.Add(new Phrase(" "));
+
+                tbl = new PdfPTable(new float[] { 8f, 15f, 52f, 15f, 15f, 15f }) { WidthPercentage = 100f };
+                CellMaster = new PdfPCell();
+
+                CellMaster = new PdfPCell(new Phrase("Item", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+                CellMaster = new PdfPCell(new Phrase("Código", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+                CellMaster = new PdfPCell(new Phrase("Descripción", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+                CellMaster = new PdfPCell(new Phrase("Stock Actual", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+                CellMaster = new PdfPCell(new Phrase("Cambio por mtto.", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+                CellMaster = new PdfPCell(new Phrase("Entregado", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(CellMaster);
+
+                foreach (var detalle6 in item.TxRegistroEquipoDetalle6)
+                {
+                    CellMaster = new PdfPCell(new Phrase("1", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                    CellMaster = new PdfPCell(new Phrase(detalle6.CodigoRepuesto, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                    CellMaster = new PdfPCell(new Phrase(detalle6.Descripcion, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                    CellMaster = new PdfPCell(new Phrase(detalle6.StockActual.ToString("N"), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_RIGHT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                    CellMaster = new PdfPCell(new Phrase(detalle6.CambioPorMantenimiento.ToString("N"), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_RIGHT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                    CellMaster = new PdfPCell(new Phrase(detalle6.Entregado.ToString("N"), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_RIGHT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    tbl.AddCell(CellMaster);
+                }
+
+                doc.Add(tbl);
+
+                // Validamos si ingresaron imanes
+
+                var countFotos = item.TxRegistroEquipoDetalle7.Count;
+                iTextSharp.text.Image foto = null;
+
+                if (countFotos > 0)
+                {
+                    doc.Add(new Phrase("\n"));
+
+                    doc.Add(new Phrase("E. Fotos", subTitulo));
+
+                    doc.Add(new Phrase(" "));
+
+                    tbl = new PdfPTable(new float[] { 50f, 50f }) { WidthPercentage = 100f };
+                    CellMaster = new PdfPCell();
+
+                    foreach (var detalle7 in item.TxRegistroEquipoDetalle7)
+                    {
+                        foto = ImagenBase64ToImagen(detalle7.Foto, 270f, 200f);
+
+                        if (foto != null)
+                        {
+                            CellMaster = new PdfPCell(foto);
+                            CellMaster.HorizontalAlignment = Element.ALIGN_CENTER;
+                            CellMaster.VerticalAlignment = Element.ALIGN_MIDDLE;
+                            CellMaster.Border = 0;
+                            tbl.AddCell(CellMaster);
+                        } 
+                    }
+
+                    if ((countFotos % 2) != 0)
+                    {
+                        CellMaster = new PdfPCell(new Phrase(" "));
+                        CellMaster.Border = 0;
+                        tbl.AddCell(CellMaster);
+                    }
+
+                    doc.Add(tbl);
+                }
+
+                doc.Add(new Phrase("\n"));
+                doc.Add(new Phrase("\n"));
+
+                tbl = new PdfPTable(new float[] { 45f, 10f, 45f }) { WidthPercentage = 100f };
+                CellMaster = new PdfPCell();
+
+                foto = ImagenBase64ToImagen(item.FirmaIncuba, 270f, 100f);
+
+                CellMaster = new PdfPCell(foto);
+                CellMaster.HorizontalAlignment = Element.ALIGN_CENTER;
+                CellMaster.VerticalAlignment = Element.ALIGN_MIDDLE;
+                CellMaster.Border = 0;
+                tbl.AddCell(CellMaster);
+
+                CellMaster = new PdfPCell(new Phrase(" "));
+                CellMaster.Border = 0;
+                tbl.AddCell(CellMaster);
+
+                foto = ImagenBase64ToImagen(item.FirmaPlanta, 270f, 100f);
+
+                CellMaster = new PdfPCell(foto);
+                CellMaster.HorizontalAlignment = Element.ALIGN_CENTER;
+                CellMaster.VerticalAlignment = Element.ALIGN_MIDDLE;
+                CellMaster.Border = 0;
+                tbl.AddCell(CellMaster);
+
+                CellMaster = new PdfPCell(new Phrase("Jefe de planta de incubación", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                CellMaster.Border = 0;
+                CellMaster.BorderWidthTop = 2f;
+                tbl.AddCell(CellMaster);
+
+                CellMaster = new PdfPCell(new Phrase(" "));
+                CellMaster.Border = 0;
+                tbl.AddCell(CellMaster);
+
+                CellMaster = new PdfPCell(new Phrase("Responsable de Invetsa", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                CellMaster.Border = 0;
+                CellMaster.BorderWidthTop = 2f;
+                tbl.AddCell(CellMaster);
+
+                CellMaster = new PdfPCell(new Phrase("Nombre: " + item.ResponsablePlanta, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                CellMaster.Border = 0;
+                tbl.AddCell(CellMaster);
+
+                CellMaster = new PdfPCell(new Phrase(" "));
+                CellMaster.Border = 0;
+                tbl.AddCell(CellMaster);
+
+                CellMaster = new PdfPCell(new Phrase("Nombre: " + item.ResponsableIncuba, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                CellMaster.Border = 0;
+                tbl.AddCell(CellMaster);
+
+                doc.Add(tbl);
+                write.Close();
+                doc.Close();
+                ms.Seek(0, SeekOrigin.Begin);
+                var file = ms;
+
+                return file;
+            });
+        }
+
+        private iTextSharp.text.Image ImagenBase64ToImagen(string ImagenBase64, float fitWidth, float fiHeight)
+        {
+            Byte[] bytes;
+            iTextSharp.text.Image foto = null;
+            string base64Data;
+            try
+            {
+
+                base64Data = ImagenBase64.Substring(ImagenBase64.IndexOf(",") + 1);
+                bytes = Convert.FromBase64String(base64Data);
+                foto = iTextSharp.text.Image.GetInstance(bytes);
+
+                foto.Alignment = iTextSharp.text.Image.ALIGN_CENTER;
+                foto.Border = iTextSharp.text.Rectangle.NO_BORDER;
+                foto.BorderColor = iTextSharp.text.BaseColor.White;
+                foto.ScaleToFit(fitWidth, fiHeight);
+            }
+            catch (DocumentException dex)
+            {
+                foto = null;
+            }
+
+            return foto;
+        }
+
     }
 }

@@ -7,12 +7,17 @@ namespace Net.Business.DTO
     public class DtoInsertTxRegistroEquipo : EntityBase
     {
         public int IdRegistroEquipo { get; set; }
+        public DateTime? FecRegistro { get; set; }
         public string CodigoEmpresa { get; set; }
         public string CodigoPlanta { get; set; }
         public string CodigoModelo { get; set; }
         public string FirmaIncuba { get; set; }
         public string FirmaPlanta { get; set; }
         public Boolean FlgCerrado { get; set; }
+        public string ResponsableIncuba { get; set; }
+        public string ResponsablePlanta { get; set; }
+        public int? IdUsuarioCierre { get; set; }
+        public DateTime? FecCierre { get; set; }
         public List<BE_TxRegistroEquipoDetalle1> TxRegistroEquipoDetalle1 { get; set; }
         public List<BE_TxRegistroEquipoDetalle2> TxRegistroEquipoDetalle2 { get; set; }
         public List<BE_TxRegistroEquipoDetalle3> TxRegistroEquipoDetalle3 { get; set; }
@@ -27,12 +32,17 @@ namespace Net.Business.DTO
             return new BE_TxRegistroEquipo
             {
                 IdRegistroEquipo = this.IdRegistroEquipo,
+                FecRegistro = this.FecRegistro,
                 CodigoEmpresa = this.CodigoEmpresa,
                 CodigoPlanta = this.CodigoPlanta,
                 CodigoModelo = this.CodigoModelo,
                 FirmaIncuba = this.FirmaIncuba,
                 FirmaPlanta = this.FirmaPlanta,
                 FlgCerrado = this.FlgCerrado,
+                ResponsableIncuba = this.ResponsableIncuba,
+                ResponsablePlanta = this.ResponsablePlanta,
+                IdUsuarioCierre = this.IdUsuarioCierre,
+                FecCierre = this.FecCierre,
                 TxRegistroEquipoDetalle1 = this.TxRegistroEquipoDetalle1,
                 TxRegistroEquipoDetalle2 = this.TxRegistroEquipoDetalle2,
                 TxRegistroEquipoDetalle3 = this.TxRegistroEquipoDetalle3,

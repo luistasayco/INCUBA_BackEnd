@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Business.DTO", "Net.Business.DTO\Net.Business.DTO.csproj", "{A3845C10-8D9D-4C5B-A8A4-4EA304FC803F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Business.DTO", "Net.Business.DTO\Net.Business.DTO.csproj", "{A3845C10-8D9D-4C5B-A8A4-4EA304FC803F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Business.Entities", "Net.Business.Entities\Net.Business.Entities.csproj", "{22DA0D04-522B-4658-B9E2-02BDCDA59779}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Business.Entities", "Net.Business.Entities\Net.Business.Entities.csproj", "{22DA0D04-522B-4658-B9E2-02BDCDA59779}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Connection", "Net.Connection\Net.Connection.csproj", "{BF978DB5-9E49-44A1-9BDB-FD78EF40BB8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Connection", "Net.Connection\Net.Connection.csproj", "{BF978DB5-9E49-44A1-9BDB-FD78EF40BB8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Connection.Attributes", "Net.Connection.Attributes\Net.Connection.Attributes.csproj", "{3EA5FA45-9881-4F5E-90DC-B55FD754A64B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Connection.Attributes", "Net.Connection.Attributes\Net.Connection.Attributes.csproj", "{3EA5FA45-9881-4F5E-90DC-B55FD754A64B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Data", "Net.Data\Net.Data.csproj", "{58A8E895-FE59-43B8-8D5E-E36A5B1B7E86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Data", "Net.Data\Net.Data.csproj", "{58A8E895-FE59-43B8-8D5E-E36A5B1B7E86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Business.Services", "Net.Business.Services\Net.Business.Services.csproj", "{4072D80F-B4C7-4163-856E-6DF52A625AF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Business.Services", "Net.Business.Services\Net.Business.Services.csproj", "{4072D80F-B4C7-4163-856E-6DF52A625AF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.CrossCotting", "Net.CrossCotting\Net.CrossCotting.csproj", "{1744F006-7CEB-4B11-A61A-29EE2965E69E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{4072D80F-B4C7-4163-856E-6DF52A625AF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4072D80F-B4C7-4163-856E-6DF52A625AF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4072D80F-B4C7-4163-856E-6DF52A625AF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1744F006-7CEB-4B11-A61A-29EE2965E69E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1744F006-7CEB-4B11-A61A-29EE2965E69E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1744F006-7CEB-4B11-A61A-29EE2965E69E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1744F006-7CEB-4B11-A61A-29EE2965E69E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

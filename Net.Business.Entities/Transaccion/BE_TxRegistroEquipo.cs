@@ -63,10 +63,35 @@ namespace Net.Business.Entities
         [DBParameter(SqlDbType.Text, 0, ActionType.Everything)]
         public string FirmaPlanta { get; set; }
         /// <summary>
+        /// IdUsuarioCierre
+        /// </summary>
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int? IdUsuarioCierre { get; set; }
+        /// <summary>
+        /// FecCierre
+        /// </summary>
+        [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
+        public DateTime? FecCierre { get; set; }
+        /// <summary>
         /// Id
         /// </summary>
         [DBParameter(SqlDbType.Bit, 0, ActionType.Everything)]
         public Boolean? FlgCerrado { get; set; }
+        /// <summary>
+        /// UsuarioCierre
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
+        public string UsuarioCierre { get; set; }
+        /// <summary>
+        /// ResponsableIncuba
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 150, ActionType.Everything)]
+        public string ResponsableIncuba { get; set; }
+        /// <summary>
+        /// ResponsablePlanta
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 150, ActionType.Everything)]
+        public string ResponsablePlanta { get; set; }
         /// <summary>
         /// Fecha inicio de registro - filtro
         /// </summary>
@@ -77,6 +102,11 @@ namespace Net.Business.Entities
         /// </summary>
         [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
         public DateTime? FecRegistroFin { get; set; }
+        /// <summary>
+        /// UsuarioCierre
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
+        public string UsuarioCreacion { get; set; }
         public List<BE_TxRegistroEquipoDetalle1> TxRegistroEquipoDetalle1 { get; set; }
         public List<BE_TxRegistroEquipoDetalle2> TxRegistroEquipoDetalle2 { get; set; }
         public List<BE_TxRegistroEquipoDetalle2> TxRegistroEquipoDetalle2NoPredeterminado { get; set; }

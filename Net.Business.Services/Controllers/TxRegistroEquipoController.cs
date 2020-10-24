@@ -70,7 +70,7 @@ namespace Net.Business.Services.Controllers
         /// <summary>
         /// Obtener un TxRegistro Equipo
         /// </summary>
-        /// <param name="id">Id</param>
+        /// <param name="id">Id</param>g
         /// <returns>Devuelve un solo registro</returns>
         /// <response code="200">Devuelve el listado completo </response>
         /// <response code="404">Si no existen datos</response>  
@@ -190,6 +190,26 @@ namespace Net.Business.Services.Controllers
             await _repository.TxRegistroEquipo.Delete(value.TxRegistroEquipo());
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// Obtener un TxRegistro Equipo
+        /// </summary>
+        /// <param name="id">Id</param>
+        /// <returns>Devuelve un solo registro</returns>
+        /// <response code="200">Devuelve el listado completo </response>
+        /// <response code="404">Si no existen datos</response>  
+        [HttpGet("{id}", Name = "GetGeneraPdfByIdTxRegistroEquipo")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesDefaultResponseType]
+        public async Task<FileContentResult> GetGeneraPdfByIdTxRegistroEquipo(int id)
+        {
+            var objectGetById = await _repository.TxRegistroEquipo.GenerarPDF(new DtoFindTxRegistroEquipoPorId { IdRegistroEquipo = id }.TxRegistroEquipo());
+
+            var pdf = File(objectGetById.GetBuffer(), "applicacion/pdf", "diploma.pdf");
+
+            return pdf;
         }
     }
 }
