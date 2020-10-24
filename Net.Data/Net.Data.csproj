@@ -14,4 +14,9 @@
     <ProjectReference Include="..\Net.CrossCotting\Net.CrossCotting.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ModuloII\" />
+    <Folder Include="ModuloII\Interface\" />
+  </ItemGroup>
+
 </Project>
