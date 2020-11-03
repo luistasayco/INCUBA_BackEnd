@@ -3,7 +3,7 @@ using System.Data;
 
 namespace Net.Business.Entities
 {
-    public class BE_TxExamenFisicoPollitoDetalle: EntityBase
+    public class BE_TxExamenFisicoPollitoResumen
     {
         /// <summary>
         /// IdExamenFisicoDetalle
@@ -16,34 +16,24 @@ namespace Net.Business.Entities
         [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
         public int IdExamenFisico { get; set; }
         /// <summary>
-        /// NumeroPollito
+        /// IdProceso
         /// </summary>
         [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
-        public int NumeroPollito { get; set; }
+        public int IdProceso { get; set; }
         /// <summary>
         /// DescripcionProceso
         /// </summary>
         [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
         public string DescripcionProceso { get; set; }
         /// <summary>
-        /// IdProcesoDetalle
-        /// </summary>
-        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
-        public int IdProcesoDetalle { get; set; }
-        /// <summary>
-        /// descripcionProcesoDetalle
-        /// </summary>
-        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
-        public string DescripcionProcesoDetalle { get; set; }
-        /// <summary>
-        /// Valor
+        /// Esperado
         /// </summary>
         [DBParameter(SqlDbType.Decimal, 0, ActionType.Everything)]
-        public decimal Valor { get; set; }
+        public decimal Esperado { get; set; }
         /// <summary>
-        /// Factor
+        /// Obtenido
         /// </summary>
         [DBParameter(SqlDbType.Decimal, 0, ActionType.Everything)]
-        public decimal Factor { get; set; }
+        public decimal Obtenido { get; set; }
     }
 }

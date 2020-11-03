@@ -22,6 +22,11 @@ namespace Net.Data
         {
             return Task.Run(() => FindAll(entidad, SP_GET));
         }
+
+        public IEnumerable<BE_Calidad> GetAllCalidad(BE_Calidad entidad)
+        {
+            return FindAll(entidad, SP_GET);
+        }
         public Task<BE_Calidad> GetById(BE_Calidad entidad)
         {
             return Task.Run(() => FindById(entidad, SP_GET_ID));

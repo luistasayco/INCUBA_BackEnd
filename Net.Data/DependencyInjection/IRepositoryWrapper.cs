@@ -17,5 +17,6 @@
         IRequerimientoEquipoRepository RequerimientoEquipo { get; }
         ITxRegistroEquipoRepository TxRegistroEquipo { get; }
         ITxRegistroEquipoDetalle1Repository TxRegistroEquipoDetalle1 { get; }
+        ITxExamenFisicoPollitoRepository TxExamenFisicoPollito { get; }
     }
 }

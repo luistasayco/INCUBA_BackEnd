@@ -21,6 +21,7 @@ namespace Net.Data
         private IRequerimientoEquipoRepository _RequerimientoEquipo;
         private ITxRegistroEquipoRepository _TxRegistroEquipo;
         private ITxRegistroEquipoDetalle1Repository _TxRegistroEquipoDetalle1;
+        private ITxExamenFisicoPollitoRepository _TxExamenFisicoPollito;
         public RepositoryWrapper(IConnectionSQL repoContext)
         {
             _repoContext = repoContext;
@@ -189,6 +190,18 @@ namespace Net.Data
                     _TxRegistroEquipoDetalle1 = new TxRegistroEquipoDetalle1Repository(_repoContext);
                 }
                 return _TxRegistroEquipoDetalle1;
+            }
+        }
+
+        public ITxExamenFisicoPollitoRepository TxExamenFisicoPollito
+        {
+            get
+            {
+                if (_TxExamenFisicoPollito == null)
+                {
+                    _TxExamenFisicoPollito = new TxExamenFisicoPollitoRepository(_repoContext);
+                }
+                return _TxExamenFisicoPollito;
             }
         }
     }

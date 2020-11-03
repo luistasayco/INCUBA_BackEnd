@@ -6,7 +6,7 @@ namespace Net.Business.DTO
     {
         public int IdProceso { get; set; }
         public int IdProcesoDetalle { get; set; }
-        public string Descripcion { get; set; }
+        public string DescripcionProcesoDetalle { get; set; }
         public decimal Factor { get; set; }
         public int Orden { get; set; }
         public string TipoControl { get; set; }
@@ -16,7 +16,7 @@ namespace Net.Business.DTO
             {
                 IdProceso = this.IdProceso,
                 IdProcesoDetalle = this.IdProcesoDetalle,
-                Descripcion = this.Descripcion,
+                DescripcionProcesoDetalle = this.DescripcionProcesoDetalle,
                 Factor = this.Factor,
                 Orden = this.Orden,
                 TipoControl = this.TipoControl,

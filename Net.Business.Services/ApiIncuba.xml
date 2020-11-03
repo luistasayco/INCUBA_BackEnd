@@ -425,6 +425,71 @@
             <response code="400">Si el objeto enviado es nulo o invalido</response>
             <response code="409">Si ocurrio un conflicto</response>
         </member>
+        <member name="M:Net.Business.Services.Controllers.TxExamenFisicoPollitoController.GetAll(Net.Business.DTO.DtoFindTxExamenFisicoPollitoPorFiltro)">
+            <summary>
+            Obtener lista de registro de equipo
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxExamenFisicoPollitoController.GetByIdTxExamenFisicoPollito(System.Int32)">
+            <summary>
+            Obtener un TxRegistro Equipo
+            </summary>
+            <param name="id">Id</param>g
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxExamenFisicoPollitoController.GetByIdTxExamenFisicoPollitoNew">
+            <summary>
+            Obtener un TxRegistro Equipo
+            </summary>
+            <param>Id</param>g
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxExamenFisicoPollitoController.Create(Net.Business.DTO.DtoInsertTxExamenFisicoPollito)">
+            <summary>
+            Crear un informe de registro de equipo
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxExamenFisicoPollitoController.Update(Net.Business.DTO.DtoUpdateTxExamenFisicoPollito)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxExamenFisicoPollitoController.Delete(Net.Business.DTO.DtoDeleteTxExamenFisicoPollito)">
+             <summary>
+             Eliminar registro de Mantenimiento Por Modelo 
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxExamenFisicoPollitoController.GetGeneraPdfByIdTxExamenFisicoPollito(System.Int32)">
+            <summary>
+            Obtener un TxRegistro Equipo
+            </summary>
+            <param name="id">Id</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
         <member name="M:Net.Business.Services.Controllers.TxRegistroEquipoController.GetAll(Net.Business.DTO.DtoFindTxRegistroEquipo)">
             <summary>
             Obtener lista de registro de equipo

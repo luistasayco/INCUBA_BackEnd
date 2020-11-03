@@ -43,7 +43,6 @@ namespace Net.Business.Services.Controllers
 
             return Ok(objectGetAll);
         }
-
         /// <summary>
         /// Obtener una proceso individual
         /// </summary>
@@ -96,7 +95,7 @@ namespace Net.Business.Services.Controllers
 
             if (ObjectNew == 0)
             {
-                ModelState.AddModelError("", $"Algo salio mal guardando el registro {value.Descripcion}");
+                ModelState.AddModelError("", $"Algo salio mal guardando el registro {value.DescripcionProcesoDetalle}");
                 return StatusCode(500, ModelState);
             }
 

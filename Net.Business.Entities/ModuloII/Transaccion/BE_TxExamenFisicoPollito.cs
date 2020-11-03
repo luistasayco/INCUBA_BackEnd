@@ -1,4 +1,6 @@
 ﻿using Net.Connection.Attributes;
+using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Net.Business.Entities
@@ -6,35 +8,65 @@ namespace Net.Business.Entities
     public class BE_TxExamenFisicoPollito: EntityBase
     {
         /// <summary>
-        /// Id
+        /// IdExamenFisico
         /// </summary>
         [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
-        public int Id { get; set; }
+        public int? IdExamenFisico { get; set; }
         /// <summary>
-        /// Numero de Hoja
+        /// CodigoEmpresa
         /// </summary>
-        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
-        public int NumeroHoja { get; set; }
+        [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
+        public string CodigoEmpresa { get; set; }
+        /// <summary>
+        /// CodigoEmpresa
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string DescripcionEmpresa { get; set; }
+        /// <summary>
+        /// UnidadPlanta
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
+        public string UnidadPlanta { get; set; }
+        /// <summary>
+        /// FecRegistro
+        /// </summary>
+        [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
+        public DateTime? FecRegistro { get; set; }
+        /// <summary>
+        /// FecHoraRegistro
+        /// </summary>
+        [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
+        public DateTime? FecHoraRegistro { get; set; }
+        /// <summary>
+        /// Numero de nacedora
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string ResponsableInvetsa { get; set; }
+        /// <summary>
+        /// Numero de nacedora
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string ResponsablePlanta { get; set; }
         /// <summary>
         /// Numero de nacedora
         /// </summary>
         [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
-        public int NumeroNacedora { get; set; }
+        public int? NumeroNacedora { get; set; }
         /// <summary>
         /// Lote
         /// </summary>
         [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
-        public int Lote { get; set; }
+        public string Lote { get; set; }
         /// <summary>
         /// Peso Promedio
         /// </summary>
         [DBParameter(SqlDbType.Decimal, 0, ActionType.Everything)]
-        public decimal PesoPromedio { get; set; }
+        public decimal? PesoPromedio { get; set; }
         /// <summary>
         /// Edad Reproductora
         /// </summary>
-        [DBParameter(SqlDbType.Decimal, 0, ActionType.Everything)]
-        public decimal EdadReproductora { get; set; }
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string EdadReproductora { get; set; }
         /// <summary>
         /// Sexo
         /// </summary>
@@ -48,12 +80,58 @@ namespace Net.Business.Entities
         /// <summary>
         /// Calificacion
         /// </summary>
-        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
-        public int Calificacion { get; set; }
+        [DBParameter(SqlDbType.Decimal, 0, ActionType.Everything)]
+        public decimal? Calificacion { get; set; }
         /// <summary>
         /// Id Calidad
         /// </summary>
         [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
-        public int IdCalidad { get; set; }
+        public int? IdCalidad { get; set; }
+        /// <summary>
+        /// DescripcionCalidad
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string DescripcionCalidad { get; set; }
+        /// <summary>
+        /// ColorCalidad
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string ColorCalidad { get; set; }
+        /// <summary> 
+        /// Uniformidad
+        /// </summary>
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int? Uniformidad { get; set; }
+        /// <summary>
+        /// FirmaInvetsa
+        /// </summary>
+        [DBParameter(SqlDbType.Text, 0, ActionType.Everything)]
+        public string FirmaInvetsa { get; set; }
+        /// <summary>
+        /// FirmaPlanta
+        /// </summary>
+        [DBParameter(SqlDbType.Text, 0, ActionType.Everything)]
+        public string FirmaPlanta { get; set; }
+        //Filtros
+        /// <summary>
+        /// FecRegistroInicio
+        /// </summary>
+        [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
+        public DateTime? FecRegistroInicio { get; set; }
+        /// <summary>
+        /// FecRegistroFin
+        /// </summary>
+        [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
+        public DateTime? FecRegistroFin { get; set; }
+        /// <summary>
+        /// UsuarioCreacion
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 20, ActionType.Everything)]
+        public string UsuarioCreacion { get; set; }
+        public IEnumerable<BE_TxExamenFisicoPollitoDetalleNew> ListDetalleNew { get; set; }
+
+        public IEnumerable<BE_TxExamenFisicoPollitoDetalleFotos> ListDetalleFotos { get; set; }
+
+        public IEnumerable<BE_TxExamenFisicoPollitoResumen> ListDetalleResumen { get; set; }
     }
 }
