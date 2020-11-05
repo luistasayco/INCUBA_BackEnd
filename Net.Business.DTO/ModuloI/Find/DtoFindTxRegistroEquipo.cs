@@ -3,7 +3,7 @@ using System;
 
 namespace Net.Business.DTO
 {
-    public class DtoFindTxRegistroEquipo
+    public class DtoFindTxRegistroEquipo: EntityBase
     {
         public int IdRegistroEquipo { get; set; }
         public string CodigoEmpresa { get; set; }
@@ -20,7 +20,8 @@ namespace Net.Business.DTO
                 CodigoPlanta = this.CodigoPlanta,
                 CodigoModelo = this.CodigoModelo,
                 FecRegistroInicio = this.FecRegistroInicio,
-                FecRegistroFin = this.FecRegistroFin
+                FecRegistroFin = this.FecRegistroFin,
+                RegUsuario = this.RegUsuario
             };
         }
     }

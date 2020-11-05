@@ -434,6 +434,15 @@
             <response code="200">Devuelve el listado completo </response>
             <response code="404">Si no existen datos</response>   
         </member>
+        <member name="M:Net.Business.Services.Controllers.TxExamenFisicoPollitoController.GetByDetalleNew">
+            <summary>
+            Obtener lista de registro de equipo
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
         <member name="M:Net.Business.Services.Controllers.TxExamenFisicoPollitoController.GetByIdTxExamenFisicoPollito(System.Int32)">
             <summary>
             Obtener un TxRegistro Equipo

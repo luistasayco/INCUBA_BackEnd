@@ -4,7 +4,7 @@ using System.Data;
 
 namespace Net.Business.Entities
 {
-    public class FE_TxExamenFisicoPollito
+    public class FE_TxExamenFisicoPollito: EntityBase
     {
         /// <summary>
         /// IdExamenFisico

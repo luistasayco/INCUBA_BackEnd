@@ -72,11 +72,20 @@ namespace Net.Data
             return p;
         }
 
+        public Task<IEnumerable<BE_TxExamenFisicoPollitoDetalleNew>> GetByDetalleNew(BE_TxExamenFisicoPollito entidad)
+        {
+            return Task.Run(() => context.ExecuteSqlViewFindByCondition<BE_TxExamenFisicoPollitoDetalleNew>(SP_GET_DETALLE_NEW, entidad));
+        }
+
         public Task<BE_TxExamenFisicoPollito> GetByIdNew(BE_TxExamenFisicoPollito entidad)
         {
             var objListPrincipal = Task.Run(() =>
             {
                 BE_TxExamenFisicoPollito p = new BE_TxExamenFisicoPollito();
+                p.IdExamenFisico = 0;
+                p.IdCalidad = 0;
+                p.LineaGenetica = string.Empty;
+                p.Lote = string.Empty;
                 p.ListDetalleNew = context.ExecuteSqlViewFindByCondition<BE_TxExamenFisicoPollitoDetalleNew>(SP_GET_DETALLE_NEW, entidad).ToList();
                 return p;
             });

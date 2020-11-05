@@ -47,6 +47,29 @@ namespace Net.Business.Services.Controllers
         }
 
         /// <summary>
+        /// Obtener lista de registro de equipo
+        /// </summary>
+        /// <param name="value">Este es el cuerpo para enviar los parametros</param>
+        /// <returns>Lista del maestro de mantenimiento registrado</returns>
+        /// <response code="200">Devuelve el listado completo </response>
+        /// <response code="404">Si no existen datos</response>   
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetByDetalleNew()
+        {
+
+            var objectGetAll = await _repository.TxExamenFisicoPollito.GetByDetalleNew(new DtoFindTxExamenFisicoPollitoPorId { IdExamenFisico = 0 }.RetornaTxExamenFisicoPollito());
+
+            if (objectGetAll == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(objectGetAll);
+        }
+
+        /// <summary>
         /// Obtener un TxRegistro Equipo
         /// </summary>
         /// <param name="id">Id</param>g

@@ -3,7 +3,7 @@ using System;
 
 namespace Net.Business.DTO
 {
-    public class DtoFindTxExamenFisicoPollitoPorFiltro
+    public class DtoFindTxExamenFisicoPollitoPorFiltro: EntityBase
     {
         public int IdExamenFisico { get; set; }
         public string CodigoEmpresa { get; set; }
@@ -17,7 +17,8 @@ namespace Net.Business.DTO
                 IdExamenFisico = this.IdExamenFisico,
                 CodigoEmpresa = this.CodigoEmpresa,
                 FecRegistroInicio = this.FecRegistroInicio,
-                FecRegistroFin = this.FecRegistroFin
+                FecRegistroFin = this.FecRegistroFin,
+                RegUsuario = this.RegUsuario
             };
         }
     }

@@ -10,6 +10,7 @@ namespace Net.Data
     public interface ITxExamenFisicoPollitoRepository : IRepositoryBase<BE_TxExamenFisicoPollito>
     {
         Task<IEnumerable<BE_TxExamenFisicoPollito>> GetAll(FE_TxExamenFisicoPollito entidad);
+        Task<IEnumerable<BE_TxExamenFisicoPollitoDetalleNew>> GetByDetalleNew(BE_TxExamenFisicoPollito entidad);
         Task<BE_TxExamenFisicoPollito> GetById(BE_TxExamenFisicoPollito entidad);
         Task<BE_TxExamenFisicoPollito> GetByIdNew(BE_TxExamenFisicoPollito entidad);
         Task<int> Create(BE_TxExamenFisicoPollito entidad);
