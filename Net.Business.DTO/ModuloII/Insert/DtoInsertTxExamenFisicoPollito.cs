@@ -24,6 +24,9 @@ namespace Net.Business.DTO
         public int Uniformidad { get; set; }
         public string FirmaInvetsa { get; set; }
         public string FirmaPlanta { get; set; }
+        public int IdUsuarioCierre { get; set; }
+        public DateTime? FecCierre { get; set; }
+        public Boolean FlgCerrado { get; set; }
         public IEnumerable<BE_TxExamenFisicoPollitoDetalleNew> ListDetalleNew { get; set; }
         public IEnumerable<BE_TxExamenFisicoPollitoDetalleFotos> ListDetalleFotos { get; set; }
         public IEnumerable<BE_TxExamenFisicoPollitoResumen> ListDetalleResumen { get; set; }
@@ -48,6 +51,9 @@ namespace Net.Business.DTO
                 Uniformidad = this.Uniformidad,
                 FirmaInvetsa = this.FirmaInvetsa,
                 FirmaPlanta = this.FirmaPlanta,
+                IdUsuarioCierre = this.IdUsuarioCierre,
+                FecCierre = this.FecCierre,
+                FlgCerrado = this.FlgCerrado,
                 ListDetalleNew = this.ListDetalleNew,
                 ListDetalleFotos = this.ListDetalleFotos,
                 ListDetalleResumen = this.ListDetalleResumen,

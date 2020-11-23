@@ -22,6 +22,10 @@ namespace Net.Data
         private ITxRegistroEquipoRepository _TxRegistroEquipo;
         private ITxRegistroEquipoDetalle1Repository _TxRegistroEquipoDetalle1;
         private ITxExamenFisicoPollitoRepository _TxExamenFisicoPollito;
+        private ITipoExplotacionRepository _TipoExplotacion;
+        private ISubTipoExplotacionRepository _SubTipoExplotacion;
+        private ITxRegistroDocumentoRepository _TxRegistroDocumento;
+
         public RepositoryWrapper(IConnectionSQL repoContext)
         {
             _repoContext = repoContext;
@@ -192,7 +196,6 @@ namespace Net.Data
                 return _TxRegistroEquipoDetalle1;
             }
         }
-
         public ITxExamenFisicoPollitoRepository TxExamenFisicoPollito
         {
             get
@@ -202,6 +205,39 @@ namespace Net.Data
                     _TxExamenFisicoPollito = new TxExamenFisicoPollitoRepository(_repoContext);
                 }
                 return _TxExamenFisicoPollito;
+            }
+        }
+        public ITipoExplotacionRepository TipoExplotacion
+        {
+            get
+            {
+                if (_TipoExplotacion == null)
+                {
+                    _TipoExplotacion = new TipoExplotacionRepository(_repoContext);
+                }
+                return _TipoExplotacion;
+            }
+        }
+        public ISubTipoExplotacionRepository SubTipoExplotacion
+        {
+            get
+            {
+                if (_SubTipoExplotacion == null)
+                {
+                    _SubTipoExplotacion = new SubTipoExplotacionRepository(_repoContext);
+                }
+                return _SubTipoExplotacion;
+            }
+        }
+        public ITxRegistroDocumentoRepository TxRegistroDocumento
+        {
+            get
+            {
+                if (_TxRegistroDocumento == null)
+                {
+                    _TxRegistroDocumento = new TxRegistroDocumentoRepository(_repoContext);
+                }
+                return _TxRegistroDocumento;
             }
         }
     }

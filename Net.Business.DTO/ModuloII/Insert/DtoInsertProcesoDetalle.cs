@@ -1,4 +1,5 @@
 ﻿using Net.Business.Entities;
+using System;
 
 namespace Net.Business.DTO
 {
@@ -7,7 +8,7 @@ namespace Net.Business.DTO
         public int IdProceso { get; set; }
         public int IdProcesoDetalle { get; set; }
         public string DescripcionProcesoDetalle { get; set; }
-        public decimal Factor { get; set; }
+        public Boolean FlgDefault { get; set; }
         public int Orden { get; set; }
         public string TipoControl { get; set; }
         public BE_ProcesoDetalle ProcesoDetalle()
@@ -17,7 +18,7 @@ namespace Net.Business.DTO
                 IdProceso = this.IdProceso,
                 IdProcesoDetalle = this.IdProcesoDetalle,
                 DescripcionProcesoDetalle = this.DescripcionProcesoDetalle,
-                Factor = this.Factor,
+                FlgDefault = this.FlgDefault,
                 Orden = this.Orden,
                 TipoControl = this.TipoControl,
                 RegUsuario = this.RegUsuario,

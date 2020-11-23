@@ -438,6 +438,7 @@ namespace Net.Data
                 doc.AddTitle("SBA");
 
                 var pe = new PageEventHelper();
+                pe.FlagCerrado = Boolean.Parse(item.FlgCerrado.ToString());
                 write.PageEvent = pe;
                 // Colocamos la fuente que deseamos que tenga el documento
                 BaseFont helvetica = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1250, true);

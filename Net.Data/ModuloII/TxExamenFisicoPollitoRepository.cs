@@ -31,7 +31,7 @@ namespace Net.Data
         const string SP_MERGE_DETALLE_FOTO = DB_ESQUEMA + "INC_SetTxExamenFisicoPollitoDetalleFotosMerge";
         const string SP_MERGE_DETALLE_RESUMEN = DB_ESQUEMA + "INC_SetTxExamenFisicoPollitoResumenMerge";
 
-        const string SP_UPDATE = DB_ESQUEMA + "";
+        const string SP_UPDATE_STATUS = DB_ESQUEMA + "INC_SetTxExamenFisicoPollitoUpdateStatus";
         const string SP_DELETE = DB_ESQUEMA + "INC_SetTxExamenFisicoPollitoDelete";
 
         public TxExamenFisicoPollitoRepository(IConnectionSQL context)
@@ -286,7 +286,10 @@ namespace Net.Data
                 value.IdExamenFisico = 0;
             }
         }
-
+        public Task UpdateStatus(BE_TxExamenFisicoPollito entidad)
+        {
+            return Task.Run(() => Update(entidad, SP_UPDATE_STATUS));
+        }
         public Task Delete(BE_TxExamenFisicoPollito entidad)
         {
             return Task.Run(() => Delete(entidad, SP_DELETE));
@@ -309,6 +312,7 @@ namespace Net.Data
                 doc.AddTitle("SBA");
 
                 var pe = new PageEventHelper();
+                pe.FlagCerrado = Boolean.Parse(item.FlgCerrado.ToString());
                 write.PageEvent = pe;
                 // Colocamos la fuente que deseamos que tenga el documento
                 BaseFont helvetica = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1250, true);

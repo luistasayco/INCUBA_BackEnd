@@ -425,6 +425,118 @@
             <response code="400">Si el objeto enviado es nulo o invalido</response>
             <response code="409">Si ocurrio un conflicto</response>
         </member>
+        <member name="M:Net.Business.Services.Controllers.SubTipoExplotacionController.GetAll(Net.Business.DTO.DtoFindSubTipoExplotacion)">
+            <summary>
+            Obtener lista de calidad
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de Calidad registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.SubTipoExplotacionController.GetAllPorUsuario(Net.Business.DTO.DtoFindSubTipoExplotacionPorUsuario)">
+            <summary>
+            Obtener lista de calidad
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de Calidad registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.SubTipoExplotacionController.GetbyIdSubTipoExplotacion(System.Int32)">
+            <summary>
+            Obtener una calidad individual
+            </summary>
+            <param name="id">Id de Calidad</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.SubTipoExplotacionController.Create(Net.Business.DTO.DtoInsertSubTipoExplotacion)">
+            <summary>
+            Crear un nuevo registro
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.SubTipoExplotacionController.Update(Net.Business.DTO.DtoUpdateSubTipoExplotacion)">
+            <summary>
+            Actualizar registro existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.SubTipoExplotacionController.Delete(Net.Business.DTO.DtoDeleteSubTipoExplotacion)">
+             <summary>
+             Eliminar logicamente un registro
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TipoExplotacionController.GetAll(Net.Business.DTO.DtoFindTipoExplotacion)">
+            <summary>
+            Obtener lista
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de Calidad registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TipoExplotacionController.GetAllPorUsuario(Net.Business.DTO.DtoFindTipoExplotacionPorUsuario)">
+            <summary>
+            Obtener lista
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de Calidad registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TipoExplotacionController.GetbyIdTipoExplotacion(System.Int32)">
+            <summary>
+            Obtener una calidad individual
+            </summary>
+            <param name="id">Id de Calidad</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TipoExplotacionController.Create(Net.Business.DTO.DtoInsertTipoExplotacion)">
+            <summary>
+            Crear una nueva calidad
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TipoExplotacionController.Update(Net.Business.DTO.DtoUpdateTipoExplotacion)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TipoExplotacionController.Delete(Net.Business.DTO.DtoDeleteTipoExplotacion)">
+             <summary>
+             Eliminar logicamente una calidad
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
         <member name="M:Net.Business.Services.Controllers.TxExamenFisicoPollitoController.GetAll(Net.Business.DTO.DtoFindTxExamenFisicoPollitoPorFiltro)">
             <summary>
             Obtener lista de registro de equipo
@@ -480,6 +592,15 @@
             <response code="204">Actualizado Satisfactoriamente</response>
             <response code="404">Si el objeto enviado es nulo o invalido</response>
         </member>
+        <member name="M:Net.Business.Services.Controllers.TxExamenFisicoPollitoController.UpdateStatus(Net.Business.DTO.DtoUpdateStatusTxExamenFisicoPollito)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
         <member name="M:Net.Business.Services.Controllers.TxExamenFisicoPollitoController.Delete(Net.Business.DTO.DtoDeleteTxExamenFisicoPollito)">
              <summary>
              Eliminar registro de Mantenimiento Por Modelo 
@@ -491,6 +612,54 @@
             <response code="409">Si ocurrio un conflicto</response>
         </member>
         <member name="M:Net.Business.Services.Controllers.TxExamenFisicoPollitoController.GetGeneraPdfByIdTxExamenFisicoPollito(System.Int32)">
+            <summary>
+            Obtener un TxRegistro Equipo
+            </summary>
+            <param name="id">Id</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.GetAll(Net.Business.DTO.DtoFindTxRegistroDocumento)">
+            <summary>
+            Obtener lista de calidad
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de Calidad registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.Create(System.String,System.Collections.Generic.IList{Microsoft.AspNetCore.Http.IFormFile})">
+            <summary>
+            Crear una nueva calidad
+            </summary>
+            <param name="value"></param>
+            <param name="archivo"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.Update(Net.Business.DTO.DtoUpdateTxRegistroDocumento)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.Delete(Net.Business.DTO.DtoDeleteTxRegistroDocumento)">
+             <summary>
+             Eliminar logicamente una calidad
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.GetDownloadFile(System.Int32)">
             <summary>
             Obtener un TxRegistro Equipo
             </summary>

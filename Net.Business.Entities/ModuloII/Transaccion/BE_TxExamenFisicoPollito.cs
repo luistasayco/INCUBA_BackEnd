@@ -128,6 +128,26 @@ namespace Net.Business.Entities
         /// </summary>
         [DBParameter(SqlDbType.NVarChar, 20, ActionType.Everything)]
         public string UsuarioCreacion { get; set; }
+        /// <summary>
+        /// IdUsuarioCierre
+        /// </summary>
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int? IdUsuarioCierre { get; set; }
+        /// <summary>
+        /// FecCierre
+        /// </summary>
+        [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
+        public DateTime? FecCierre { get; set; }
+        /// <summary>
+        /// Id
+        /// </summary>
+        [DBParameter(SqlDbType.Bit, 0, ActionType.Everything)]
+        public Boolean? FlgCerrado { get; set; }
+        /// <summary>
+        /// UsuarioCierre
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
+        public string UsuarioCierre { get; set; }
         public IEnumerable<BE_TxExamenFisicoPollitoDetalleNew> ListDetalleNew { get; set; }
 
         public IEnumerable<BE_TxExamenFisicoPollitoDetalleFotos> ListDetalleFotos { get; set; }

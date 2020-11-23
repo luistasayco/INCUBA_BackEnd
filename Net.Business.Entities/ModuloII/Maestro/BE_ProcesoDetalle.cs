@@ -16,8 +16,8 @@ namespace Net.Business.Entities
         public string DescripcionProcesoDetalle { get; set; }
         [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
         public string DescripcionProceso { get; set; }
-        [DBParameter(SqlDbType.Decimal, 0, ActionType.Everything)]
-        public decimal? Factor { get; set; }
+        [DBParameter(SqlDbType.Bit, 0, ActionType.Everything)]
+        public Boolean? FlgDefault { get; set; }
         [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
         public int? Orden { get; set; }
         [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]

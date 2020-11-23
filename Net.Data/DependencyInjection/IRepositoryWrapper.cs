@@ -18,5 +18,8 @@
         ITxRegistroEquipoRepository TxRegistroEquipo { get; }
         ITxRegistroEquipoDetalle1Repository TxRegistroEquipoDetalle1 { get; }
         ITxExamenFisicoPollitoRepository TxExamenFisicoPollito { get; }
+        ITipoExplotacionRepository TipoExplotacion { get; }
+        ISubTipoExplotacionRepository SubTipoExplotacion { get; }
+        ITxRegistroDocumentoRepository TxRegistroDocumento { get; }
     }
 }

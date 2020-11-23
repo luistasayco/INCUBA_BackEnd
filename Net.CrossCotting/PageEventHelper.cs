@@ -47,6 +47,12 @@ namespace Net.CrossCotting
             get { return _FooterFont; }
             set { _FooterFont = value; }
         }
+        private Boolean _FlagCerrado;
+        public Boolean FlagCerrado
+        {
+            get { return _FlagCerrado; }
+            set { _FlagCerrado = value; }
+        }
         #endregion
         // we override the onOpenDocument method
         public override void OnOpenDocument(PdfWriter writer, Document document)
@@ -152,7 +158,14 @@ namespace Net.CrossCotting
             iTextSharp.text.Image objImagePdf;
 
             // Crea la imagen
-            objImagePdf = iTextSharp.text.Image.GetInstance(Path.Combine(Environment.CurrentDirectory, "img", "pollitos.png"));
+            if (this.FlagCerrado)
+            {
+                objImagePdf = iTextSharp.text.Image.GetInstance(Path.Combine(Environment.CurrentDirectory, "img", "pollitos.png"));
+            } else
+            {
+                objImagePdf = iTextSharp.text.Image.GetInstance(Path.Combine(Environment.CurrentDirectory, "img", "pollitos_borrador.png"));
+            }
+
             // Cambia el tamaño de la imagen
             objImagePdf.ScaleToFit(objPdfDocument.PageSize.Width, objPdfDocument.PageSize.Height);
             // Se indica que la imagen debe almacenarse como fondo

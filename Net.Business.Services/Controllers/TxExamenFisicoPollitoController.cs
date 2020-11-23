@@ -173,6 +173,28 @@ namespace Net.Business.Services.Controllers
         }
 
         /// <summary>
+        /// Actualizar una calidad existente
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <response code="204">Actualizado Satisfactoriamente</response>
+        /// <response code="404">Si el objeto enviado es nulo o invalido</response>
+        [HttpPut]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateStatus([FromBody] DtoUpdateStatusTxExamenFisicoPollito value)
+        {
+            if (value == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _repository.TxExamenFisicoPollito.UpdateStatus(value.RetornaTxExamenFisicoPollito());
+
+            return NoContent();
+        }
+
+        /// <summary>
         /// Eliminar registro de Mantenimiento Por Modelo 
         /// </summary>
         /// <param name="value"></param>
