@@ -45,6 +45,8 @@ namespace Net.Business.Services
         public static void ConfigureRepositoryWrapper(this IServiceCollection services)
         {
             services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+
+            services.AddSingleton<DriveApiService>();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Net.Data
 {
     public class TxRegistroDocumentoRepository : RepositoryBase<BE_TxRegistroDocumento>, ITxRegistroDocumentoRepository
     {
-        private readonly string _ubicacion;
+        //private readonly string _ubicacion;
 
         const string DB_ESQUEMA = "DBO.";
         const string SP_GET = DB_ESQUEMA + "EXT_GetTxRegistroDocumentoPorFiltro";
@@ -24,10 +24,15 @@ namespace Net.Data
         const string SP_DELETE = DB_ESQUEMA + "EXT_SetTxRegistroDocumentoDelete";
         const string SP_UPDATE = DB_ESQUEMA + "EXT_SetTxRegistroDocumentoUpdate";
 
+        // Validacion de existencia de IdDriveGoogle
+
+        const string SP_GET_GOOGLE_DRIVE_ID = DB_ESQUEMA + "EXT_GetTxRegistroDocumentoFolderPorFiltros";
+        const string SP_GOOGLE_DRIVE_INSERT = DB_ESQUEMA + "EXT_SetTxRegistroDocumentoFolderInsert";
+
         public TxRegistroDocumentoRepository(IConnectionSQL context)
             : base(context)
         {
-            _ubicacion = "\\\\SERVIDOR95\\Users\\InvetsaNet\\Documents\\Auditoria\\extranet_file\\";
+            //_ubicacion = "\\\\SERVIDOR95\\Users\\InvetsaNet\\Documents\\Auditoria\\extranet_file\\";
         }
         public Task<IEnumerable<BE_TxRegistroDocumento>> GetAll(BE_TxRegistroDocumento entidad)
         {
@@ -60,7 +65,20 @@ namespace Net.Data
 
                             var _anio = DateTime.Now.Year;
                             var _mes = DateTime.Now.Month;
-                            var armarRuta = string.Format("{0}\\{1}\\{2}\\{3}\\{4}\\{5}\\", entidad.CodigoEmpresa, entidad.CodigoPlanta, entidad.IdTipoExplotacion.ToString(), entidad.IdSubTipoExplotacion.ToString(), _anio.ToString(), _mes.ToString());
+
+                            entidad.Ano = _anio;
+                            entidad.Mes = _mes;
+
+                            DriveApiService googleApiDrive = new DriveApiService();
+
+                            // Validamos si existe Id de folder en Google Drive
+                            string IdFolderGoogleDrive = GetIdDriveFolder(new BE_TxRegistroDocumentoFolder { IdSubTipoExplotacion = entidad.IdSubTipoExplotacion, CodigoEmpresa = entidad.CodigoEmpresa, CodigoPlanta = entidad.CodigoPlanta, Ano = entidad.Ano, Mes = entidad.Mes });
+
+                            if (string.IsNullOrEmpty(IdFolderGoogleDrive))
+                            {
+                                IdFolderGoogleDrive = googleApiDrive.GenerateDirectory(entidad.DescripcionTipoExplotacion ,entidad.DescripcionSubTipoExplotacion, entidad.DescripcionEmpresa, entidad.DescripcionPlanta, entidad.Ano.ToString(), entidad.Mes.ToString());
+                                var idNew = (int)context.ExecuteSqlInsert<BE_TxRegistroDocumentoFolder>(SP_GOOGLE_DRIVE_INSERT, new BE_TxRegistroDocumentoFolder {IdFolder = 0, IdSubTipoExplotacion = entidad.IdSubTipoExplotacion, CodigoEmpresa = entidad.CodigoEmpresa, CodigoPlanta = entidad.CodigoPlanta, IdGoogleDrive = IdFolderGoogleDrive,  RegUsuario = entidad.RegUsuario, RegEstacion = entidad.RegEstacion});
+                            }
 
                             try
                             {
@@ -90,7 +108,7 @@ namespace Net.Data
                                         };
                                         cmd.Parameters.Add(oParamNombreArchivo);
 
-                                        cmd.Parameters.Add(new SqlParameter("@RutaArchivo", armarRuta));
+                                        //cmd.Parameters.Add(new SqlParameter("@RutaArchivo", armarRuta));
                                         cmd.Parameters.Add(new SqlParameter("@TipoArchivo", _lista.ContentType));
                                         cmd.Parameters.Add(new SqlParameter("@ExtencionArchivo", extension));
                                         cmd.Parameters.Add(new SqlParameter("@RegUsuario", entidad.RegUsuario));
@@ -98,7 +116,7 @@ namespace Net.Data
 
                                         await cmd.ExecuteNonQueryAsync();
 
-                                        var rutaUbicacionSave = _ubicacion + armarRuta;
+                                        //var rutaUbicacionSave = _ubicacion + armarRuta;
 
                                         
 
@@ -107,21 +125,27 @@ namespace Net.Data
 
                                         nombre_archivo = entidad.NombreArchivo + "." + extension.ToString();
 
-                                        if (System.IO.File.Exists(rutaUbicacionSave.ToString() + nombre_archivo.ToString()))
-                                        {
-                                            System.IO.File.Delete(rutaUbicacionSave.ToString() + nombre_archivo.ToString());
-                                        }
+                                        //if (System.IO.File.Exists(rutaUbicacionSave.ToString() + nombre_archivo.ToString()))
+                                        //{
+                                        //    System.IO.File.Delete(rutaUbicacionSave.ToString() + nombre_archivo.ToString());
+                                        //}
 
-                                        if (!System.IO.Directory.Exists(rutaUbicacionSave))
-                                        {
-                                            System.IO.Directory.CreateDirectory(rutaUbicacionSave);
-                                        }
+                                        //if (!System.IO.Directory.Exists(rutaUbicacionSave))
+                                        //{
+                                        //    System.IO.Directory.CreateDirectory(rutaUbicacionSave);
+                                        //}
 
-                                        using (FileStream fileStream = System.IO.File.Create(rutaUbicacionSave.ToString() + nombre_archivo.ToString()))
-                                        {
-                                            _lista.CopyTo(fileStream);
-                                            fileStream.Flush();
-                                        }
+                                        //using (FileStream fileStream = System.IO.File.Create(rutaUbicacionSave.ToString() + nombre_archivo.ToString()))
+                                        //{
+                                        //    _lista.CopyTo(fileStream);
+                                        //    fileStream.Flush();
+                                        //}
+
+                                        //DriveApiService googleApiDrive = new DriveApiService();
+                                        //var dataId = googleApiDrive.CreateFolder(entidad.DescripcionEmpresa, "root");
+                                        //_lista.Name = nombre_archivo;
+                                        var datGoogle = await googleApiDrive.Upload(_lista, IdFolderGoogleDrive, entidad.NombreArchivo);
+
                                     }
                                 }
 
@@ -137,7 +161,7 @@ namespace Net.Data
                     }
                 }
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
                 entidad.IdDocumento = 0;
             }
@@ -145,11 +169,27 @@ namespace Net.Data
             return int.Parse(entidad.IdDocumento.ToString());
         }
 
+        private string GetIdDriveFolder(BE_TxRegistroDocumentoFolder entidad)
+        {
+            var data = context.ExecuteSqlViewId<BE_TxRegistroDocumentoFolder>(SP_GET_GOOGLE_DRIVE_ID, entidad);
+
+            if (data == null)
+            {
+                return string.Empty;
+            }
+
+            return data.IdGoogleDrive;
+        }
+
         public async Task<BE_MemoryStream> GetDownloadFile(BE_TxRegistroDocumento entidad)
         {
             try
             {
-                var data = FindById(entidad, SP_GET_ID);
+
+                DriveApiService googleApiDrive = new DriveApiService();
+                var data = await googleApiDrive.Download(entidad.IdGoogleDrive);
+
+                //var data = FindById(entidad, SP_GET_ID);
 
                 //var ruta = "//SERVIDOR95/Users/InvetsaNet/Documents/Auditoria/extranet_file";
 
@@ -158,14 +198,14 @@ namespace Net.Data
 
                 //nombre_archivo = entidad.NombreArchivo + "." + extension.ToString();
 
-                var path = _ubicacion + data.RutaArchivo + data.NombreArchivo + '.'+  data.ExtencionArchivo;
+                //var path = _ubicacion + data.RutaArchivo + data.NombreArchivo + '.'+  data.ExtencionArchivo;
 
-                var memory = new MemoryStream();
+                //var memory = new MemoryStream();
 
-                if (!System.IO.Directory.Exists(_ubicacion + data.RutaArchivo))
-                {
-                    System.IO.Directory.CreateDirectory(_ubicacion + data.RutaArchivo);
-                }
+                //if (!System.IO.Directory.Exists(_ubicacion + data.RutaArchivo))
+                //{
+                //    System.IO.Directory.CreateDirectory(_ubicacion + data.RutaArchivo);
+                //}
 
                 //DirectoryInfo di = new DirectoryInfo(_ubicacion + data.RutaArchivo);
                 //Console.WriteLine("No search pattern returns:");
@@ -176,7 +216,7 @@ namespace Net.Data
                 //    {
                 //        rutaFile = fi.FullName;
                 //    }
-                   
+
                 //}
 
                 //if (!File.Exists(path))
@@ -188,17 +228,17 @@ namespace Net.Data
                 //var path = Path.GetFullPath(data.NombreArchivo, ruta + armarRuta);
                 //var file = Path.GetFullPath(data.NombreArchivo, _ubicacion + data.RutaArchivo);
 
-                using (FileStream stream = new FileStream(path, FileMode.Open))
-                {
-                    await stream.CopyToAsync(memory);
-                }
-                memory.Position = 0;
+                //using (FileStream stream = new FileStream(path, FileMode.Open))
+                //{
+                //    await stream.CopyToAsync(memory);
+                //}
+                //memory.Position = 0;
 
                 return new BE_MemoryStream
                 {
-                    FileMemoryStream = memory,
-                    TypeFile = GetContentType(path),
-                    NameFile = Path.GetFileName(path)
+                    //FileMemoryStream = memory,
+                    //TypeFile = GetContentType(path),
+                    //NameFile = Path.GetFileName(path)
                 };
             }
             catch (Exception ex)

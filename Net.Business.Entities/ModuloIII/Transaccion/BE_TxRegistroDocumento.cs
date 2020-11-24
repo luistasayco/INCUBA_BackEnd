@@ -10,8 +10,12 @@ namespace Net.Business.Entities
         public int? IdDocumento { get; set; }
         [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
         public int? IdTipoExplotacion { get; set; }
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string DescripcionTipoExplotacion { get; set; }
         [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
         public int? IdSubTipoExplotacion { get; set; }
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string DescripcionSubTipoExplotacion { get; set; }
         [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
         public string CodigoEmpresa { get; set; }
         [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
@@ -25,7 +29,7 @@ namespace Net.Business.Entities
         [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
         public int? Mes { get; set; }
         [DBParameter(SqlDbType.VarChar, 300, ActionType.Everything)]
-        public string RutaArchivo { get; set; }
+        public string IdGoogleDrive { get; set; }
         [DBParameter(SqlDbType.VarChar, 200, ActionType.Everything)]
         public string NombreArchivo { get; set; }
         [DBParameter(SqlDbType.VarChar, 100, ActionType.Everything)]

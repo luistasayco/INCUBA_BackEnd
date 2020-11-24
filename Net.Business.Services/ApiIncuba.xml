@@ -659,11 +659,19 @@
             <response code="400">Si el objeto enviado es nulo o invalido</response>
             <response code="409">Si ocurrio un conflicto</response>
         </member>
-        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.GetDownloadFile(System.Int32)">
+        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.GetDownloadFile(System.String)">
             <summary>
             Obtener un TxRegistro Equipo
             </summary>
             <param name="id">Id</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.GetFileGoogleDrive">
+            <summary>
+            Obtener un TxRegistro Equipo
+            </summary>
             <returns>Devuelve un solo registro</returns>
             <response code="200">Devuelve el listado completo </response>
             <response code="404">Si no existen datos</response>  

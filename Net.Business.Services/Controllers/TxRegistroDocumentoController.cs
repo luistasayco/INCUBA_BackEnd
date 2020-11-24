@@ -162,13 +162,36 @@ namespace Net.Business.Services.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesDefaultResponseType]
-        public async Task<FileContentResult> GetDownloadFile(int id)
+        public async Task<FileContentResult> GetDownloadFile(string id)
         {
-            var objectGetById = await _repository.TxRegistroDocumento.GetDownloadFile(new DtoFindTxRegistroDocumentoId { IdDocumento = id }.RetornaTxRegistroDocumento());
+            var objectGetById = await _repository.TxRegistroDocumento.GetDownloadFile(new DtoFindTxRegistroDocumentoId { IdGoogleDrive  = id }.RetornaTxRegistroDocumento());
 
             var pdf = File(objectGetById.FileMemoryStream.GetBuffer(), objectGetById.TypeFile, objectGetById.NameFile);
 
             return pdf;
+        }
+
+        /// <summary>
+        /// Obtener un TxRegistro Equipo
+        /// </summary>
+        /// <returns>Devuelve un solo registro</returns>
+        /// <response code="200">Devuelve el listado completo </response>
+        /// <response code="404">Si no existen datos</response>  
+        [HttpGet(Name = "GetFileGoogleDrive")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> GetFileGoogleDrive()
+        {
+            DriveApiService d = new DriveApiService();
+            var objectGetAll = d.ListEntities("root");
+
+            if (objectGetAll == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(objectGetAll);
         }
     }
 }

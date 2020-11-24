@@ -25,6 +25,7 @@ namespace Net.Data
         private ITipoExplotacionRepository _TipoExplotacion;
         private ISubTipoExplotacionRepository _SubTipoExplotacion;
         private ITxRegistroDocumentoRepository _TxRegistroDocumento;
+        private IGoogleDriveFilesRepository _GoogleDriveFiles;
 
         public RepositoryWrapper(IConnectionSQL repoContext)
         {
@@ -238,6 +239,18 @@ namespace Net.Data
                     _TxRegistroDocumento = new TxRegistroDocumentoRepository(_repoContext);
                 }
                 return _TxRegistroDocumento;
+            }
+        }
+
+        public IGoogleDriveFilesRepository GoogleDriveFiles
+        {
+            get
+            {
+                if (_GoogleDriveFiles == null)
+                {
+                    _GoogleDriveFiles = new GoogleDriveFilesRepository(_repoContext);
+                }
+                return _GoogleDriveFiles;
             }
         }
     }
