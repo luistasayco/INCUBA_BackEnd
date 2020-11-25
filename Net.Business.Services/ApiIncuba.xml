@@ -640,15 +640,6 @@
             <response code="400">Si el objeto enviado es nulo o invalido</response>  
             <response code="500">Algo salio mal guardando el registro</response>  
         </member>
-        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.Update(Net.Business.DTO.DtoUpdateTxRegistroDocumento)">
-            <summary>
-            Actualizar una calidad existente
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-            <response code="204">Actualizado Satisfactoriamente</response>
-            <response code="404">Si el objeto enviado es nulo o invalido</response>
-        </member>
         <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.Delete(Net.Business.DTO.DtoDeleteTxRegistroDocumento)">
              <summary>
              Eliminar logicamente una calidad
@@ -664,14 +655,6 @@
             Obtener un TxRegistro Equipo
             </summary>
             <param name="id">Id</param>
-            <returns>Devuelve un solo registro</returns>
-            <response code="200">Devuelve el listado completo </response>
-            <response code="404">Si no existen datos</response>  
-        </member>
-        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.GetFileGoogleDrive">
-            <summary>
-            Obtener un TxRegistro Equipo
-            </summary>
             <returns>Devuelve un solo registro</returns>
             <response code="200">Devuelve el listado completo </response>
             <response code="404">Si no existen datos</response>  

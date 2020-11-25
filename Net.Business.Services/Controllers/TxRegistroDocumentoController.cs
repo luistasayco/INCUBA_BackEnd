@@ -105,27 +105,6 @@ namespace Net.Business.Services.Controllers
 
             return Ok();
         }
-        /// <summary>
-        /// Actualizar una calidad existente
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// <response code="204">Actualizado Satisfactoriamente</response>
-        /// <response code="404">Si el objeto enviado es nulo o invalido</response>
-        [HttpPut]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update([FromBody] DtoUpdateTxRegistroDocumento value)
-        {
-            if (value == null)
-            {
-                return BadRequest(ModelState);
-            }
-
-            await _repository.TxRegistroDocumento.Update(value.RetornaTxRegistroDocumento());
-
-            return NoContent();
-        }
 
         /// <summary>
         /// Eliminar logicamente una calidad
@@ -164,34 +143,12 @@ namespace Net.Business.Services.Controllers
         [ProducesDefaultResponseType]
         public async Task<FileContentResult> GetDownloadFile(string id)
         {
-            var objectGetById = await _repository.TxRegistroDocumento.GetDownloadFile(new DtoFindTxRegistroDocumentoId { IdGoogleDrive  = id }.RetornaTxRegistroDocumento());
+            var objectGetById = await _repository.TxRegistroDocumento.GetDownloadFileGoogleDrive(new DtoFindTxRegistroDocumentoId { IdGoogleDrive  = id }.RetornaTxRegistroDocumento());
 
             var pdf = File(objectGetById.FileMemoryStream.GetBuffer(), objectGetById.TypeFile, objectGetById.NameFile);
 
             return pdf;
         }
 
-        /// <summary>
-        /// Obtener un TxRegistro Equipo
-        /// </summary>
-        /// <returns>Devuelve un solo registro</returns>
-        /// <response code="200">Devuelve el listado completo </response>
-        /// <response code="404">Si no existen datos</response>  
-        [HttpGet(Name = "GetFileGoogleDrive")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> GetFileGoogleDrive()
-        {
-            DriveApiService d = new DriveApiService();
-            var objectGetAll = d.ListEntities("root");
-
-            if (objectGetAll == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(objectGetAll);
-        }
     }
 }

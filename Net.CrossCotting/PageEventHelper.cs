@@ -11,6 +11,8 @@ namespace Net.CrossCotting
         PdfContentByte cb;
         // we will put the final number of pages in a template
         PdfTemplate template;
+
+        PdfTemplate templateHeader;
         // this is the BaseFont we are going to use for the header / footer
         BaseFont bf = null;
         // This keeps track of the creation time
@@ -62,7 +64,8 @@ namespace Net.CrossCotting
                 PrintTime = DateTime.Now;
                 bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
                 cb = writer.DirectContent;
-                template = cb.CreateTemplate(document.PageSize.Width, 60);
+                template = cb.CreateTemplate(document.PageSize.Width, 80);
+                templateHeader = cb.CreateTemplate(document.PageSize.Width, 80);
             }
             catch (DocumentException de)
             {
@@ -91,26 +94,34 @@ namespace Net.CrossCotting
             }
             if (HeaderLeft + HeaderRight != string.Empty)
             {
-                PdfPTable HeaderTable = new PdfPTable(2);
-                HeaderTable.DefaultCell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                HeaderTable.TotalWidth = pageSize.Width;
-                HeaderTable.SetWidthPercentage(new float[] { 50, 50 }, pageSize);
+                //PdfPTable HeaderTable = new PdfPTable(2);
+                //HeaderTable.DefaultCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                //HeaderTable.TotalWidth = pageSize.Width;
+                //HeaderTable.SetWidthPercentage(new float[] { 50, 50 }, pageSize);
 
-                PdfPCell HeaderLeftCell = new PdfPCell(new Phrase(8, HeaderLeft, HeaderFont)) { BorderColor = new BaseColor(103, 93, 152), BackgroundColor = new BaseColor(103, 93, 152) };
-                HeaderLeftCell.Padding = 5;
-                HeaderLeftCell.PaddingBottom = 8;
-                HeaderLeftCell.BorderWidthRight = 0;
-                //HeaderLeftCell.BackgroundColor = new BaseColor(103, 93, 152);
-                HeaderTable.AddCell(HeaderLeftCell);
-                PdfPCell HeaderRightCell = new PdfPCell(new Phrase(8, HeaderRight, HeaderFont)) { BorderColor = new BaseColor(103, 93, 152), BackgroundColor = new BaseColor(103, 93, 152) };
-                HeaderRightCell.HorizontalAlignment = PdfPCell.ALIGN_RIGHT;
-                HeaderRightCell.Padding = 5;
-                HeaderRightCell.PaddingBottom = 8;
-                HeaderRightCell.BorderWidthLeft = 0;
-                HeaderTable.AddCell(HeaderRightCell);
-                cb.SetRgbColorFill(0, 0, 0);
-                HeaderTable.WriteSelectedRows(0, -1, pageSize.GetLeft(0), pageSize.GetTop(0), cb);
+                //PdfPCell HeaderLeftCell = new PdfPCell(new Phrase(8, HeaderLeft, HeaderFont)) { BorderColor = new BaseColor(54, 207, 37), BackgroundColor = new BaseColor(54, 207, 37) };
+                //HeaderLeftCell.Padding = 5;
+                //HeaderLeftCell.PaddingBottom = 8;
+                //HeaderLeftCell.BorderWidthRight = 0;
+                ////HeaderLeftCell.BackgroundColor = new BaseColor(103, 93, 152);
+                //HeaderTable.AddCell(HeaderLeftCell);
+                //PdfPCell HeaderRightCell = new PdfPCell(new Phrase(8, HeaderRight, HeaderFont)) { BorderColor = new BaseColor(237, 77, 7), BackgroundColor = new BaseColor(237, 77, 7) };
+                //HeaderRightCell.HorizontalAlignment = PdfPCell.ALIGN_RIGHT;
+                //HeaderRightCell.Padding = 5;
+                //HeaderRightCell.PaddingBottom = 8;
+                //HeaderRightCell.BorderWidthLeft = 0;
+                //HeaderTable.AddCell(HeaderRightCell);
+                //cb.SetRgbColorFill(0, 0, 0);
+                //HeaderTable.WriteSelectedRows(0, -1, pageSize.GetLeft(0), pageSize.GetTop(0), cb);
             }
+
+            iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(Path.Combine(Environment.CurrentDirectory, "img", "header.png"));
+            float w = document.PageSize.Width;
+            float h = 80;
+            logo.Alignment = Element.ALIGN_CENTER;
+            templateHeader.AddImage(logo, w, 0, 0, h, 0, 0);
+
+            cb.AddTemplate(templateHeader, pageSize.GetLeft(0), pageSize.GetTop(80));
         }
 
         public override void OnEndPage(PdfWriter writer, Document document)
@@ -129,18 +140,18 @@ namespace Net.CrossCotting
 
             iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(Path.Combine(Environment.CurrentDirectory, "img", "footer.png"));
             float w = document.PageSize.Width;
-            float h = 60;
+            float h = 80;
             logo.Alignment = Element.ALIGN_CENTER;
             template.AddImage(logo, w, 0, 0, h, 0, 0);
 
             cb.AddTemplate(template, pageSize.GetLeft(0), pageSize.GetBottom(0));
-            cb.BeginText();
-            cb.SetFontAndSize(bf, 8);
+            //cb.BeginText();
+            //cb.SetFontAndSize(bf, 8);
             //cb.ShowTextAligned(PdfContentByte.ALIGN_RIGHT,
             //    "Printed On " + PrintTime.ToString(),
             //    pageSize.GetRight(40),
             //    pageSize.GetBottom(30), 0);
-            cb.EndText();
+            //cb.EndText();
         }
 
         public override void OnCloseDocument(PdfWriter writer, Document document)
@@ -149,7 +160,7 @@ namespace Net.CrossCotting
             template.BeginText();
             template.SetFontAndSize(bf, 8);
             template.SetTextMatrix(0, 0);
-            template.ShowText("" + (writer.PageNumber - 1));
+            //template.ShowText("" + (writer.PageNumber - 1));
             template.EndText();
         }
 

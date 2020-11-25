@@ -431,11 +431,11 @@ namespace Net.Data
                 Document doc = new Document();
                 doc.SetPageSize(PageSize.Letter);
                 // points to cm
-                doc.SetMargins(28.34f, 28.34f, 50f, 60f);
+                doc.SetMargins(28.34f, 28.34f, 85f, 85f);
                 MemoryStream ms = new MemoryStream();
                 PdfWriter write = PdfWriter.GetInstance(doc, ms);
-                doc.AddAuthor("Luis Tasayco");
-                doc.AddTitle("SBA");
+                doc.AddAuthor("Grupo SBA");
+                doc.AddTitle("Invetsa");
 
                 var pe = new PageEventHelper();
                 pe.FlagCerrado = Boolean.Parse(item.FlgCerrado.ToString());
@@ -452,7 +452,13 @@ namespace Net.Data
                 pe.HeaderRight = " ";
                 doc.Open();
 
-                doc.Add(new Phrase("INFORME DE INSCRIPCIÓN DE EQUIPOS", titulo));
+                var tblTitulo = new PdfPTable(new float[] { 100f }) { WidthPercentage = 100 };
+                var title = string.Format("INFORME DE INSCRIPCIÓN DE EQUIPOS - {0}", entidad.IdRegistroEquipo, titulo);
+                var c1Titulo = new PdfPCell(new Phrase(title, titulo)) { Border = 0 };
+                c1Titulo.HorizontalAlignment = Element.ALIGN_CENTER;
+                c1Titulo.VerticalAlignment = Element.ALIGN_MIDDLE;
+                tblTitulo.AddCell(c1Titulo);
+                doc.Add(tblTitulo);
 
                 doc.Add(new Phrase(" "));
                 doc.Add(new Phrase(" "));
@@ -478,10 +484,10 @@ namespace Net.Data
                 doc.Add(tbl);
 
                 tbl = new PdfPTable(new float[] { 25f, 75f }) { WidthPercentage = 100 };
-                c1.Phrase = new Phrase("Dirección", parrafoNegro);
-                c2.Phrase = new Phrase(" ", parrafoNegro);
-                tbl.AddCell(c1);
-                tbl.AddCell(c2);
+                //c1.Phrase = new Phrase("Dirección", parrafoNegro);
+                //c2.Phrase = new Phrase(" ", parrafoNegro);
+                //tbl.AddCell(c1);
+                //tbl.AddCell(c2);
 
                 c1.Phrase = new Phrase("Jefe de Planta", parrafoNegro);
                 c2.Phrase = new Phrase(item.ResponsablePlanta, parrafoNegro);

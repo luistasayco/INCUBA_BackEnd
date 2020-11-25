@@ -305,11 +305,11 @@ namespace Net.Data
                 Document doc = new Document();
                 doc.SetPageSize(PageSize.Letter);
                 // points to cm
-                doc.SetMargins(28.34f, 28.34f, 50f, 60f);
+                doc.SetMargins(28.34f, 28.34f, 85f, 85f);
                 MemoryStream ms = new MemoryStream();
                 PdfWriter write = PdfWriter.GetInstance(doc, ms);
-                doc.AddAuthor("Luis Tasayco");
-                doc.AddTitle("SBA");
+                doc.AddAuthor("Grupo SBA");
+                doc.AddTitle("Invetsa");
 
                 var pe = new PageEventHelper();
                 pe.FlagCerrado = Boolean.Parse(item.FlgCerrado.ToString());
@@ -329,7 +329,9 @@ namespace Net.Data
                 doc.Open();
 
                 var tblTitulo = new PdfPTable(new float[] { 100f }) { WidthPercentage = 100 };
-                var c1Titulo = new PdfPCell(new Phrase("EXÁMEN FÍSICO POLLITO", titulo)) { Border = 0};
+
+                var title = string.Format("EXÁMEN FÍSICO POLLITO - {0}", entidad.IdExamenFisico, titulo);
+                var c1Titulo = new PdfPCell(new Phrase(title, titulo)) { Border = 0};
                 c1Titulo.HorizontalAlignment = Element.ALIGN_CENTER;
                 c1Titulo.VerticalAlignment = Element.ALIGN_MIDDLE;
                 tblTitulo.AddCell(c1Titulo);

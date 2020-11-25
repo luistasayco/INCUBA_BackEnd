@@ -1,9 +1,11 @@
 ﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Download;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
+using Net.Business.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -83,8 +85,9 @@ namespace Net.Data
 
             // Define parameters of request.
             FilesResource.ListRequest listRequest = service.Files.List();
+            listRequest.Q = "('" + id + "' in parents)";
             listRequest.PageSize = 10;
-            listRequest.Fields = "nextPageToken, files(id, name)";
+            listRequest.Fields = "nextPageToken, files(id, name, mimeType)";
 
             // List files.
             IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
@@ -93,9 +96,13 @@ namespace Net.Data
             {
                 foreach (var file in files)
                 {
-                    if (file.Name == fileMetadata.Name)
+                    if (file.MimeType == "application/vnd.google-apps.folder")
                     {
-                        return file.Id;
+
+                        if (file.Name == fileMetadata.Name)
+                        {
+                            return file.Id;
+                        }
                     }
                 }
             }
@@ -122,8 +129,8 @@ namespace Net.Data
         /// <returns></returns>
         public async Task<Google.Apis.Drive.v3.Data.File> Upload(IFormFile file, string documentId, string nameFile)
         {
-            //var name = ($"{nameFile}.{Path.GetExtension(file.FileName)}");
-            var name = file.FileName;
+            var name = ($"{nameFile}{Path.GetExtension(file.FileName)}");
+            //var name = nameFile;
             var mimeType = file.ContentType;
 
             var fileMetadata = new Google.Apis.Drive.v3.Data.File()
@@ -165,9 +172,9 @@ namespace Net.Data
         /// Eliminando archivo / carpeta
         /// </summary>
         /// <param name="id"></param>
-        public void Remove(string id)
+        public Task Remove(string id)
         {
-            service.Files.Delete(id).Execute();
+            return Task.Run(() => service.Files.Delete(id).Execute());
         }
 
         /// <summary>
@@ -175,16 +182,80 @@ namespace Net.Data
         /// </summary>
         /// <param name="fileId"></param>
         /// <returns></returns>
-        public async Task<MemoryStream> Download(string fileId)
+        public async Task<BE_MemoryStream> Download(string fileId)
         {
             var outputstream = new MemoryStream();
             var request = service.Files.Get(fileId);
+
+            var name = request.Execute().Name;
+
+            request.MediaDownloader.ProgressChanged += (Google.Apis.Download.IDownloadProgress progress) =>
+            {
+                switch (progress.Status)
+                {
+                    case DownloadStatus.Downloading:
+                        {
+                            Console.WriteLine(progress.BytesDownloaded);
+                            break;
+                        }
+                    case DownloadStatus.Completed:
+                        {
+                            Console.WriteLine("Download complete.");
+                            //SaveStream(outputstream, FilePath);
+                            break;
+                        }
+                    case DownloadStatus.Failed:
+                        {
+                            Console.WriteLine("Download failed.");
+                            break;
+                        }
+                }
+            };
 
             await request.DownloadAsync(outputstream);
 
             outputstream.Position = 0;
 
-            return outputstream;
+            return new BE_MemoryStream
+            {
+                FileMemoryStream = outputstream,
+                TypeFile = GetContentType(name),
+                NameFile = Path.GetFileName(name)
+            };
+        }
+
+        private string GetContentType(string path)
+        {
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
+        }
+
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                {".txt", "text/plain"},
+                {".pdf", "application/pdf"},
+                {".doc", "application/vnd.ms-word"},
+                {".docx", "application/vnd.ms-word"},
+                {".xls", "application/vnd.ms-excel"},
+                {".xlsx", "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"},
+                {".png", "image/png"},
+                {".jpg", "image/jpeg"},
+                {".jpeg", "image/jpeg"},
+                {".gif", "image/gif"},
+                {".csv", "text/csv"}
+            };
+        }
+
+        // file save to server path
+        private static void SaveStream(MemoryStream stream, string FilePath)
+        {
+            using (System.IO.FileStream file = new FileStream(FilePath, FileMode.Create, FileAccess.ReadWrite))
+            {
+                stream.WriteTo(file);
+            }
         }
     }
 }
