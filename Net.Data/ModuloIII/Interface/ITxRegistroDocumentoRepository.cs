@@ -9,8 +9,12 @@ namespace Net.Data
     public interface ITxRegistroDocumentoRepository : IRepositoryBase<BE_TxRegistroDocumento>
     {
         Task<IEnumerable<BE_TxRegistroDocumento>> GetAll(BE_TxRegistroDocumento entidad);
+        Task<IEnumerable<BE_GoogleDriveFiles>> GetAllEmpresaPorUsuario(BE_GoogleDriveFiles entidad);
+
+        Task<IEnumerable<BE_GoogleDriveFiles>> GetGoogleDriveFilesPorId(BE_GoogleDriveFiles entidad);
         Task<BE_TxRegistroDocumento> GetById(BE_TxRegistroDocumento entidad);
-        Task<int> Create(BE_TxRegistroDocumento entidad, IList<IFormFile> lista_anexo);
+        Task<BE_ResultadoTransaccion> Create(BE_TxRegistroDocumento entidad, IList<IFormFile> lista_anexo);
+        Task<BE_ResultadoTransaccion> Update(BE_TxRegistroDocumento entidad);
         Task Delete(BE_TxRegistroDocumento entidad);
         Task<BE_MemoryStream> GetDownloadFileGoogleDrive(BE_TxRegistroDocumento entidad);
     }

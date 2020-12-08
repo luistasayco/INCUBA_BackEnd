@@ -107,6 +107,18 @@ namespace Net.Business.Entities
         /// </summary>
         [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
         public string UsuarioCreacion { get; set; }
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string DescripcionTipoExplotacion { get; set; }
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int? IdSubTipoExplotacion { get; set; }
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string DescripcionSubTipoExplotacion { get; set; }
+        [DBParameter(SqlDbType.VarChar, 100, ActionType.Everything)]
+        public string EmailFrom { get; set; }
+        [DBParameter(SqlDbType.VarChar, 500, ActionType.Everything)]
+        public string EmailTo { get; set; }
+        [DBParameter(SqlDbType.VarChar, 300, ActionType.Everything)]
+        public string NombreArchivo { get; set; }
         public List<BE_TxRegistroEquipoDetalle1> TxRegistroEquipoDetalle1 { get; set; }
         public List<BE_TxRegistroEquipoDetalle2> TxRegistroEquipoDetalle2 { get; set; }
         public List<BE_TxRegistroEquipoDetalle2> TxRegistroEquipoDetalle2NoPredeterminado { get; set; }

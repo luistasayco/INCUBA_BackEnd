@@ -13,7 +13,7 @@ namespace Net.Data
         Task<BE_TxRegistroEquipo> GetById(BE_TxRegistroEquipo entidad);
         Task<int> Create(BE_TxRegistroEquipo entidad);
         Task Update(BE_TxRegistroEquipo entidad);
-        Task UpdateStatus(BE_TxRegistroEquipo entidad);
+        Task<BE_ResultadoTransaccion> UpdateStatus(BE_TxRegistroEquipo entidad);
         Task Delete(BE_TxRegistroEquipo entidad);
         Task<MemoryStream> GenerarPDF(BE_TxRegistroEquipo entidad);
     }

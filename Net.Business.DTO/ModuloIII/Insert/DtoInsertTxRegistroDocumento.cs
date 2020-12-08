@@ -1,5 +1,4 @@
 ﻿using Net.Business.Entities;
-using System;
 
 namespace Net.Business.DTO
 {
@@ -15,6 +14,8 @@ namespace Net.Business.DTO
         public string CodigoPlanta { get; set; }
         public string DescripcionPlanta { get; set; }
         public string NombreArchivo { get; set; }
+        public string EmailFrom { get; set; }
+        public string EmailTo { get; set; }
 
         public BE_TxRegistroDocumento RetornaTxRegistroDocumento()
         {
@@ -30,6 +31,8 @@ namespace Net.Business.DTO
                 CodigoPlanta = this.CodigoPlanta,
                 DescripcionPlanta = this.DescripcionPlanta,
                 NombreArchivo = this.NombreArchivo,
+                EmailFrom = this.EmailFrom,
+                EmailTo = this.EmailTo,
                 RegUsuario = this.RegUsuario,
                 RegEstacion = this.RegEstacion
             };

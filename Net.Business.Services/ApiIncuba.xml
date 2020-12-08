@@ -629,6 +629,20 @@
             <response code="200">Devuelve el listado completo </response>
             <response code="404">Si no existen datos</response>   
         </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.GetAllEmpresaPorUsuario(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.GetGoogleDriveFilesPorId(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
         <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.Create(System.String,System.Collections.Generic.IList{Microsoft.AspNetCore.Http.IFormFile})">
             <summary>
             Crear una nueva calidad
@@ -639,6 +653,15 @@
             <response code="201">Devuelve el elemento recién creado</response>
             <response code="400">Si el objeto enviado es nulo o invalido</response>  
             <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.UpdateStatus(Net.Business.DTO.DtoUpdateStatusTxRegistroDocumento)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
         </member>
         <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.Delete(Net.Business.DTO.DtoDeleteTxRegistroDocumento)">
              <summary>

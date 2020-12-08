@@ -163,7 +163,12 @@ namespace Net.Business.Services.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _repository.TxRegistroEquipo.UpdateStatus(value.TxRegistroEquipo());
+            var data = await _repository.TxRegistroEquipo.UpdateStatus(value.TxRegistroEquipo());
+
+            if (data.ResultadoCodigo == -1)
+            {
+                return BadRequest(data);
+            }
 
             return NoContent();
         }

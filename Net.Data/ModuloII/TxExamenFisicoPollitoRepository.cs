@@ -1,6 +1,10 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Moq;
 using Net.Business.Entities;
 using Net.Connection;
 using Net.CrossCotting;
@@ -21,6 +25,7 @@ namespace Net.Data
         const string DB_ESQUEMA = "DBO.";
         const string SP_GET = DB_ESQUEMA + "INC_GetTxExamenFisicoPollitoPorFiltros";
         const string SP_GET_ID = DB_ESQUEMA + "INC_GetTxExamenFisicoPollitoPorId";
+        const string SP_GET_ID_GOOGLE_DRIVE = DB_ESQUEMA + "INC_GetTxExamenFisicoPollitoPorIdGoogleDrive";
         const string SP_GET_DETALLE_NEW = DB_ESQUEMA + "INC_GetTxExamenFisicoPollitoDetalleNew";
         const string SP_GET_ID_DETALLE = DB_ESQUEMA + "INC_GetTxExamenFisicoPollitoDetallePorId";
         const string SP_GET_ID_DETALLE_FOTOS = DB_ESQUEMA + "INC_GetTxExamenFisicoPollitoDetalleFotosPorId";
@@ -130,7 +135,7 @@ namespace Net.Data
                                 cmd.Parameters.Add(oParam);
 
                                 cmd.Parameters.Add(new SqlParameter("@CodigoEmpresa", value.CodigoEmpresa));
-                                cmd.Parameters.Add(new SqlParameter("@UnidadPlanta", value.UnidadPlanta));
+                                cmd.Parameters.Add(new SqlParameter("@CodigoPlanta", value.CodigoPlanta));
                                 cmd.Parameters.Add(new SqlParameter("@FecRegistro", value.FecRegistro));
                                 cmd.Parameters.Add(new SqlParameter("@ResponsableInvetsa", value.ResponsableInvetsa));
                                 cmd.Parameters.Add(new SqlParameter("@ResponsablePlanta", value.ResponsablePlanta));
@@ -145,6 +150,8 @@ namespace Net.Data
                                 cmd.Parameters.Add(new SqlParameter("@IdCalidad", value.IdCalidad));
                                 cmd.Parameters.Add(new SqlParameter("@FirmaInvetsa", value.FirmaInvetsa));
                                 cmd.Parameters.Add(new SqlParameter("@FirmaPlanta", value.FirmaPlanta));
+                                cmd.Parameters.Add(new SqlParameter("@EmailFrom", value.EmailFrom));
+                                cmd.Parameters.Add(new SqlParameter("@EmailTo", value.EmailTo));
                                 cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
                                 cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
 
@@ -286,9 +293,98 @@ namespace Net.Data
                 value.IdExamenFisico = 0;
             }
         }
-        public Task UpdateStatus(BE_TxExamenFisicoPollito entidad)
+        public Task<BE_ResultadoTransaccion> UpdateStatus(BE_TxExamenFisicoPollito entidad)
         {
-            return Task.Run(() => Update(entidad, SP_UPDATE_STATUS));
+            return Task.Run(() => {
+
+                BE_ResultadoTransaccion vResultadoTransaccion = new BE_ResultadoTransaccion();
+                vResultadoTransaccion.ResultadoCodigo = 1;
+
+                entidad.FecCierre = DateTime.Now;
+
+                //Actualizamos el status
+                Update(entidad, SP_UPDATE_STATUS);
+
+                //Obtiene informacion del examen fisicion del pollito bebe
+                var data = context.ExecuteSqlViewId<BE_TxExamenFisicoPollito>(SP_GET_ID_GOOGLE_DRIVE, new BE_TxExamenFisicoPollito { IdExamenFisico = entidad.IdExamenFisico });
+                var nameFile = string.Format("{0}.{1}", data.NombreArchivo, "pdf");
+                var memory = new MemoryStream();
+                try
+                {
+                    var memoryPDF = GenerarPDF(new BE_TxExamenFisicoPollito { IdExamenFisico = entidad.IdExamenFisico });
+                    memory = memoryPDF.Result;
+                }
+                catch (Exception ex)
+                {
+                    vResultadoTransaccion.ResultadoCodigo = -1;
+                    vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                    return vResultadoTransaccion;
+                }
+
+                try
+                {
+                    EmailSenderRepository emailSenderRepository = new EmailSenderRepository(context);
+                    var mensaje = string.Format("Se envía informe de Examen Físico de Pollito BB - N° {0}", entidad.IdExamenFisico);
+                    emailSenderRepository.SendEmailAsync(data.EmailTo, "Correo Automatico - Examen Físico de Pollito BB", mensaje, new BE_MemoryStream { FileMemoryStream = memory }, nameFile);
+                }
+                catch (Exception ex)
+                {
+                    vResultadoTransaccion.ResultadoCodigo = -1;
+                    vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                    return vResultadoTransaccion;
+                }
+
+                MemoryStream ms = memory;
+
+                TxRegistroDocumentoRepository _repository = new TxRegistroDocumentoRepository(context);
+                List<IFormFile> files = new List<IFormFile>();
+
+                var fileMock = new Mock<IFormFile>();
+                
+                fileMock.Setup(_ => _.FileName).Returns(nameFile);
+                fileMock.Setup(_ => _.ContentType).Returns("application/pdf");
+                fileMock.Setup(_ => _.Length).Returns(ms.Length);
+                fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
+                fileMock.Setup(_ => _.ContentDisposition).Returns(string.Format("inline; filename={0}", nameFile));
+
+                files.Add(fileMock.Object);
+
+                try
+                {
+                    var resultDocumentFile = _repository.Create(new BE_TxRegistroDocumento
+                    {
+                        CodigoEmpresa = data.CodigoEmpresa,
+                        DescripcionEmpresa = data.DescripcionEmpresa,
+                        CodigoPlanta = data.CodigoPlanta,
+                        DescripcionPlanta = data.DescripcionPlanta,
+                        DescripcionTipoExplotacion = data.DescripcionTipoExplotacion,
+                        DescripcionSubTipoExplotacion = data.DescripcionSubTipoExplotacion,
+                        IdSubTipoExplotacion = data.IdSubTipoExplotacion,
+                        IdDocumento = 0,
+                        IdDocumentoReferencial = (int)data.IdExamenFisico,
+                        FlgCerrado = true,
+                        FecCerrado = DateTime.Now,
+                        RegUsuario = entidad.RegUsuario,
+                        RegEstacion = entidad.RegEstacion
+                    }, files);
+
+                    if (resultDocumentFile.Result.ResultadoCodigo == -1)
+                    {
+                        vResultadoTransaccion.ResultadoCodigo = -1;
+                        vResultadoTransaccion.ResultadoDescripcion = resultDocumentFile.Result.ResultadoDescripcion;
+                        return vResultadoTransaccion;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    vResultadoTransaccion.ResultadoCodigo = -1;
+                    vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                    return vResultadoTransaccion;
+                }
+
+                return vResultadoTransaccion;
+
+            });
         }
         public Task Delete(BE_TxExamenFisicoPollito entidad)
         {
@@ -330,7 +426,7 @@ namespace Net.Data
 
                 var tblTitulo = new PdfPTable(new float[] { 100f }) { WidthPercentage = 100 };
 
-                var title = string.Format("EXÁMEN FÍSICO POLLITO - {0}", entidad.IdExamenFisico, titulo);
+                var title = string.Format("EXÁMEN FÍSICO DE POLLITO BB - {0}", entidad.IdExamenFisico, titulo);
                 var c1Titulo = new PdfPCell(new Phrase(title, titulo)) { Border = 0};
                 c1Titulo.HorizontalAlignment = Element.ALIGN_CENTER;
                 c1Titulo.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -340,13 +436,13 @@ namespace Net.Data
                 doc.Add(new Phrase(" "));
                 doc.Add(new Phrase(" "));
 
-                var tbl = new PdfPTable(new float[] { 20f, 27f, 6f, 20f, 27f }) { WidthPercentage = 100 };
+                var tbl = new PdfPTable(new float[] { 12f, 37f, 4f, 20f, 27f }) { WidthPercentage = 100 };
 
                 var c1 = new PdfPCell(new Phrase("Compañia:", parrafoNegro)) { Border = 0, PaddingBottom = 5f };
                 var c2 = new PdfPCell(new Phrase(item.DescripcionEmpresa, parrafoNegro)) { Border = 0, PaddingBottom = 5f };
                 var c3 = new PdfPCell(new Phrase("", parrafoNegro)) { Border = 0, PaddingBottom = 5f };
                 var c4 = new PdfPCell(new Phrase("Unidad - Planta:", parrafoNegro)) { Border = 0, PaddingBottom = 5f };
-                var c5 = new PdfPCell(new Phrase(item.UnidadPlanta.ToString(), parrafoNegro)) { Border = 0, PaddingBottom = 5f };
+                var c5 = new PdfPCell(new Phrase(item.DescripcionPlanta.ToString(), parrafoNegro)) { Border = 0, PaddingBottom = 5f };
                 tbl.AddCell(c1);
                 tbl.AddCell(c2);
                 tbl.AddCell(c3);
@@ -608,8 +704,6 @@ namespace Net.Data
 
                 doc.Add(tbl);
 
-                doc.Add(new Phrase(" "));
-
                 // Validamos si ingresaron imagenes
 
                 var countFotos = item.ListDetalleFotos.Count();
@@ -617,7 +711,7 @@ namespace Net.Data
 
                 if (countFotos > 0)
                 {
-                    doc.Add(new Phrase("\n"));
+                    //doc.Add(new Phrase("\n"));
 
                     doc.Add(new Phrase("Fotos", subTitulo));
 
@@ -650,8 +744,7 @@ namespace Net.Data
                     doc.Add(tbl);
                 }
 
-                doc.Add(new Phrase("\n"));
-                doc.Add(new Phrase("\n"));
+                doc.Add(new Phrase(" "));
 
                 tbl = new PdfPTable(new float[] { 45f, 10f, 45f }) { WidthPercentage = 100f };
                 c1 = new PdfPCell();

@@ -18,6 +18,8 @@ namespace Net.Business.DTO
         public string ResponsablePlanta { get; set; }
         public int? IdUsuarioCierre { get; set; }
         public DateTime? FecCierre { get; set; }
+        public string EmailTo { get; set; }
+        public string EmailFrom { get; set; }
         public List<BE_TxRegistroEquipoDetalle1> TxRegistroEquipoDetalle1 { get; set; }
         public List<BE_TxRegistroEquipoDetalle2> TxRegistroEquipoDetalle2 { get; set; }
         public List<BE_TxRegistroEquipoDetalle3> TxRegistroEquipoDetalle3 { get; set; }
@@ -43,6 +45,8 @@ namespace Net.Business.DTO
                 ResponsablePlanta = this.ResponsablePlanta,
                 IdUsuarioCierre = this.IdUsuarioCierre,
                 FecCierre = this.FecCierre,
+                EmailTo = this.EmailTo,
+                EmailFrom =this.EmailFrom,
                 TxRegistroEquipoDetalle1 = this.TxRegistroEquipoDetalle1,
                 TxRegistroEquipoDetalle2 = this.TxRegistroEquipoDetalle2,
                 TxRegistroEquipoDetalle3 = this.TxRegistroEquipoDetalle3,

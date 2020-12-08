@@ -1,13 +1,12 @@
 ﻿using Net.Business.Entities;
-using System;
 
 namespace Net.Business.DTO
 {
-    public class DtoUpdateTxRegistroDocumento: EntityBase
+    public class DtoUpdateStatusTxRegistroDocumento: EntityBase
     {
         public int IdDocumento { get; set; }
         public string IdGoogleDrive { get; set; }
-        public string NombreArchivo { get; set; }
+        public string IdGoogleDriveFolder { get; set; }
 
         public BE_TxRegistroDocumento RetornaTxRegistroDocumento()
         {
@@ -15,7 +14,7 @@ namespace Net.Business.DTO
             {
                 IdDocumento = this.IdDocumento,
                 IdGoogleDrive = this.IdGoogleDrive,
-                NombreArchivo = this.NombreArchivo,
+                IdGoogleDriveFolder = this.IdGoogleDriveFolder,
                 RegUsuario = this.RegUsuario,
                 RegEstacion = this.RegEstacion
             };

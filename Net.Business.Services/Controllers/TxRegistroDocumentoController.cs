@@ -44,6 +44,49 @@ namespace Net.Business.Services.Controllers
 
             return Ok(objectGetAll);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAllEmpresaPorUsuario(int id)
+        {
+
+            var objectGetAll = await _repository.TxRegistroDocumento.GetAllEmpresaPorUsuario(new DtoFindGoogleDriveFilesPorIdUsuario { RegUsuario = id }.RetornaGoogleDriveFiles());
+
+            if (objectGetAll == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(objectGetAll);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetGoogleDriveFilesPorId(string id)
+        {
+
+            var objectGetAll = await _repository.TxRegistroDocumento.GetGoogleDriveFilesPorId(new DtoFindGoogleDriveFiles { IdGoogleDrive = id }.RetornaGoogleDriveFiles());
+
+            if (objectGetAll == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(objectGetAll);
+        }
+
         /// <summary>
         /// Obtener una calidad individual
         /// </summary>
@@ -95,15 +138,37 @@ namespace Net.Business.Services.Controllers
                 return BadRequest("Invalid model object");
             }
 
-            int ObjectNew = await _repository.TxRegistroDocumento.Create(myObj.RetornaTxRegistroDocumento(), archivo);
+            var ObjectNew = await _repository.TxRegistroDocumento.Create(myObj.RetornaTxRegistroDocumento(), archivo);
 
-            if (ObjectNew == 0)
+            if (ObjectNew.ResultadoCodigo == -1)
             {
                 ModelState.AddModelError("", $"Algo salio mal guardando el registro {myObj.NombreArchivo}");
                 return StatusCode(500, ModelState);
             }
 
             return Ok();
+        }
+
+        /// <summary>
+        /// Actualizar una calidad existente
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <response code="204">Actualizado Satisfactoriamente</response>
+        /// <response code="404">Si el objeto enviado es nulo o invalido</response>
+        [HttpPut]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateStatus([FromBody] DtoUpdateStatusTxRegistroDocumento value)
+        {
+            if (value == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _repository.TxRegistroDocumento.Update(value.RetornaTxRegistroDocumento());
+
+            return NoContent();
         }
 
         /// <summary>

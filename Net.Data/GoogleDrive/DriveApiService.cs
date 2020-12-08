@@ -57,15 +57,15 @@ namespace Net.Data
             return listRequest.Execute().Files;
         }
 
-        public string GenerateDirectory(string TipoExplotacion, string SubTipoExplotacion, string Empresa, string Planta, string Anio, string Mes)
+        public string GenerateDirectory(string Empresa, string Planta, string TipoExplotacion, string SubTipoExplotacion, string Anio, string Mes)
         {
-            var Id = CreateFolder(TipoExplotacion, "root");
-
-            Id = CreateFolder(SubTipoExplotacion, Id);
-
-            Id = CreateFolder(Empresa, Id);
+            var Id = CreateFolder(Empresa, "root");
 
             Id = CreateFolder(Planta, Id);
+
+            Id = CreateFolder(TipoExplotacion, Id);
+
+            Id = CreateFolder(SubTipoExplotacion, Id);
 
             Id = CreateFolder(Anio, Id);
 
@@ -118,6 +118,61 @@ namespace Net.Data
             var fileRequest = request.Execute();
 
             return fileRequest.Id;
+        }
+
+        public IEnumerable<BE_GoogleDriveFiles> GetFolderChildren(string id = "root")
+        {
+
+            List<BE_GoogleDriveFiles> list = new List<BE_GoogleDriveFiles>();
+
+            // Define parameters of request.
+            FilesResource.ListRequest listRequest = service.Files.List();
+            listRequest.Q = "('" + id + "' in parents)";
+            //listRequest.PageSize = 10;
+            listRequest.Fields = "nextPageToken, files(id, name, mimeType)";
+
+            // List files.
+            IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;
+
+            if (files != null && files.Count > 0)
+            {
+                foreach (var file in files)
+                {
+                    var itenGoogle = new BE_GoogleDriveFiles
+                    {
+                        IdGoogleDrive = file.Id,
+                        Names = file.Name,
+                        MimeType = file.MimeType
+                    };
+
+                    list.Add(itenGoogle);
+                }
+            }
+
+            return list;
+        }
+
+        public async Task<int> MoveFile(string fileId, string FolderId)
+        {
+            Google.Apis.Drive.v3.FilesResource.GetRequest getRequest = service.Files.Get(fileId);
+            getRequest.Fields = "parents";
+            Google.Apis.Drive.v3.Data.File file = getRequest.Execute();
+            string previousParents = string.Join(",", file.Parents);
+
+            Google.Apis.Drive.v3.FilesResource.UpdateRequest updateRequest = service.Files.Update(new Google.Apis.Drive.v3.Data.File(), fileId);
+            updateRequest.Fields = "parents";
+            updateRequest.AddParents = FolderId;
+            updateRequest.RemoveParents = previousParents;
+
+            file = updateRequest.Execute();
+
+            if (file != null)
+            {
+                return 1;
+            } else
+            {
+                return 0;
+            }
         }
 
         /// <summary>

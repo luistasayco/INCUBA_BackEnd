@@ -23,10 +23,15 @@ namespace Net.Business.Entities
         [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
         public string DescripcionEmpresa { get; set; }
         /// <summary>
-        /// UnidadPlanta
+        /// CodigoPlanta
         /// </summary>
         [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
-        public string UnidadPlanta { get; set; }
+        public string CodigoPlanta { get; set; }
+        /// <summary>
+        /// DescripcionPlanta
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string DescripcionPlanta { get; set; }
         /// <summary>
         /// FecRegistro
         /// </summary>
@@ -148,6 +153,21 @@ namespace Net.Business.Entities
         /// </summary>
         [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
         public string UsuarioCierre { get; set; }
+
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string DescripcionTipoExplotacion { get; set; }
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int? IdSubTipoExplotacion { get; set; }
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string DescripcionSubTipoExplotacion { get; set; }
+
+        [DBParameter(SqlDbType.VarChar, 100, ActionType.Everything)]
+        public string EmailFrom { get; set; }
+        [DBParameter(SqlDbType.VarChar, 500, ActionType.Everything)]
+        public string EmailTo { get; set; }
+        [DBParameter(SqlDbType.VarChar, 300, ActionType.Everything)]
+        public string NombreArchivo { get; set; }
+
         public IEnumerable<BE_TxExamenFisicoPollitoDetalleNew> ListDetalleNew { get; set; }
 
         public IEnumerable<BE_TxExamenFisicoPollitoDetalleFotos> ListDetalleFotos { get; set; }

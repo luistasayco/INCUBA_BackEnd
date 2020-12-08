@@ -21,7 +21,6 @@
         ITipoExplotacionRepository TipoExplotacion { get; }
         ISubTipoExplotacionRepository SubTipoExplotacion { get; }
         ITxRegistroDocumentoRepository TxRegistroDocumento { get; }
-
-        IGoogleDriveFilesRepository GoogleDriveFiles { get; }
+        IEmailSenderRepository EmailSender { get; }
     }
 }

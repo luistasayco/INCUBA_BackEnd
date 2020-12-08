@@ -25,7 +25,7 @@ namespace Net.Data
         private ITipoExplotacionRepository _TipoExplotacion;
         private ISubTipoExplotacionRepository _SubTipoExplotacion;
         private ITxRegistroDocumentoRepository _TxRegistroDocumento;
-        private IGoogleDriveFilesRepository _GoogleDriveFiles;
+        private IEmailSenderRepository _EmailSender;
 
         public RepositoryWrapper(IConnectionSQL repoContext)
         {
@@ -242,15 +242,15 @@ namespace Net.Data
             }
         }
 
-        public IGoogleDriveFilesRepository GoogleDriveFiles
+        public IEmailSenderRepository EmailSender
         {
             get
             {
-                if (_GoogleDriveFiles == null)
+                if (_EmailSender == null)
                 {
-                    _GoogleDriveFiles = new GoogleDriveFilesRepository(_repoContext);
+                    _EmailSender = new EmailSenderRepository(_repoContext);
                 }
-                return _GoogleDriveFiles;
+                return _EmailSender;
             }
         }
     }

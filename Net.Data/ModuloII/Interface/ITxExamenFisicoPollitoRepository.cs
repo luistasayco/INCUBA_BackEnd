@@ -15,7 +15,7 @@ namespace Net.Data
         Task<BE_TxExamenFisicoPollito> GetByIdNew(BE_TxExamenFisicoPollito entidad);
         Task<int> Create(BE_TxExamenFisicoPollito entidad);
         Task Update(BE_TxExamenFisicoPollito entidad);
-        Task UpdateStatus(BE_TxExamenFisicoPollito entidad);
+        Task<BE_ResultadoTransaccion> UpdateStatus(BE_TxExamenFisicoPollito entidad);
         Task Delete(BE_TxExamenFisicoPollito entidad);
         Task<MemoryStream> GenerarPDF(BE_TxExamenFisicoPollito entidad);
     }

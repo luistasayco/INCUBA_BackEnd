@@ -8,7 +8,8 @@ namespace Net.Business.DTO
     {
         public int IdExamenFisico { get; set; }
         public string CodigoEmpresa { get; set; }
-        public string UnidadPlanta { get; set; }
+        public string CodigoPlanta { get; set; }
+        public string DescripcionPlanta { get; set; }
         public DateTime? FecRegistro { get; set; }
         public DateTime? FecHoraRegistro { get; set; }
         public string ResponsableInvetsa { get; set; }
@@ -24,9 +25,11 @@ namespace Net.Business.DTO
         public int Uniformidad { get; set; }
         public string FirmaInvetsa { get; set; }
         public string FirmaPlanta { get; set; }
-        public int IdUsuarioCierre { get; set; }
+        public int? IdUsuarioCierre { get; set; }
         public DateTime? FecCierre { get; set; }
-        public Boolean FlgCerrado { get; set; }
+        public Boolean? FlgCerrado { get; set; }
+        public string EmailFrom { get; set; }
+        public string EmailTo { get; set; }
         public IEnumerable<BE_TxExamenFisicoPollitoDetalleNew> ListDetalleNew { get; set; }
         public IEnumerable<BE_TxExamenFisicoPollitoDetalleFotos> ListDetalleFotos { get; set; }
         public IEnumerable<BE_TxExamenFisicoPollitoResumen> ListDetalleResumen { get; set; }
@@ -36,7 +39,8 @@ namespace Net.Business.DTO
             {
                 IdExamenFisico = this.IdExamenFisico,
                 CodigoEmpresa = this.CodigoEmpresa,
-                UnidadPlanta = this.UnidadPlanta,
+                CodigoPlanta = this.CodigoPlanta,
+                DescripcionPlanta = this.DescripcionPlanta,
                 FecRegistro = this.FecRegistro,
                 ResponsableInvetsa = this.ResponsableInvetsa,
                 ResponsablePlanta = this.ResponsablePlanta,
@@ -57,6 +61,8 @@ namespace Net.Business.DTO
                 ListDetalleNew = this.ListDetalleNew,
                 ListDetalleFotos = this.ListDetalleFotos,
                 ListDetalleResumen = this.ListDetalleResumen,
+                EmailFrom = this.EmailFrom,
+                EmailTo = this.EmailTo,
                 RegUsuario = this.RegUsuario,
                 RegEstacion = this.RegEstacion
             };

@@ -35,7 +35,9 @@ namespace Net.Business.Entities
         [DBParameter(SqlDbType.VarChar, 100, ActionType.Everything)]
         public string TipoArchivo { get; set; }
         [DBParameter(SqlDbType.Bit, 0, ActionType.Everything)]
-        public Boolean? FlgActivo { get; set; }
+        public Boolean? FlgCerrado { get; set; }
+        [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
+        public DateTime? FecCerrado { get; set; }
         [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
         public DateTime? FecRegistro { get; set; }
         [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
@@ -47,5 +49,13 @@ namespace Net.Business.Entities
         public DateTime? FecInicio { get; set; }
         [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
         public DateTime? FecFin { get; set; }
+        [DBParameter(SqlDbType.VarChar, 100, ActionType.Everything)]
+        public string EmailFrom { get; set; }
+        [DBParameter(SqlDbType.VarChar, 500, ActionType.Everything)]
+        public string EmailTo { get; set; }
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int? IdDocumentoReferencial { get; set; }
+        [DBParameter(SqlDbType.VarChar, 300, ActionType.Everything)]
+        public string IdGoogleDriveFolder { get; set; }
     }
 }

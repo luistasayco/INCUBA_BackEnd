@@ -19,15 +19,20 @@ namespace Net.Data
 
         const string DB_ESQUEMA = "DBO.";
         const string SP_GET = DB_ESQUEMA + "EXT_GetTxRegistroDocumentoPorFiltro";
+        const string SP_GET_EMPRESA_X_USUARIO = DB_ESQUEMA + "EXT_GetTxRegistroDocumentoEmpresa";
         const string SP_GET_ID = DB_ESQUEMA + "EXT_GetTxRegistroDocumentoPorId";
         const string SP_INSERT = DB_ESQUEMA + "EXT_SetTxRegistroDocumentoInsert";
         const string SP_DELETE = DB_ESQUEMA + "EXT_SetTxRegistroDocumentoDelete";
         const string SP_UPDATE = DB_ESQUEMA + "EXT_SetTxRegistroDocumentoUpdate";
 
+        const string SP_UPDATESTATUS = DB_ESQUEMA + "EXT_SetTxRegistroDocumentoUpdateStatus";
+
         // Validacion de existencia de IdDriveGoogle
 
         const string SP_GET_GOOGLE_DRIVE_ID = DB_ESQUEMA + "EXT_GetTxRegistroDocumentoFolderPorFiltros";
         const string SP_GOOGLE_DRIVE_INSERT = DB_ESQUEMA + "EXT_SetTxRegistroDocumentoFolderInsert";
+
+        const string SP_GOOGLE_DRIVE_EMPRESA_MERGE = DB_ESQUEMA + "EXT_SetTxRegistroDocumentoEmpresaMerge";
 
         public TxRegistroDocumentoRepository(IConnectionSQL context)
             : base(context)
@@ -38,6 +43,21 @@ namespace Net.Data
             return Task.Run(() => FindAll(entidad, SP_GET));
         }
 
+        public Task<IEnumerable<BE_GoogleDriveFiles>> GetAllEmpresaPorUsuario(BE_GoogleDriveFiles entidad)
+        {
+            return Task.Run(() => context.ExecuteSqlViewFindByCondition<BE_GoogleDriveFiles>(SP_GET_EMPRESA_X_USUARIO, entidad));
+        }
+
+        public Task<IEnumerable<BE_GoogleDriveFiles>> GetGoogleDriveFilesPorId(BE_GoogleDriveFiles entidad)
+        {
+            return Task.Run(() =>
+            {
+                DriveApiService apiService = new DriveApiService();
+                var lista = apiService.GetFolderChildren(entidad.IdGoogleDrive);
+                return lista;
+            });
+        }
+
         public IEnumerable<BE_TxRegistroDocumento> GetAllCalidad(BE_TxRegistroDocumento entidad)
         {
             return FindAll(entidad, SP_GET);
@@ -46,8 +66,11 @@ namespace Net.Data
         {
             return Task.Run(() => FindById(entidad, SP_GET_ID));
         }
-        public async Task<int> Create(BE_TxRegistroDocumento entidad, IList<IFormFile> lista_anexo)
+        public async Task<BE_ResultadoTransaccion> Create(BE_TxRegistroDocumento entidad, IList<IFormFile> lista_anexo)
         {
+            BE_ResultadoTransaccion vResultadoTransaccion = new BE_ResultadoTransaccion();
+            vResultadoTransaccion.ResultadoCodigo = 1;
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(context.DevuelveConnectionSQL()))
@@ -72,19 +95,36 @@ namespace Net.Data
                             DriveApiService googleApiDrive = new DriveApiService();
 
                             // Validamos si existe Id de folder en Google Drive
-                            string IdFolderGoogleDrive = GetIdDriveFolder(new BE_TxRegistroDocumentoFolder { 
-                                IdSubTipoExplotacion = entidad.IdSubTipoExplotacion, 
-                                CodigoEmpresa = entidad.CodigoEmpresa, 
-                                CodigoPlanta = entidad.CodigoPlanta, 
-                                Ano = entidad.Ano, 
-                                Mes = entidad.Mes
-                            });
+                            string IdFolderGoogleDrive = string.Empty;
 
                             try
                             {
+                                var IdFolderEmpresaGoogleDrive = googleApiDrive.CreateFolder(entidad.DescripcionEmpresa);
+
+                                using (SqlCommand cmd = new SqlCommand(SP_GOOGLE_DRIVE_EMPRESA_MERGE, conn))
+                                {
+                                    cmd.Parameters.Clear();
+                                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                                    cmd.Parameters.Add(new SqlParameter("@CodigoEmpresa", entidad.CodigoEmpresa));
+                                    cmd.Parameters.Add(new SqlParameter("@IdGoogleDrive", IdFolderEmpresaGoogleDrive));
+                                    cmd.Parameters.Add(new SqlParameter("@RegUsuario", entidad.RegUsuario));
+                                    cmd.Parameters.Add(new SqlParameter("@RegEstacion", entidad.RegEstacion));
+
+                                    await cmd.ExecuteNonQueryAsync();
+                                }
+
+                                IdFolderGoogleDrive = GetIdDriveFolder(new BE_TxRegistroDocumentoFolder
+                                {
+                                    IdSubTipoExplotacion = entidad.IdSubTipoExplotacion,
+                                    CodigoEmpresa = entidad.CodigoEmpresa,
+                                    CodigoPlanta = entidad.CodigoPlanta,
+                                    Ano = entidad.Ano,
+                                    Mes = entidad.Mes
+                                });
+
                                 if (string.IsNullOrEmpty(IdFolderGoogleDrive))
                                 {
-                                    IdFolderGoogleDrive = googleApiDrive.GenerateDirectory(entidad.DescripcionTipoExplotacion, entidad.DescripcionSubTipoExplotacion, entidad.DescripcionEmpresa, entidad.DescripcionPlanta, entidad.Ano.ToString(), entidad.Mes.ToString());
+                                    IdFolderGoogleDrive = googleApiDrive.GenerateDirectory(entidad.DescripcionEmpresa, entidad.DescripcionPlanta, entidad.DescripcionTipoExplotacion, entidad.DescripcionSubTipoExplotacion, entidad.Ano.ToString(), entidad.Mes.ToString());
 
                                     using (SqlCommand cmd = new SqlCommand(SP_GOOGLE_DRIVE_INSERT, conn))
                                     {
@@ -99,6 +139,12 @@ namespace Net.Data
 
                                         await cmd.ExecuteNonQueryAsync();
                                     }
+                                }
+
+                                if (entidad.FlgCerrado == null)
+                                {
+                                    var IdFolderPendienteCierreGoogleDrive = googleApiDrive.CreateFolder("PENDIENTE CIERRE");
+                                    IdFolderGoogleDrive = IdFolderPendienteCierreGoogleDrive;
                                 }
 
                                 using (SqlCommand cmd = new SqlCommand(SP_INSERT, conn))
@@ -124,10 +170,14 @@ namespace Net.Data
                                         SqlParameter oParamNombreArchivo = new SqlParameter("@NombreArchivo", SqlDbType.VarChar, 300)
                                         {
                                             Direction = ParameterDirection.Output
+
                                         };
                                         cmd.Parameters.Add(oParamNombreArchivo);
                                         cmd.Parameters.Add(new SqlParameter("@TipoArchivo", _lista.ContentType));
                                         cmd.Parameters.Add(new SqlParameter("@ExtencionArchivo", extension));
+                                        cmd.Parameters.Add(new SqlParameter("@FlgCerrado", entidad.FlgCerrado));
+                                        cmd.Parameters.Add(new SqlParameter("@FecCerrado", entidad.FecCerrado));
+                                        cmd.Parameters.Add(new SqlParameter("@IdDocumentoReferencial", entidad.IdDocumentoReferencial));
                                         cmd.Parameters.Add(new SqlParameter("@RegUsuario", entidad.RegUsuario));
                                         cmd.Parameters.Add(new SqlParameter("@RegEstacion", entidad.RegEstacion));
 
@@ -162,7 +212,8 @@ namespace Net.Data
                             }
                             catch (System.Exception ex)
                             {
-                                entidad.IdDocumento = 0;
+                                vResultadoTransaccion.ResultadoCodigo = -1;
+                                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
                                 transaction.Rollback();
                             }
                         }
@@ -171,10 +222,11 @@ namespace Net.Data
             }
             catch (System.Exception ex)
             {
-                entidad.IdDocumento = 0;
+                vResultadoTransaccion.ResultadoCodigo = -1;
+                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
             }
 
-            return int.Parse(entidad.IdDocumento.ToString());
+            return vResultadoTransaccion;
         }
 
         private string GetIdDriveFolder(BE_TxRegistroDocumentoFolder entidad)
@@ -253,7 +305,48 @@ namespace Net.Data
                 return new BE_MemoryStream();
             }
         }
+        public Task<BE_ResultadoTransaccion> Update(BE_TxRegistroDocumento entidad)
+        {
+            return Task.Run(() => {
 
+                BE_ResultadoTransaccion vResultadoTransaccion = new BE_ResultadoTransaccion();
+                vResultadoTransaccion.ResultadoCodigo = 1;
+
+                try
+                {
+                    DriveApiService driveApiService = new DriveApiService();
+                    var resp = driveApiService.MoveFile(entidad.IdGoogleDrive, entidad.IdGoogleDriveFolder);
+
+                    if (resp.Result == 0)
+                    {
+                        vResultadoTransaccion.ResultadoCodigo = -1;
+                        vResultadoTransaccion.ResultadoDescripcion = "Ocurrio un error al mover archivo en el google drive";
+                        return vResultadoTransaccion;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    vResultadoTransaccion.ResultadoCodigo = -1;
+                    vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                    return vResultadoTransaccion;
+                }
+
+                try
+                {
+                    entidad.IdGoogleDrive = null;
+                    entidad.IdGoogleDriveFolder = null;
+                    Update(entidad, SP_UPDATESTATUS);
+                }
+                catch (Exception ex)
+                {
+                    vResultadoTransaccion.ResultadoCodigo = -1;
+                    vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                    return vResultadoTransaccion;
+                }
+
+                return vResultadoTransaccion;
+            });
+        }
         public Task Delete(BE_TxRegistroDocumento entidad)
         {
             return Task.Run(() => {

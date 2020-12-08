@@ -189,7 +189,12 @@ namespace Net.Business.Services.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _repository.TxExamenFisicoPollito.UpdateStatus(value.RetornaTxExamenFisicoPollito());
+            var result = await _repository.TxExamenFisicoPollito.UpdateStatus(value.RetornaTxExamenFisicoPollito());
+
+            if (result.ResultadoCodigo == -1)
+            {
+                return BadRequest(result);
+            }
 
             return NoContent();
         }
