@@ -21,7 +21,7 @@ namespace Net.Data
 
             Options = context.ExecuteSqlViewId<BE_ParametroSistema>(SP_GET_ID, new BE_ParametroSistema { IdParametrosSistema = 0 });
 
-            Options.SendEmailPasswordOrigen = EncriptaHelper.Decrypt(Options.SendEmailPassword);
+            Options.SendEmailPasswordOrigen = EncriptaHelper.DecryptStringAES(Options.SendEmailPassword);
 
             Cliente = new SmtpClient()
             {

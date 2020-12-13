@@ -20,8 +20,8 @@ namespace Net.Business.Entities
         /// <summary>
         /// SendEmailPassword
         /// </summary>
-        [DBParameter(SqlDbType.VarBinary, 16, ActionType.Everything)]
-        public byte[] SendEmailPassword { get; set; }
+        [DBParameter(SqlDbType.Text, 0, ActionType.Everything)]
+        public string SendEmailPassword { get; set; }
         /// <summary>
         /// SendEmailPassword
         /// </summary>

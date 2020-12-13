@@ -25,8 +25,10 @@ namespace Net.Data
         //https://dev.to/theonlybeardedbeast/using-google-drive-in-a-c-application-38ag
         public DriveApiService()
         {
-           
-            using (var stream = new FileStream(@"C:\Users\InvetsaNet\Documents\Auditoria\extranet_file\client_secret.json", FileMode.Open, FileAccess.Read))
+
+            var path = Path.Combine(Environment.CurrentDirectory, "extranet_file", "client_secret.json");
+
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
                 string credPath = "token.json";
 

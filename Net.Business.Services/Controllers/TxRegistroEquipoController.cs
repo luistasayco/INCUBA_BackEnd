@@ -208,7 +208,7 @@ namespace Net.Business.Services.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesDefaultResponseType]
-        public async Task<FileContentResult> GetGeneraPdfByIdTxRegistroEquipo(int id)
+        public async Task<IActionResult> GetGeneraPdfByIdTxRegistroEquipo(int id)
         {
             var objectGetById = await _repository.TxRegistroEquipo.GenerarPDF(new DtoFindTxRegistroEquipoPorId { IdRegistroEquipo = id }.TxRegistroEquipo());
 

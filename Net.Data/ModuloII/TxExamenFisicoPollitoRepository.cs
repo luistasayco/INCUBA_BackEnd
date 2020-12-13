@@ -293,110 +293,117 @@ namespace Net.Data
                 value.IdExamenFisico = 0;
             }
         }
-        public Task<BE_ResultadoTransaccion> UpdateStatus(BE_TxExamenFisicoPollito entidad)
+        public async Task<BE_ResultadoTransaccion> UpdateStatus(BE_TxExamenFisicoPollito entidad)
         {
-            return Task.Run(() => {
+            BE_ResultadoTransaccion vResultadoTransaccion = new BE_ResultadoTransaccion();
+            vResultadoTransaccion.ResultadoCodigo = 1;
 
-                BE_ResultadoTransaccion vResultadoTransaccion = new BE_ResultadoTransaccion();
-                vResultadoTransaccion.ResultadoCodigo = 1;
-
+            try
+            {
                 entidad.FecCierre = DateTime.Now;
-
-                //Actualizamos el status
                 Update(entidad, SP_UPDATE_STATUS);
-
-                //Obtiene informacion del examen fisicion del pollito bebe
-                var data = context.ExecuteSqlViewId<BE_TxExamenFisicoPollito>(SP_GET_ID_GOOGLE_DRIVE, new BE_TxExamenFisicoPollito { IdExamenFisico = entidad.IdExamenFisico });
-                var nameFile = string.Format("{0}.{1}", data.NombreArchivo, "pdf");
-                var memory = new MemoryStream();
-                try
-                {
-                    var memoryPDF = GenerarPDF(new BE_TxExamenFisicoPollito { IdExamenFisico = entidad.IdExamenFisico });
-                    memory = memoryPDF.Result;
-                }
-                catch (Exception ex)
-                {
-                    vResultadoTransaccion.ResultadoCodigo = -1;
-                    vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
-                    return vResultadoTransaccion;
-                }
-
-                try
-                {
-                    EmailSenderRepository emailSenderRepository = new EmailSenderRepository(context);
-                    var mensaje = string.Format("Se envía informe de Examen Físico de Pollito BB - N° {0}", entidad.IdExamenFisico);
-                    emailSenderRepository.SendEmailAsync(data.EmailTo, "Correo Automatico - Examen Físico de Pollito BB", mensaje, new BE_MemoryStream { FileMemoryStream = memory }, nameFile);
-                }
-                catch (Exception ex)
-                {
-                    vResultadoTransaccion.ResultadoCodigo = -1;
-                    vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
-                    return vResultadoTransaccion;
-                }
-
-                MemoryStream ms = memory;
-
-                TxRegistroDocumentoRepository _repository = new TxRegistroDocumentoRepository(context);
-                List<IFormFile> files = new List<IFormFile>();
-
-                var fileMock = new Mock<IFormFile>();
-                
-                fileMock.Setup(_ => _.FileName).Returns(nameFile);
-                fileMock.Setup(_ => _.ContentType).Returns("application/pdf");
-                fileMock.Setup(_ => _.Length).Returns(ms.Length);
-                fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
-                fileMock.Setup(_ => _.ContentDisposition).Returns(string.Format("inline; filename={0}", nameFile));
-
-                files.Add(fileMock.Object);
-
-                try
-                {
-                    var resultDocumentFile = _repository.Create(new BE_TxRegistroDocumento
-                    {
-                        CodigoEmpresa = data.CodigoEmpresa,
-                        DescripcionEmpresa = data.DescripcionEmpresa,
-                        CodigoPlanta = data.CodigoPlanta,
-                        DescripcionPlanta = data.DescripcionPlanta,
-                        DescripcionTipoExplotacion = data.DescripcionTipoExplotacion,
-                        DescripcionSubTipoExplotacion = data.DescripcionSubTipoExplotacion,
-                        IdSubTipoExplotacion = data.IdSubTipoExplotacion,
-                        IdDocumento = 0,
-                        IdDocumentoReferencial = (int)data.IdExamenFisico,
-                        FlgCerrado = true,
-                        FecCerrado = DateTime.Now,
-                        RegUsuario = entidad.RegUsuario,
-                        RegEstacion = entidad.RegEstacion
-                    }, files);
-
-                    if (resultDocumentFile.Result.ResultadoCodigo == -1)
-                    {
-                        vResultadoTransaccion.ResultadoCodigo = -1;
-                        vResultadoTransaccion.ResultadoDescripcion = resultDocumentFile.Result.ResultadoDescripcion;
-                        return vResultadoTransaccion;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    vResultadoTransaccion.ResultadoCodigo = -1;
-                    vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
-                    return vResultadoTransaccion;
-                }
-
+            }
+            catch (Exception ex)
+            {
+               
+                vResultadoTransaccion.ResultadoCodigo = -1;
+                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
                 return vResultadoTransaccion;
+            }
 
-            });
+            var memory = new MemoryStream();
+            try
+            {
+                var memoryPDF = await GenerarPDF(new BE_TxExamenFisicoPollito { IdExamenFisico = entidad.IdExamenFisico });
+                memory = memoryPDF;
+            }
+            catch (Exception ex)
+            {
+                vResultadoTransaccion.ResultadoCodigo = -1;
+                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                return vResultadoTransaccion;
+            }
+
+            
+
+            //Obtiene informacion del examen fisicion del pollito bebe
+            var data = context.ExecuteSqlViewId<BE_TxExamenFisicoPollito>(SP_GET_ID_GOOGLE_DRIVE, new BE_TxExamenFisicoPollito { IdExamenFisico = entidad.IdExamenFisico });
+            var nameFile = string.Format("{0}.{1}", data.NombreArchivo, "pdf");
+
+            try
+            {
+                EmailSenderRepository emailSenderRepository = new EmailSenderRepository(context);
+                var mensaje = string.Format("Se envía informe de Examen Físico de Pollito BB - N° {0}", entidad.IdExamenFisico);
+                await emailSenderRepository.SendEmailAsync(data.EmailTo, "Correo Automatico - Examen Físico de Pollito BB", mensaje, new BE_MemoryStream { FileMemoryStream = memory }, nameFile);
+            }
+            catch (Exception ex)
+            {
+                vResultadoTransaccion.ResultadoCodigo = -1;
+                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                return vResultadoTransaccion;
+            }
+
+            MemoryStream ms = memory;
+
+            TxRegistroDocumentoRepository _repository = new TxRegistroDocumentoRepository(context);
+            List<IFormFile> files = new List<IFormFile>();
+
+            var fileMock = new Mock<IFormFile>();
+
+            fileMock.Setup(_ => _.FileName).Returns(nameFile);
+            fileMock.Setup(_ => _.ContentType).Returns("application/pdf");
+            fileMock.Setup(_ => _.Length).Returns(ms.Length);
+            fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
+            fileMock.Setup(_ => _.ContentDisposition).Returns(string.Format("inline; filename={0}", nameFile));
+
+            files.Add(fileMock.Object);
+
+            try
+            {
+                var resultDocumentFile = await _repository.Create(new BE_TxRegistroDocumento
+                {
+                    CodigoEmpresa = data.CodigoEmpresa,
+                    DescripcionEmpresa = data.DescripcionEmpresa,
+                    CodigoPlanta = data.CodigoPlanta,
+                    DescripcionPlanta = data.DescripcionPlanta,
+                    DescripcionTipoExplotacion = data.DescripcionTipoExplotacion,
+                    DescripcionSubTipoExplotacion = data.DescripcionSubTipoExplotacion,
+                    IdSubTipoExplotacion = data.IdSubTipoExplotacion,
+                    IdDocumento = 0,
+                    IdDocumentoReferencial = (int)data.IdExamenFisico,
+                    FlgCerrado = true,
+                    FecCerrado = DateTime.Now,
+                    RegUsuario = entidad.RegUsuario,
+                    RegEstacion = entidad.RegEstacion
+                }, files);
+
+                if (resultDocumentFile.ResultadoCodigo == -1)
+                {
+                    vResultadoTransaccion.ResultadoCodigo = -1;
+                    vResultadoTransaccion.ResultadoDescripcion = resultDocumentFile.ResultadoDescripcion;
+                    return vResultadoTransaccion;
+                }
+            }
+            catch (Exception ex)
+            {
+                vResultadoTransaccion.ResultadoCodigo = -1;
+                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                return vResultadoTransaccion;
+            }
+
+            return vResultadoTransaccion;
         }
         public Task Delete(BE_TxExamenFisicoPollito entidad)
         {
             return Task.Run(() => Delete(entidad, SP_DELETE));
         }
-        public Task<MemoryStream> GenerarPDF(BE_TxExamenFisicoPollito entidad)
+        public async Task<MemoryStream> GenerarPDF(BE_TxExamenFisicoPollito entidad)
         {
             BE_TxExamenFisicoPollito item = GetByIdPDF(entidad);
             CalidadRepository ICalidad = new CalidadRepository(context);
             IEnumerable<BE_Calidad> calidad = ICalidad.GetAllCalidad(new BE_Calidad { Descripcion = "" });
 
-            return Task.Run(() =>
+            return await Task.Run(() =>
             {
                 Document doc = new Document();
                 doc.SetPageSize(PageSize.Letter);

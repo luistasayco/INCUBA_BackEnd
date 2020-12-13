@@ -18,9 +18,10 @@ namespace Net.Connection
         public ConnectionSQL(IConfiguration configuration, IServiceProvider serviceProvider)
         {
             var connectionStringPlaceHolder = configuration.GetConnectionString("cnnSql");
-            //var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
-            //var dbName = httpContextAccessor.HttpContext.Request.Headers["dbName"].First();
-            _cnx = connectionStringPlaceHolder.Replace("{dbName}", "BD_AUDITORIA_PERU");
+            var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+            var dbName = httpContextAccessor.HttpContext.Request.Headers["dbName"].First();
+            dbName = string.Format("BD_AUDITORIA_{0}", dbName);
+            _cnx = connectionStringPlaceHolder.Replace("{dbName}", dbName);
         }
 
         public ConnectionSQL()

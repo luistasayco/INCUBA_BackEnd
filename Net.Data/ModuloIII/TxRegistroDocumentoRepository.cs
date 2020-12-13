@@ -91,14 +91,14 @@ namespace Net.Data
 
                             entidad.Ano = _anio;
                             entidad.Mes = _mes;
-
-                            DriveApiService googleApiDrive = new DriveApiService();
-
-                            // Validamos si existe Id de folder en Google Drive
-                            string IdFolderGoogleDrive = string.Empty;
-
                             try
                             {
+                                DriveApiService googleApiDrive = new DriveApiService();
+
+                                // Validamos si existe Id de folder en Google Drive
+                                string IdFolderGoogleDrive = string.Empty;
+
+                            
                                 var IdFolderEmpresaGoogleDrive = googleApiDrive.CreateFolder(entidad.DescripcionEmpresa);
 
                                 using (SqlCommand cmd = new SqlCommand(SP_GOOGLE_DRIVE_EMPRESA_MERGE, conn))
