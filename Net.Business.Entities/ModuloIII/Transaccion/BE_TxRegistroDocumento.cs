@@ -38,6 +38,8 @@ namespace Net.Business.Entities
         public Boolean? FlgCerrado { get; set; }
         [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
         public DateTime? FecCerrado { get; set; }
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int? IdUsuarioCierre { get; set; }
         [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]
         public DateTime? FecRegistro { get; set; }
         [DBParameter(SqlDbType.DateTime, 0, ActionType.Everything)]

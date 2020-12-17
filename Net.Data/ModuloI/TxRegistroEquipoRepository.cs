@@ -491,6 +491,7 @@ namespace Net.Data
                     IdDocumento = 0,
                     IdDocumentoReferencial = (int)data.IdRegistroEquipo,
                     FlgCerrado = true,
+                    IdUsuarioCierre = entidad.RegUsuario,
                     FecCerrado = DateTime.Now,
                     RegUsuario = entidad.RegUsuario,
                     RegEstacion = entidad.RegEstacion

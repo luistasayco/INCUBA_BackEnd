@@ -13,6 +13,7 @@ namespace Net.Data
 
         Task<IEnumerable<BE_GoogleDriveFiles>> GetGoogleDriveFilesPorId(BE_GoogleDriveFiles entidad);
         Task<BE_TxRegistroDocumento> GetById(BE_TxRegistroDocumento entidad);
+        Task<BE_TxRegistroDocumento> GetByIdDocumento(BE_TxRegistroDocumento entidad);
         Task<BE_ResultadoTransaccion> Create(BE_TxRegistroDocumento entidad, IList<IFormFile> lista_anexo);
         Task<BE_ResultadoTransaccion> Update(BE_TxRegistroDocumento entidad);
         Task Delete(BE_TxRegistroDocumento entidad);

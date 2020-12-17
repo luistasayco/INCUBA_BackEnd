@@ -237,6 +237,15 @@
             <response code="200">Devuelve el listado completo </response>
             <response code="404">Si no existen datos</response>   
         </member>
+        <member name="M:Net.Business.Services.Controllers.PlantaController.GetAllPlanta(Net.Business.DTO.DtoFindPlantaAll)">
+            <summary>
+            Obtener lista de Planta
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
         <member name="M:Net.Business.Services.Controllers.ProcesoController.GetAll(Net.Business.DTO.DtoFindProceso)">
             <summary>
             Obtener lista de Proceso
@@ -643,7 +652,27 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.GetByIdDocumento(System.Int32)">
+            <summary>
+            Obtener un registro
+            </summary>
+            <param name="id">Id de Calidad</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
         <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.Create(System.String,System.Collections.Generic.IList{Microsoft.AspNetCore.Http.IFormFile})">
+            <summary>
+            Crear una nueva calidad
+            </summary>
+            <param name="value"></param>
+            <param name="archivo"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxRegistroDocumentoController.CreateFiles(System.String,System.Collections.Generic.IList{Microsoft.AspNetCore.Http.IFormFile})">
             <summary>
             Crear una nueva calidad
             </summary>

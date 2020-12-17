@@ -21,6 +21,7 @@ namespace Net.Data
         const string SP_GET = DB_ESQUEMA + "EXT_GetTxRegistroDocumentoPorFiltro";
         const string SP_GET_EMPRESA_X_USUARIO = DB_ESQUEMA + "EXT_GetTxRegistroDocumentoEmpresa";
         const string SP_GET_ID = DB_ESQUEMA + "EXT_GetTxRegistroDocumentoPorId";
+        const string SP_GET_ID_DOCUMENTO = DB_ESQUEMA + "EXT_GetTxRegistroDocumentoPorIdDocumento";
         const string SP_INSERT = DB_ESQUEMA + "EXT_SetTxRegistroDocumentoInsert";
         const string SP_DELETE = DB_ESQUEMA + "EXT_SetTxRegistroDocumentoDelete";
         const string SP_UPDATE = DB_ESQUEMA + "EXT_SetTxRegistroDocumentoUpdate";
@@ -41,6 +42,10 @@ namespace Net.Data
         public Task<IEnumerable<BE_TxRegistroDocumento>> GetAll(BE_TxRegistroDocumento entidad)
         {
             return Task.Run(() => FindAll(entidad, SP_GET));
+        }
+        public Task<BE_TxRegistroDocumento> GetByIdDocumento(BE_TxRegistroDocumento entidad)
+        {
+            return Task.Run(() => FindById(entidad, SP_GET_ID_DOCUMENTO));
         }
 
         public Task<IEnumerable<BE_GoogleDriveFiles>> GetAllEmpresaPorUsuario(BE_GoogleDriveFiles entidad)
@@ -173,9 +178,16 @@ namespace Net.Data
 
                                         };
                                         cmd.Parameters.Add(oParamNombreArchivo);
+                                        SqlParameter oParamCadenaEmail = new SqlParameter("@CadenaEmail", SqlDbType.VarChar, 300)
+                                        {
+                                            Direction = ParameterDirection.Output
+
+                                        };
+                                        cmd.Parameters.Add(oParamCadenaEmail);
                                         cmd.Parameters.Add(new SqlParameter("@TipoArchivo", _lista.ContentType));
                                         cmd.Parameters.Add(new SqlParameter("@ExtencionArchivo", extension));
                                         cmd.Parameters.Add(new SqlParameter("@FlgCerrado", entidad.FlgCerrado));
+                                        cmd.Parameters.Add(new SqlParameter("@IdUsuarioCierre", entidad.IdUsuarioCierre));
                                         cmd.Parameters.Add(new SqlParameter("@FecCerrado", entidad.FecCerrado));
                                         cmd.Parameters.Add(new SqlParameter("@IdDocumentoReferencial", entidad.IdDocumentoReferencial));
                                         cmd.Parameters.Add(new SqlParameter("@RegUsuario", entidad.RegUsuario));
@@ -185,6 +197,8 @@ namespace Net.Data
 
                                         entidad.IdDocumento = (int)cmd.Parameters["@IdDocumento"].Value;
                                         entidad.NombreArchivo = (string)oParamNombreArchivo.Value;
+
+                                        var cadenaEmail = (string)oParamCadenaEmail.Value;
 
                                         nombre_archivo = entidad.NombreArchivo + "." + extension.ToString();
 
@@ -202,6 +216,25 @@ namespace Net.Data
                                                 cmdIdGoogle.Parameters.Add(new SqlParameter("@RegEstacion", entidad.RegEstacion));
 
                                                 await cmdIdGoogle.ExecuteNonQueryAsync();
+                                            }
+                                        }
+                                        if (entidad.FlgCerrado == null)
+                                        {
+                                            try
+                                            {
+                                                if (!string.IsNullOrEmpty(cadenaEmail))
+                                                {
+                                                    EmailSenderRepository emailSenderRepository = new EmailSenderRepository(context);
+                                                    var mensaje = string.Format("Buen día, <br>  <br> Se realizo la carga de un nuevo archivo a la extranet N° {0}, Favor su aprobación", entidad.IdDocumento);
+                                                    var link = string.Format(" <br>  <br><a href=\"https://auditoria.invetsa.com/Invetsa/\">Ingresar a la Aplicación</a>");
+                                                    await emailSenderRepository.SendEmailAsync(cadenaEmail, "Correo Automatico - Registro de Documento - Extranet", mensaje + "  " + link);
+                                                }
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                vResultadoTransaccion.ResultadoCodigo = -1;
+                                                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                                                return vResultadoTransaccion;
                                             }
                                         }
 

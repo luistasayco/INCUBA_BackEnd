@@ -121,6 +121,18 @@ namespace Net.Business.Services.Controllers
             {
                 ModelState.AddModelError("", $"Algo salio mal guardando el registro");
                 return StatusCode(500, ModelState);
+            } else
+            {
+                if (value.FlgCerrado)
+                {
+                    var updateStatus = new DtoUpdateStatusTxRegistroEquipo { IdRegistroEquipo = ObjectNew, RegUsuario = value.RegUsuario, RegEstacion = value.RegEstacion };
+                    var data = await _repository.TxRegistroEquipo.UpdateStatus(updateStatus.TxRegistroEquipo());
+
+                    if (data.ResultadoCodigo == -1)
+                    {
+                        return BadRequest(data);
+                    }
+                }
             }
 
             return CreatedAtRoute("GetByIdTxRegistroEquipo", new { id = ObjectNew }, ObjectNew);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -146,6 +147,23 @@ namespace Net.Business.Services.Controllers
             {
                 ModelState.AddModelError("", $"Algo salio mal guardando el registro");
                 return StatusCode(500, ModelState);
+            }
+            else
+            {
+                if (value.FlgCerrado != null)
+                {
+                    if (bool.Parse(value.FlgCerrado.ToString()))
+                    {
+                        var updateStatus = new DtoUpdateStatusTxExamenFisicoPollito { IdExamenFisico = ObjectNew, IdUsuarioCierre = int.Parse(value.RegUsuario.ToString()), RegUsuario = value.RegUsuario, RegEstacion = value.RegEstacion };
+                        var result = await _repository.TxExamenFisicoPollito.UpdateStatus(value.RetornaTxExamenFisicoPollito());
+
+                        if (result.ResultadoCodigo == -1)
+                        {
+                            return BadRequest(result);
+                        }
+                    }
+                }
+                
             }
 
             return CreatedAtRoute("GetByIdTxExamenFisicoPollito", new { id = ObjectNew }, ObjectNew);

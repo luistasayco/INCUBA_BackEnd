@@ -67,7 +67,19 @@ namespace Net.Data
 
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            var correo = new MailMessage(from: Options.SendEmail, to: email, subject: subject, body: message);
+            var listEmail = ListarEmail(email);
+            var emailTo = string.Empty;
+            if (listEmail.Count > 0)
+            {
+                emailTo = listEmail[0];
+                listEmail.RemoveAt(0);
+            }
+
+            var correo = new MailMessage(from: Options.SendEmail, to: emailTo, subject: subject, body: message);
+            foreach (var item in listEmail)
+            {
+                correo.To.Add(item);
+            }
             correo.IsBodyHtml = true;
             return Cliente.SendMailAsync(correo);
         }
@@ -80,6 +92,7 @@ namespace Net.Data
             if (listEmail.Count > 0)
             {
                 emailTo = listEmail[0];
+                listEmail.RemoveAt(0);
             }
 
             var correo = new MailMessage(from: Options.SendEmail, to: emailTo, subject: subject, body: message);

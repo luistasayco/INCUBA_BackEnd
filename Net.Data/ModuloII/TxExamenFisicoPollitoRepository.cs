@@ -152,6 +152,9 @@ namespace Net.Data
                                 cmd.Parameters.Add(new SqlParameter("@FirmaPlanta", value.FirmaPlanta));
                                 cmd.Parameters.Add(new SqlParameter("@EmailFrom", value.EmailFrom));
                                 cmd.Parameters.Add(new SqlParameter("@EmailTo", value.EmailTo));
+                                cmd.Parameters.Add(new SqlParameter("@FlgCerrado", value.FlgCerrado));
+                                cmd.Parameters.Add(new SqlParameter("@IdUsuarioCierre", value.IdUsuarioCierre));
+                                cmd.Parameters.Add(new SqlParameter("@FecCierre", value.FecCierre));
                                 cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
                                 cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
 
@@ -373,6 +376,7 @@ namespace Net.Data
                     IdDocumentoReferencial = (int)data.IdExamenFisico,
                     FlgCerrado = true,
                     FecCerrado = DateTime.Now,
+                    IdUsuarioCierre = entidad.RegUsuario,
                     RegUsuario = entidad.RegUsuario,
                     RegEstacion = entidad.RegEstacion
                 }, files);

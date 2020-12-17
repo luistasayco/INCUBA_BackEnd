@@ -88,27 +88,27 @@ namespace Net.Business.Services.Controllers
         }
 
         /// <summary>
-        /// Obtener una calidad individual
+        /// Obtener un registro
         /// </summary>
         /// <param name="id">Id de Calidad</param>
         /// <returns>Devuelve un solo registro</returns>
         /// <response code="200">Devuelve el listado completo </response>
         /// <response code="404">Si no existen datos</response>  
-        //[HttpGet("{id}", Name = "GetbyIdTxRegistroDocumento")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[ProducesDefaultResponseType]
-        //public async Task<IActionResult> GetbyIdTxRegistroDocumento(int id)
-        //{
-        //    var objectGetById = await _repository.TxRegistroDocumento.GetById(new DtoFindTxRegistroDocumento { IdDocumento = id }.RetornaTxRegistroDocumento());
+        [HttpGet("{id}", Name = "GetByIdDocumento")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> GetByIdDocumento(int id)
+        {
+            var objectGetById = await _repository.TxRegistroDocumento.GetByIdDocumento(new DtoFindTxRegistroDocumentoIdDocumento { IdDocumento = id }.RetornaTxRegistroDocumento());
 
-        //    if (objectGetById == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (objectGetById == null)
+            {
+                return NotFound();
+            }
 
-        //    return Ok(objectGetById);
-        //}
+            return Ok(objectGetById);
+        }
 
         /// <summary>
         /// Crear una nueva calidad
@@ -145,6 +145,48 @@ namespace Net.Business.Services.Controllers
                 ModelState.AddModelError("", $"Algo salio mal guardando el registro {myObj.NombreArchivo}");
                 return StatusCode(500, ModelState);
             }
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Crear una nueva calidad
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="archivo"></param>
+        /// <returns>Id del registro creado</returns>
+        /// <response code="201">Devuelve el elemento recién creado</response>
+        /// <response code="400">Si el objeto enviado es nulo o invalido</response>  
+        /// <response code="500">Algo salio mal guardando el registro</response>  
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> CreateFiles([FromForm] string value, [FromForm] IList<IFormFile> archivo)
+        {
+            IList<DtoInsertTxRegistroDocumento> myObj = JsonConvert.DeserializeObject <IList<DtoInsertTxRegistroDocumento>>(value);
+            
+            if (myObj == null)
+            {
+                return BadRequest("Master object is null");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid model object");
+            }
+            //IList<x.RetornaTxRegistroDocumento() > myObj;
+            foreach (var item in myObj)
+            {
+                var ObjectNew = await _repository.TxRegistroDocumento.Create(item.RetornaTxRegistroDocumento(), archivo);
+            } 
+
+            //if (ObjectNew.ResultadoCodigo == -1)
+            //{
+            //    ModelState.AddModelError("", $"Algo salio mal guardando el registro");
+            //    return StatusCode(500, ModelState);
+            //}
 
             return Ok();
         }

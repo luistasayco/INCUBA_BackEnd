@@ -43,5 +43,28 @@ namespace Net.Business.Services.Controllers
 
             return Ok(objectGetAll);
         }
+
+        /// <summary>
+        /// Obtener lista de Planta
+        /// </summary>
+        /// <param name="value">Este es el cuerpo para enviar los parametros</param>
+        /// <returns>Lista del maestro de mantenimiento registrado</returns>
+        /// <response code="200">Devuelve el listado completo </response>
+        /// <response code="404">Si no existen datos</response>   
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(List<DtoFindPlanta>))]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetAllPlanta([FromQuery] DtoFindPlantaAll value)
+        {
+
+            var objectGetAll = await _repository.Planta.GetAlls(value.Planta());
+
+            if (objectGetAll == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(objectGetAll);
+        }
     }
 }

@@ -9,6 +9,7 @@ namespace Net.Data
     {
         const string DB_ESQUEMA = "DBO.";
         const string SP_GET = DB_ESQUEMA + "INC_GetPlantaPorEmpresa";
+        const string SP_GET_ALL = DB_ESQUEMA + "INC_GetPlantaAll";
 
         public PlantaRepository(IConnectionSQL context)
             : base(context)
@@ -17,6 +18,11 @@ namespace Net.Data
         public Task<IEnumerable<BE_Planta>> GetAll(BE_Planta entidad)
         {
             return Task.Run(() => FindAll(entidad, SP_GET));
+        }
+
+        public Task<IEnumerable<BE_Planta>> GetAlls(BE_Planta entidad)
+        {
+            return Task.Run(() => FindAll(entidad, SP_GET_ALL));
         }
     }
 }
