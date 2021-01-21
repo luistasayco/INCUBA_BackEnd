@@ -22,5 +22,15 @@
         ISubTipoExplotacionRepository SubTipoExplotacion { get; }
         ITxRegistroDocumentoRepository TxRegistroDocumento { get; }
         IEmailSenderRepository EmailSender { get; }
+        IBoquillaRepository Boquilla { get; }
+        IProcesoSprayRepository ProcesoSpray { get; }
+        IProcesoDetalleSprayRepository ProcesoDetalleSpray { get; }
+        ITxVacunacionSprayRepository TxVacunacionSpray { get; }
+        IAgujaRepository Aguja { get; }
+        IIrregularidadRepository Irregularidad { get; }
+        IProcesoSubCutaneaRepository ProcesoSubCutanea { get; }
+        IProcesoDetalleSubCutaneaRepository ProcesoDetalleSubCutanea { get; }
+        ITxVacunacionSubCutaneaRepository TxVacunacionSubCutanea { get; }
+        IVacunaRepository Vacuna { get; }
     }
 }

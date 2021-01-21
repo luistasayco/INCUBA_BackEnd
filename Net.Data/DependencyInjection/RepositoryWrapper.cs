@@ -26,6 +26,16 @@ namespace Net.Data
         private ISubTipoExplotacionRepository _SubTipoExplotacion;
         private ITxRegistroDocumentoRepository _TxRegistroDocumento;
         private IEmailSenderRepository _EmailSender;
+        private IBoquillaRepository _Boquilla;
+        private IProcesoSprayRepository _ProcesoSpray;
+        private IProcesoDetalleSprayRepository _ProcesoDetalleSpray;
+        private ITxVacunacionSprayRepository _TxVacunacionSpray;
+        private IAgujaRepository _Aguja;
+        private IIrregularidadRepository _Irregularidad;
+        private IProcesoSubCutaneaRepository _ProcesoSubCutanea;
+        private IProcesoDetalleSubCutaneaRepository _ProcesoDetalleSubCutanea;
+        private ITxVacunacionSubCutaneaRepository _TxVacunacionSubCutanea;
+        private IVacunaRepository _Vacuna;
 
         public RepositoryWrapper(IConnectionSQL repoContext)
         {
@@ -241,7 +251,6 @@ namespace Net.Data
                 return _TxRegistroDocumento;
             }
         }
-
         public IEmailSenderRepository EmailSender
         {
             get
@@ -251,6 +260,116 @@ namespace Net.Data
                     _EmailSender = new EmailSenderRepository(_repoContext);
                 }
                 return _EmailSender;
+            }
+        }
+        public IBoquillaRepository Boquilla
+        {
+            get
+            {
+                if (_Boquilla == null)
+                {
+                    _Boquilla = new BoquillaRepository(_repoContext);
+                }
+                return _Boquilla;
+            }
+        }
+        public IProcesoSprayRepository ProcesoSpray
+        {
+            get
+            {
+                if (_ProcesoSpray == null)
+                {
+                    _ProcesoSpray = new ProcesoSprayRepository(_repoContext);
+                }
+                return _ProcesoSpray;
+            }
+        }
+        public IProcesoDetalleSprayRepository ProcesoDetalleSpray
+        {
+            get
+            {
+                if (_ProcesoDetalleSpray == null)
+                {
+                    _ProcesoDetalleSpray = new ProcesoDetalleSprayRepository(_repoContext);
+                }
+                return _ProcesoDetalleSpray;
+            }
+        }
+        public ITxVacunacionSprayRepository TxVacunacionSpray
+        {
+            get
+            {
+                if (_TxVacunacionSpray == null)
+                {
+                    _TxVacunacionSpray = new TxVacunacionSprayRepository(_repoContext);
+                }
+                return _TxVacunacionSpray;
+            }
+        }
+        public IAgujaRepository Aguja
+        {
+            get
+            {
+                if (_Aguja == null)
+                {
+                    _Aguja = new AgujaRepository(_repoContext);
+                }
+                return _Aguja;
+            }
+        }
+        public IIrregularidadRepository Irregularidad
+        {
+            get
+            {
+                if (_Irregularidad == null)
+                {
+                    _Irregularidad = new IrregularidadRepository(_repoContext);
+                }
+                return _Irregularidad;
+            }
+        }
+        public IProcesoSubCutaneaRepository ProcesoSubCutanea
+        {
+            get
+            {
+                if (_ProcesoSubCutanea == null)
+                {
+                    _ProcesoSubCutanea = new ProcesoSubCutaneaRepository(_repoContext);
+                }
+                return _ProcesoSubCutanea;
+            }
+        }
+        public IProcesoDetalleSubCutaneaRepository ProcesoDetalleSubCutanea
+        {
+            get
+            {
+                if (_ProcesoDetalleSubCutanea == null)
+                {
+                    _ProcesoDetalleSubCutanea = new ProcesoDetalleSubCutaneaRepository(_repoContext);
+                }
+                return _ProcesoDetalleSubCutanea;
+            }
+        }
+        public ITxVacunacionSubCutaneaRepository TxVacunacionSubCutanea
+        {
+            get
+            {
+                if (_TxVacunacionSubCutanea == null)
+                {
+                    _TxVacunacionSubCutanea = new TxVacunacionSubCutaneaRepository(_repoContext);
+                }
+                return _TxVacunacionSubCutanea;
+            }
+        }
+        public IVacunaRepository Vacuna
+        {
+            get
+            {
+                if (_Vacuna == null)
+                {
+                    _Vacuna = new VacunaRepository(_repoContext);
+                }
+                return _Vacuna;
             }
         }
     }

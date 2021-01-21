@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,12 +12,12 @@ namespace Net.Business.Services.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ApiExplorerSettings(GroupName = "ApiExamenFisicoPollito")]
+    [ApiExplorerSettings(GroupName = "ApiVacunacionSpray")]
     [Authorize(AuthenticationSchemes = "Bearer")]
-    public class TxExamenFisicoPollitoController : ControllerBase
+    public class TxVacunacionSprayController : ControllerBase
     {
         private readonly IRepositoryWrapper _repository;
-        public TxExamenFisicoPollitoController(IRepositoryWrapper repository)
+        public TxVacunacionSprayController(IRepositoryWrapper repository)
         {
             this._repository = repository;
         }
@@ -29,19 +30,17 @@ namespace Net.Business.Services.Controllers
         /// <response code="200">Devuelve el listado completo </response>
         /// <response code="404">Si no existen datos</response>   
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(List<DtoFindTxExamenFisicoPollitoPorFiltro>))]
+        [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> GetAll([FromQuery] DtoFindTxExamenFisicoPollitoPorFiltro value)
+        public async Task<IActionResult> GetAll([FromQuery] DtoFindTxVacunacionSpray value)
         {
 
-            var objectGetAll = await _repository.TxExamenFisicoPollito.GetAll(value.RetornaTxExamenFisicoPollito());
+            var objectGetAll = await _repository.TxVacunacionSpray.GetAll(value.RetornaTxVacunacionSpray());
 
             if (objectGetAll == null)
             {
                 return NotFound();
             }
-
-            //DtoResponseListTxExamenFisicoPollito data = new DtoResponseListTxExamenFisicoPollito().RetornarTxExamenFisicoPollitoResponse(objectGetAll);
 
             return Ok(objectGetAll);
         }
@@ -53,21 +52,21 @@ namespace Net.Business.Services.Controllers
         /// <returns>Lista del maestro de mantenimiento registrado</returns>
         /// <response code="200">Devuelve el listado completo </response>
         /// <response code="404">Si no existen datos</response>   
-        [HttpGet]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        public async Task<IActionResult> GetByDetalleNew()
-        {
+        //[HttpGet]
+        //[ProducesResponseType(200)]
+        //[ProducesResponseType(404)]
+        //public async Task<IActionResult> GetByDetalleNew()
+        //{
 
-            var objectGetAll = await _repository.TxExamenFisicoPollito.GetByDetalleNew(new DtoFindTxExamenFisicoPollitoPorId { IdExamenFisico = 0 }.RetornaTxExamenFisicoPollito());
+        //    var objectGetAll = await _repository.TxExamenFisicoPollito.GetByDetalleNew(new DtoFindTxExamenFisicoPollitoPorId { IdExamenFisico = 0 }.RetornaTxExamenFisicoPollito());
 
-            if (objectGetAll == null)
-            {
-                return NotFound();
-            }
+        //    if (objectGetAll == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return Ok(objectGetAll);
-        }
+        //    return Ok(objectGetAll);
+        //}
 
         /// <summary>
         /// Obtener un TxRegistro Equipo
@@ -76,13 +75,13 @@ namespace Net.Business.Services.Controllers
         /// <returns>Devuelve un solo registro</returns>
         /// <response code="200">Devuelve el listado completo </response>
         /// <response code="404">Si no existen datos</response>  
-        [HttpGet("{id}", Name = "GetByIdTxExamenFisicoPollito")]
+        [HttpGet("{id}", Name = "GetByIdTxVacunacionSpray")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> GetByIdTxExamenFisicoPollito(int id)
+        public async Task<IActionResult> GetByIdTxVacunacionSpray(int id)
         {
-            var objectGetById = await _repository.TxExamenFisicoPollito.GetById(new DtoFindTxExamenFisicoPollitoPorId { IdExamenFisico = id }.RetornaTxExamenFisicoPollito());
+            var objectGetById = await _repository.TxVacunacionSpray.GetById(new DtoFindTxVacunacionSprayPorId { IdVacunacionSpray = id }.RetornaTxVacunacionSpray());
 
             if (objectGetById == null)
             {
@@ -99,21 +98,21 @@ namespace Net.Business.Services.Controllers
         /// <returns>Devuelve un solo registro</returns>
         /// <response code="200">Devuelve el listado completo </response>
         /// <response code="404">Si no existen datos</response>  
-        [HttpGet(Name = "GetByIdTxExamenFisicoPollitoNew")]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> GetByIdTxExamenFisicoPollitoNew()
-        {
-            var objectGetById = await _repository.TxExamenFisicoPollito.GetByIdNew(new DtoFindTxExamenFisicoPollitoPorId { IdExamenFisico = 0 }.RetornaTxExamenFisicoPollito());
+        //[HttpGet(Name = "GetByIdTxExamenFisicoPollitoNew")]
+        //[ProducesResponseType(200)]
+        //[ProducesResponseType(404)]
+        //[ProducesDefaultResponseType]
+        //public async Task<IActionResult> GetByIdTxExamenFisicoPollitoNew()
+        //{
+        //    var objectGetById = await _repository.TxExamenFisicoPollito.GetByIdNew(new DtoFindTxExamenFisicoPollitoPorId { IdExamenFisico = 0 }.RetornaTxExamenFisicoPollito());
 
-           if (objectGetById == null)
-            {
-                return NotFound();
-            }
+        //    if (objectGetById == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return Ok(objectGetById);
-        }
+        //    return Ok(objectGetById);
+        //}
 
         /// <summary>
         /// Crear un informe de registro de equipo
@@ -124,11 +123,10 @@ namespace Net.Business.Services.Controllers
         /// <response code="400">Si el objeto enviado es nulo o invalido</response>  
         /// <response code="500">Algo salio mal guardando el registro</response>  
         [HttpPost]
-        [ProducesResponseType(201, Type = typeof(DtoInsertTxExamenFisicoPollito))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Create([FromBody] DtoInsertTxExamenFisicoPollito value)
+        public async Task<IActionResult> Create([FromBody] DtoInsertTxVacunacionSpray value)
         {
             if (value == null)
             {
@@ -140,7 +138,7 @@ namespace Net.Business.Services.Controllers
                 return BadRequest("Invalid model object");
             }
 
-            int ObjectNew = await _repository.TxExamenFisicoPollito.Create(value.RetornaTxExamenFisicoPollito());
+            int ObjectNew = await _repository.TxVacunacionSpray.Create(value.RetornaTxVacunacionSpray());
 
             if (ObjectNew == 0)
             {
@@ -153,8 +151,8 @@ namespace Net.Business.Services.Controllers
                 {
                     if (bool.Parse(value.FlgCerrado.ToString()))
                     {
-                        var updateStatus = new DtoUpdateStatusTxExamenFisicoPollito { IdExamenFisico = ObjectNew, IdUsuarioCierre = int.Parse(value.RegUsuario.ToString()), RegUsuario = value.RegUsuario, RegEstacion = value.RegEstacion };
-                        var result = await _repository.TxExamenFisicoPollito.UpdateStatus(value.RetornaTxExamenFisicoPollito());
+                        var updateStatus = new DtoUpdateStatusTxVacunacionSpray { IdVacunacionSpray = ObjectNew, IdUsuarioCierre = int.Parse(value.RegUsuario.ToString()), RegUsuario = value.RegUsuario, RegEstacion = value.RegEstacion };
+                        var result = await _repository.TxVacunacionSpray.UpdateStatus(value.RetornaTxVacunacionSpray());
 
                         if (result.ResultadoCodigo == -1)
                         {
@@ -162,10 +160,10 @@ namespace Net.Business.Services.Controllers
                         }
                     }
                 }
-                
+
             }
 
-            return CreatedAtRoute("GetByIdTxExamenFisicoPollito", new { id = ObjectNew }, ObjectNew);
+            return CreatedAtRoute("GetByIdTxVacunacionSpray", new { id = ObjectNew }, ObjectNew);
         }
         /// <summary>
         /// Actualizar una calidad existente
@@ -177,14 +175,14 @@ namespace Net.Business.Services.Controllers
         [HttpPut]
         [ProducesResponseType(204)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update([FromBody] DtoUpdateTxExamenFisicoPollito value)
+        public async Task<IActionResult> Update([FromBody] DtoUpdateTxVacunacionSpray value)
         {
             if (value == null)
             {
                 return BadRequest(ModelState);
             }
 
-            await _repository.TxExamenFisicoPollito.Update(value.RetornaTxExamenFisicoPollito());
+            await _repository.TxVacunacionSpray.Update(value.RetornaTxVacunacionSpray());
 
             return NoContent();
         }
@@ -199,14 +197,14 @@ namespace Net.Business.Services.Controllers
         [HttpPut]
         [ProducesResponseType(204)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateStatus([FromBody] DtoUpdateStatusTxExamenFisicoPollito value)
+        public async Task<IActionResult> UpdateStatus([FromBody] DtoUpdateStatusTxVacunacionSpray value)
         {
             if (value == null)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _repository.TxExamenFisicoPollito.UpdateStatus(value.RetornaTxExamenFisicoPollito());
+            var result = await _repository.TxVacunacionSpray.UpdateStatus(value.RetornaTxVacunacionSpray());
 
             if (result.ResultadoCodigo == -1)
             {
@@ -228,14 +226,14 @@ namespace Net.Business.Services.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Delete([FromBody] DtoDeleteTxExamenFisicoPollito value)
+        public async Task<IActionResult> Delete([FromBody] DtoDeleteTxVacunacionSpray value)
         {
             if (value == null)
             {
                 return BadRequest(ModelState);
             }
 
-            await _repository.TxExamenFisicoPollito.Delete(value.RetornaTxExamenFisicoPollito());
+            await _repository.TxVacunacionSpray.Delete(value.RetornaTxVacunacionSpray());
 
             return NoContent();
         }
@@ -247,13 +245,13 @@ namespace Net.Business.Services.Controllers
         /// <returns>Devuelve un solo registro</returns>
         /// <response code="200">Devuelve el listado completo </response>
         /// <response code="404">Si no existen datos</response>  
-        [HttpGet("{id}", Name = "GetGeneraPdfByIdTxExamenFisicoPollito")]
+        [HttpGet("{id}", Name = "GetGeneraPdfByIdTxVacunacionSpray")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesDefaultResponseType]
-        public async Task<FileContentResult> GetGeneraPdfByIdTxExamenFisicoPollito(int id)
+        public async Task<FileContentResult> GetGeneraPdfByIdTxVacunacionSpray(int id)
         {
-            var objectGetById = await _repository.TxExamenFisicoPollito.GenerarPDF(new DtoFindTxExamenFisicoPollitoPorId { IdExamenFisico = id }.RetornaTxExamenFisicoPollito());
+            var objectGetById = await _repository.TxVacunacionSpray.GenerarPDF(new DtoFindTxVacunacionSprayPorId { IdVacunacionSpray = id }.RetornaTxVacunacionSpray());
 
             var pdf = File(objectGetById.GetBuffer(), "applicacion/pdf", "diploma.pdf");
 
