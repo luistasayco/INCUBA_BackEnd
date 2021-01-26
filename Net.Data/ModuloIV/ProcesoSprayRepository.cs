@@ -12,8 +12,8 @@ namespace Net.Data
 
         const string SP_GET_ID = DB_ESQUEMA + "";
         const string SP_INSERT = DB_ESQUEMA + "INC_SetProcesoSprayInsert";
-        const string SP_DELETE = DB_ESQUEMA + "INC_SetProcesoSprayUpdate";
-        const string SP_UPDATE = DB_ESQUEMA + "INC_SetProcesoSprayDelete";
+        const string SP_DELETE = DB_ESQUEMA + "INC_SetProcesoSprayDelete";
+        const string SP_UPDATE = DB_ESQUEMA + "INC_SetProcesoSprayUpdate";
 
         public ProcesoSprayRepository(IConnectionSQL context)
             : base(context)

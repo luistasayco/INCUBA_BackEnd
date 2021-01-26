@@ -10,8 +10,8 @@ namespace Net.Business.DTO
         public string CodigoEmpresa { get; set; }
         public string CodigoPlanta { get; set; }
         public string Unidad { get; set; }
-        public DateTime FecRegistro { get; set; }
-        public DateTime FecHoraRegistro { get; set; }
+        public DateTime? FecRegistro { get; set; }
+        public DateTime? FecHoraRegistro { get; set; }
         public string ResponsableInvetsa { get; set; }
         public string ResponsableIncubadora { get; set; }
         public Boolean FlgHyLine { get; set; }
@@ -35,13 +35,14 @@ namespace Net.Business.DTO
         public string FirmaPlanta { get; set; }
         public Boolean FlgCerrado { get; set; }
         public int IdUsuarioCierre { get; set; }
-        public DateTime FecCierre { get; set; }
+        public DateTime? FecCierre { get; set; }
         public string EmailFrom { get; set; }
         public string EmailTo { get; set; }
         public IEnumerable<BE_TxVacunacionSprayDetalle> ListarTxVacunacionSprayDetalle { get; set; }
         public IEnumerable<BE_TxVacunacionSprayFotos> ListarTxVacunacionSprayFotos { get; set; }
         public IEnumerable<BE_TxVacunacionSprayMaquina> ListarTxVacunacionSprayMaquina { get; set; }
         public IEnumerable<BE_TxVacunacionSprayVacuna> ListarTxVacunacionSprayVacuna { get; set; }
+        public IEnumerable<BE_TxVacunacionSprayResultado> ListarTxVacunacionSprayResultado { get; set; }
 
         public BE_TxVacunacionSpray RetornaTxVacunacionSpray()
         {
@@ -83,6 +84,7 @@ namespace Net.Business.DTO
                 ListarTxVacunacionSprayFotos = this.ListarTxVacunacionSprayFotos,
                 ListarTxVacunacionSprayMaquina = this.ListarTxVacunacionSprayMaquina,
                 ListarTxVacunacionSprayVacuna = this.ListarTxVacunacionSprayVacuna,
+                ListarTxVacunacionSprayResultado = this.ListarTxVacunacionSprayResultado,
                 RegUsuario = this.RegUsuario,
                 RegEstacion = this.RegEstacion
             };

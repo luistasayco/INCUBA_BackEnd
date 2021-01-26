@@ -208,26 +208,28 @@ namespace Net.Data
                                 }
                             }
 
-                            if (value.ListDetalleFotos.Count() > 0)
+                            if (value.ListDetalleFotos != null)
                             {
-                                using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE_FOTO, conn))
+                                if (value.ListDetalleFotos.Count() > 0)
                                 {
-                                    foreach (BE_TxExamenFisicoPollitoDetalleFotos item in value.ListDetalleFotos)
+                                    using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE_FOTO, conn))
                                     {
-                                        cmd.Parameters.Clear();
-                                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                                        foreach (BE_TxExamenFisicoPollitoDetalleFotos item in value.ListDetalleFotos)
+                                        {
+                                            cmd.Parameters.Clear();
+                                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                                        cmd.Parameters.Add(new SqlParameter("@IdExamenFisicoDetalle", item.IdExamenFisicoDetalle));
-                                        cmd.Parameters.Add(new SqlParameter("@IdExamenFisico", value.IdExamenFisico));
-                                        cmd.Parameters.Add(new SqlParameter("@Foto", item.Foto));
-                                        cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
-                                        cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
+                                            cmd.Parameters.Add(new SqlParameter("@IdExamenFisicoDetalle", item.IdExamenFisicoDetalle));
+                                            cmd.Parameters.Add(new SqlParameter("@IdExamenFisico", value.IdExamenFisico));
+                                            cmd.Parameters.Add(new SqlParameter("@Foto", item.Foto));
+                                            cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
+                                            cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
 
-                                        await cmd.ExecuteNonQueryAsync();
+                                            await cmd.ExecuteNonQueryAsync();
+                                        }
                                     }
                                 }
                             }
-                            
 
                             transaction.Commit();
                         }

@@ -8,7 +8,7 @@ namespace Net.Data
     public class ProcesoDetalleSubCutaneaRepository : RepositoryBase<BE_ProcesoDetalleSubCutanea>, IProcesoDetalleSubCutaneaRepository
     {
         const string DB_ESQUEMA = "DBO.";
-        const string SP_GET = DB_ESQUEMA + "";
+        const string SP_GET = DB_ESQUEMA + "INC_GetProcesoDetalleSubCutaneaPorId";
 
         const string SP_GET_ID = DB_ESQUEMA + "INC_GetProcesoDetalleSubCutaneaPorId";
         const string SP_INSERT = DB_ESQUEMA + "INC_SetProcesoDetalleSubCutaneaInsert";

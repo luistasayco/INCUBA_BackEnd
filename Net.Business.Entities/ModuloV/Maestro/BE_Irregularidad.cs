@@ -7,7 +7,7 @@ namespace Net.Business.Entities
     {
         [DBParameter(SqlDbType.Int, ActionType.Everything, true)]
         public int IdIrregularidad { get; set; }
-        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        [DBParameter(SqlDbType.NVarChar, 200, ActionType.Everything)]
         public string DescripcionIrregularidad { get; set; }
     }
 }

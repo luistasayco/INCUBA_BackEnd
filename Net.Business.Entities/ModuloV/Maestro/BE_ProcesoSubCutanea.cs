@@ -10,6 +10,6 @@ namespace Net.Business.Entities
         [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
         public string DescripcionProcesoSubCutanea { get; set; }
         [DBParameter(SqlDbType.Decimal, 0, ActionType.Everything)]
-        public decimal Valor { get; set; }
+        public decimal? Valor { get; set; }
     }
 }

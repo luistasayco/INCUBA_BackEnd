@@ -4,7 +4,7 @@ namespace Net.Business.DTO
 {
     public class DtoFindProcesoDetalleSpray
     {
-        public int IdProcesoDetalleSpray { get; set; }
+        public int? IdProcesoDetalleSpray { get; set; }
         public int IdProcesoSpray { get; set; }
         public string DescripcionProcesoSpray { get; set; }
 

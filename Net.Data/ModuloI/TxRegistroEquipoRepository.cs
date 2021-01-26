@@ -324,27 +324,31 @@ namespace Net.Data
                                     }
                                 }
                             }
-
                             if (value.TxRegistroEquipoDetalle7 != null)
                             {
-                                using (SqlCommand cmd = new SqlCommand(SP_INSERT_DETALLE_7, conn))
+                                if (value.TxRegistroEquipoDetalle7.Count > 0)
                                 {
-                                    foreach (BE_TxRegistroEquipoDetalle7 item in value.TxRegistroEquipoDetalle7)
+                                    using (SqlCommand cmd = new SqlCommand(SP_INSERT_DETALLE_7, conn))
                                     {
-                                        cmd.Parameters.Clear();
-                                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                                        foreach (BE_TxRegistroEquipoDetalle7 item in value.TxRegistroEquipoDetalle7)
+                                        {
+                                            cmd.Parameters.Clear();
+                                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                                        cmd.Parameters.Add(new SqlParameter("@IdRegistroEquipoDetalle", item.IdRegistroEquipoDetalle));
-                                        cmd.Parameters.Add(new SqlParameter("@IdRegistroEquipo", value.IdRegistroEquipo));
-                                        cmd.Parameters.Add(new SqlParameter("@Foto", item.Foto));
-                                        cmd.Parameters.Add(new SqlParameter("@Orden", item.Orden));
-                                        cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
-                                        cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
+                                            cmd.Parameters.Add(new SqlParameter("@IdRegistroEquipoDetalle", item.IdRegistroEquipoDetalle));
+                                            cmd.Parameters.Add(new SqlParameter("@IdRegistroEquipo", value.IdRegistroEquipo));
+                                            cmd.Parameters.Add(new SqlParameter("@Foto", item.Foto));
+                                            cmd.Parameters.Add(new SqlParameter("@Orden", item.Orden));
+                                            cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
+                                            cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
 
-                                        await cmd.ExecuteNonQueryAsync();
+                                            await cmd.ExecuteNonQueryAsync();
+                                        }
                                     }
                                 }
                             }
+
+
 
                             transaction.Commit();
                         }

@@ -11,4 +11,3 @@ namespace Net.Business.Entities
         public string DescripcionVacuna { get; set; }
     }
 }
-}

@@ -8,7 +8,7 @@ namespace Net.Data
     public class ProcesoDetalleSprayRepository : RepositoryBase<BE_ProcesoDetalleSpray>, IProcesoDetalleSprayRepository
     {
         const string DB_ESQUEMA = "DBO.";
-        const string SP_GET = DB_ESQUEMA + "";
+        const string SP_GET = DB_ESQUEMA + "INC_GetProcesoDetalleSprayPorId";
 
         const string SP_GET_ID = DB_ESQUEMA + "INC_GetProcesoDetalleSprayPorId";
         const string SP_INSERT = DB_ESQUEMA + "INC_SetProcesoDetalleSprayInsert";

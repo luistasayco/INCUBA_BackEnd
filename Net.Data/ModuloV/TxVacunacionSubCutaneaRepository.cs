@@ -61,12 +61,12 @@ namespace Net.Data
                 BE_TxVacunacionSubCutanea p = context.ExecuteSqlViewId<BE_TxVacunacionSubCutanea>(SP_GET_ID, entidad);
                 if (p != null)
                 {
-                    p.ListarTxVacunacionSubCutaneaControlEficiencia = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSubCutaneaControlEficiencia>(SP_GET_ID_DETALLE, entidad).ToList();
-                    p.ListarTxVacunacionSubCutaneaDetalle = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSubCutaneaDetalle>(SP_GET_ID_DETALLE_FOTOS, entidad).ToList();
-                    p.ListarTxVacunacionSubCutaneaFotos = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSubCutaneaFotos>(SP_GET_ID_RESUMEN, entidad).ToList();
-                    p.ListarTxVacunacionSubCutaneaIrregularidad = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSubCutaneaIrregularidad>(SP_GET_ID_RESUMEN, entidad).ToList();
-                    p.ListarTxVacunacionSubCutaneaMaquina = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSubCutaneaMaquina>(SP_GET_ID_RESUMEN, entidad).ToList();
-                    p.ListarTxVacunacionSubCutaneaVacuna = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSubCutaneaVacuna>(SP_GET_ID_RESUMEN, entidad).ToList();
+                    p.ListarTxVacunacionSubCutaneaControlEficiencia = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSubCutaneaControlEficiencia>(SP_GET_ID_DETALLE_CONTROL_EFICIENCIA, entidad).ToList();
+                    p.ListarTxVacunacionSubCutaneaDetalle = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSubCutaneaDetalle>(SP_GET_ID_DETALLE, entidad).ToList();
+                    p.ListarTxVacunacionSubCutaneaFotos = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSubCutaneaFotos>(SP_GET_ID_DETALLE_FOTOS, entidad).ToList();
+                    p.ListarTxVacunacionSubCutaneaIrregularidad = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSubCutaneaIrregularidad>(SP_GET_ID_DETALLE_IRREGULARIDAD, entidad).ToList();
+                    p.ListarTxVacunacionSubCutaneaMaquina = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSubCutaneaMaquina>(SP_GET_ID_DETALLE_MAQUINA, entidad).ToList();
+                    p.ListarTxVacunacionSubCutaneaVacuna = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSubCutaneaVacuna>(SP_GET_ID_DETALLE_VACUNA, entidad).ToList();
                 }
                 else
                 {

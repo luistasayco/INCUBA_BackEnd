@@ -48,25 +48,25 @@ namespace Net.Business.Services.Controllers
         /// <summary>
         /// Obtener lista de registro de equipo
         /// </summary>
-        /// <param name="value">Este es el cuerpo para enviar los parametros</param>
+        /// <param name = "value" > Este es el cuerpo para enviar los parametros</param>
         /// <returns>Lista del maestro de mantenimiento registrado</returns>
-        /// <response code="200">Devuelve el listado completo </response>
-        /// <response code="404">Si no existen datos</response>   
-        //[HttpGet]
-        //[ProducesResponseType(200)]
-        //[ProducesResponseType(404)]
-        //public async Task<IActionResult> GetByDetalleNew()
-        //{
+        /// <response code = "200" > Devuelve el listado completo</response>
+        /// <response code = "404" > Si no existen datos</response>
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetByDetalleNew()
+        {
 
-        //    var objectGetAll = await _repository.TxExamenFisicoPollito.GetByDetalleNew(new DtoFindTxExamenFisicoPollitoPorId { IdExamenFisico = 0 }.RetornaTxExamenFisicoPollito());
+            var objectGetAll = await _repository.TxVacunacionSpray.GetByIdNew(new DtoFindTxVacunacionSprayPorId { IdVacunacionSpray = 0 }.RetornaTxVacunacionSpray());
 
-        //    if (objectGetAll == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (objectGetAll == null)
+            {
+                return NotFound();
+            }
 
-        //    return Ok(objectGetAll);
-        //}
+            return Ok(objectGetAll);
+        }
 
         /// <summary>
         /// Obtener un TxRegistro Equipo

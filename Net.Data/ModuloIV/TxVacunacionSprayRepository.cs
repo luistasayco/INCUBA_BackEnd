@@ -23,15 +23,19 @@ namespace Net.Data
         const string DB_ESQUEMA = "DBO.";
         const string SP_GET = DB_ESQUEMA + "INC_GetTxVacunacionSprayPorFiltros";
         const string SP_GET_ID = DB_ESQUEMA + "INC_GetTxVacunacionSprayPorId";
+        const string SP_GET_ID_NEW = DB_ESQUEMA + "INC_GetTxVacunacionSprayPorIdNew";
         const string SP_GET_ID_GOOGLE_DRIVE = DB_ESQUEMA + "INC_GetTxVacunacionSprayPorIdGoogleDrive";
-        const string SP_GET_DETALLE_NEW = DB_ESQUEMA + "";
+        const string SP_GET_DETALLE_NEW = DB_ESQUEMA + "INC_GetTxVacunacionSprayDetallePorIdNew";
         const string SP_GET_ID_DETALLE = DB_ESQUEMA + "INC_GetTxVacunacionSprayDetallePorId";
+        const string SP_GET_ID_DETALLE_RESULTADO = DB_ESQUEMA + "INC_GetTxVacunacionSprayResultadoPorId";
+        const string SP_GET_ID_DETALLE_RESULTADO_NEW = DB_ESQUEMA + "INC_GetTxVacunacionSprayResultadoPorIdNew";
         const string SP_GET_ID_DETALLE_FOTOS = DB_ESQUEMA + "INC_GetTxVacunacionSprayFotosPorId";
         const string SP_GET_ID_DETALLE_MAQUINA = DB_ESQUEMA + "INC_GetTxVacunacionSprayMaquinaPorId";
         const string SP_GET_ID_DETALLE_VACUNA = DB_ESQUEMA + "INC_GetTxVacunacionSprayVacunaPorId";
 
         const string SP_INSERT = DB_ESQUEMA + "INC_SetTxVacunacionSprayInsert";
         const string SP_MERGE_DETALLE = DB_ESQUEMA + "INC_SetTxVacunacionSprayDetalleMerge";
+        const string SP_MERGE_DETALLE_RESULTADO = DB_ESQUEMA + "INC_SetTxVacunacionSprayResultadoMerge";
         const string SP_MERGE_DETALLE_FOTO = DB_ESQUEMA + "INC_SetTxVacunacionSprayFotosMerge";
         const string SP_MERGE_DETALLE_MAQUINA = DB_ESQUEMA + "INC_SetTxVacunacionSprayMaquinaMerge";
         const string SP_MERGE_DETALLE_VACUNA = DB_ESQUEMA + "INC_SetTxVacunacionSprayVacunaMerge";
@@ -61,11 +65,24 @@ namespace Net.Data
                     p.ListarTxVacunacionSprayFotos = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSprayFotos>(SP_GET_ID_DETALLE_FOTOS, entidad).ToList();
                     p.ListarTxVacunacionSprayMaquina = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSprayMaquina>(SP_GET_ID_DETALLE_MAQUINA, entidad).ToList();
                     p.ListarTxVacunacionSprayVacuna = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSprayVacuna>(SP_GET_ID_DETALLE_VACUNA, entidad).ToList();
+                    p.ListarTxVacunacionSprayResultado = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSprayResultado>(SP_GET_ID_DETALLE_RESULTADO, entidad).ToList();
                 }
                 else
                 {
                     p = new BE_TxVacunacionSpray();
                 }
+                return p;
+            });
+            return objListPrincipal;
+        }
+
+        public Task<BE_TxVacunacionSpray> GetByIdNew(BE_TxVacunacionSpray entidad)
+        {
+            var objListPrincipal = Task.Run(() =>
+            {
+                BE_TxVacunacionSpray p = context.ExecuteSqlViewId<BE_TxVacunacionSpray>(SP_GET_ID_NEW, entidad);
+                p.ListarTxVacunacionSprayDetalle = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSprayDetalle>(SP_GET_DETALLE_NEW, entidad).ToList();
+                p.ListarTxVacunacionSprayResultado = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSprayResultado>(SP_GET_ID_DETALLE_RESULTADO_NEW, entidad).ToList();
                 return p;
             });
             return objListPrincipal;
@@ -141,7 +158,7 @@ namespace Net.Data
                                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                                     cmd.Parameters.Add(new SqlParameter("@IdVacunacionSprayDetalle", item.IdVacunacionSprayDetalle));
-                                    cmd.Parameters.Add(new SqlParameter("@IdExamenFisico", value.IdVacunacionSpray));
+                                    cmd.Parameters.Add(new SqlParameter("@IdVacunacionSpray", value.IdVacunacionSpray));
                                     cmd.Parameters.Add(new SqlParameter("@IdProcesoDetalleSpray", item.IdProcesoDetalleSpray));
                                     cmd.Parameters.Add(new SqlParameter("@Valor", item.Valor));
                                     cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
@@ -151,19 +168,18 @@ namespace Net.Data
                                 }
                             }
 
-                            using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE_MAQUINA, conn))
+                            using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE_RESULTADO, conn))
                             {
-                                foreach (BE_TxVacunacionSprayMaquina item in value.ListarTxVacunacionSprayMaquina)
+                                foreach (BE_TxVacunacionSprayResultado item in value.ListarTxVacunacionSprayResultado)
                                 {
                                     cmd.Parameters.Clear();
                                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                                    cmd.Parameters.Add(new SqlParameter("@IdVacunacionSprayMaquina", item.IdVacunacionSprayMaquina));
+                                    cmd.Parameters.Add(new SqlParameter("@IdVacunacionSprayDetalle", item.IdVacunacionSprayDetalle));
                                     cmd.Parameters.Add(new SqlParameter("@IdVacunacionSpray", value.IdVacunacionSpray));
-                                    cmd.Parameters.Add(new SqlParameter("@IdBoquilla", item.IdBoquilla));
-                                    cmd.Parameters.Add(new SqlParameter("@NroMaquinas", item.NroMaquinas));
-                                    cmd.Parameters.Add(new SqlParameter("@CodigoModelo", item.CodigoModelo));
-                                    cmd.Parameters.Add(new SqlParameter("@CodigoEquipo", item.CodigoEquipo));
+                                    cmd.Parameters.Add(new SqlParameter("@IdProcesoAgrupador", item.IdProcesoAgrupador));
+                                    cmd.Parameters.Add(new SqlParameter("@ValorEsperado", item.ValorEsperado));
+                                    cmd.Parameters.Add(new SqlParameter("@ValorObtenido", item.ValorObtenido));
                                     cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
                                     cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
 
@@ -171,45 +187,79 @@ namespace Net.Data
                                 }
                             }
 
-                            using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE_VACUNA, conn))
+                            if (value.ListarTxVacunacionSprayMaquina != null)
                             {
-                                foreach (BE_TxVacunacionSprayVacuna item in value.ListarTxVacunacionSprayVacuna)
+                                if (value.ListarTxVacunacionSprayMaquina.Count() > 0)
                                 {
-                                    cmd.Parameters.Clear();
-                                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
-                                    cmd.Parameters.Add(new SqlParameter("@IdVacunacionSprayVacuna", item.IdVacunacionSprayVacuna));
-                                    cmd.Parameters.Add(new SqlParameter("@IdVacunacionSpray", value.IdVacunacionSpray));
-                                    cmd.Parameters.Add(new SqlParameter("@IdVacuna", item.IdVacuna));
-                                    cmd.Parameters.Add(new SqlParameter("@NombreVacuna", item.NombreVacuna));
-                                    cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
-                                    cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
-
-                                    await cmd.ExecuteNonQueryAsync();
-                                }
-                            }
-
-                            if (value.ListarTxVacunacionSprayFotos.Count() > 0)
-                            {
-                                using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE_FOTO, conn))
-                                {
-                                    foreach (BE_TxVacunacionSprayFotos item in value.ListarTxVacunacionSprayFotos)
+                                    using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE_MAQUINA, conn))
                                     {
-                                        cmd.Parameters.Clear();
-                                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                                        foreach (BE_TxVacunacionSprayMaquina item in value.ListarTxVacunacionSprayMaquina)
+                                        {
+                                            cmd.Parameters.Clear();
+                                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                                        cmd.Parameters.Add(new SqlParameter("@IdVacunacionSprayDetalle", item.IdVacunacionSprayDetalle));
-                                        cmd.Parameters.Add(new SqlParameter("@IdVacunacionSpray", value.IdVacunacionSpray));
-                                        cmd.Parameters.Add(new SqlParameter("@Foto", item.Foto));
-                                        cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
-                                        cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
+                                            cmd.Parameters.Add(new SqlParameter("@IdVacunacionSprayMaquina", item.IdVacunacionSprayMaquina));
+                                            cmd.Parameters.Add(new SqlParameter("@IdVacunacionSpray", value.IdVacunacionSpray));
+                                            cmd.Parameters.Add(new SqlParameter("@IdBoquilla", item.IdBoquilla));
+                                            cmd.Parameters.Add(new SqlParameter("@NroMaquinas", item.NroMaquinas));
+                                            cmd.Parameters.Add(new SqlParameter("@CodigoModelo", item.CodigoModelo));
+                                            cmd.Parameters.Add(new SqlParameter("@CodigoEquipo", item.CodigoEquipo));
+                                            cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
+                                            cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
 
-                                        await cmd.ExecuteNonQueryAsync();
+                                            await cmd.ExecuteNonQueryAsync();
+                                        }
                                     }
                                 }
                             }
+                                    
+                            if (value.ListarTxVacunacionSprayVacuna != null)
+                            {
+                                if (value.ListarTxVacunacionSprayVacuna.Count() > 0)
+                                {
+                                    using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE_VACUNA, conn))
+                                    {
+                                        foreach (BE_TxVacunacionSprayVacuna item in value.ListarTxVacunacionSprayVacuna)
+                                        {
+                                            cmd.Parameters.Clear();
+                                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
+                                            cmd.Parameters.Add(new SqlParameter("@IdVacunacionSprayVacuna", item.IdVacunacionSprayVacuna));
+                                            cmd.Parameters.Add(new SqlParameter("@IdVacunacionSpray", value.IdVacunacionSpray));
+                                            cmd.Parameters.Add(new SqlParameter("@IdVacuna", item.IdVacuna));
+                                            cmd.Parameters.Add(new SqlParameter("@NombreVacuna", item.NombreVacuna));
+                                            cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
+                                            cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
 
+                                            await cmd.ExecuteNonQueryAsync();
+                                        }
+                                    }
+                                }
+                            }
+                                   
+
+                            if (value.ListarTxVacunacionSprayFotos != null)
+                            {
+                                if (value.ListarTxVacunacionSprayFotos.Count() > 0)
+                                {
+                                    using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE_FOTO, conn))
+                                    {
+                                        foreach (BE_TxVacunacionSprayFotos item in value.ListarTxVacunacionSprayFotos)
+                                        {
+                                            cmd.Parameters.Clear();
+                                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                                            cmd.Parameters.Add(new SqlParameter("@IdVacunacionSprayDetalle", item.IdVacunacionSprayDetalle));
+                                            cmd.Parameters.Add(new SqlParameter("@IdVacunacionSpray", value.IdVacunacionSpray));
+                                            cmd.Parameters.Add(new SqlParameter("@Foto", item.Foto));
+                                            cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
+                                            cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
+
+                                            await cmd.ExecuteNonQueryAsync();
+                                        }
+                                    }
+                                }
+                            }
                             transaction.Commit();
                         }
                         catch (Exception ex)
@@ -241,6 +291,17 @@ namespace Net.Data
 
                         try
                         {
+                            using (SqlCommand cmd = new SqlCommand(SP_UPDATE, conn))
+                            {
+                                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+ 
+                                cmd.Parameters.Add(new SqlParameter("@IdVacunacionSpray", value.IdVacunacionSpray));
+                                cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
+                                cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
+
+                                await cmd.ExecuteNonQueryAsync();
+                            }
+
                             if (value.ListarTxVacunacionSprayFotos.Count() > 0)
                             {
                                 using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE_FOTO, conn))
@@ -345,12 +406,12 @@ namespace Net.Data
                 var resultDocumentFile = await _repository.Create(new BE_TxRegistroDocumento
                 {
                     CodigoEmpresa = data.CodigoEmpresa,
-                    //DescripcionEmpresa = data.DescripcionEmpresa,
-                    //CodigoPlanta = data.CodigoPlanta,
-                    //DescripcionPlanta = data.DescripcionPlanta,
-                    //DescripcionTipoExplotacion = data.DescripcionTipoExplotacion,
-                    //DescripcionSubTipoExplotacion = data.DescripcionSubTipoExplotacion,
-                    //IdSubTipoExplotacion = data.IdSubTipoExplotacion,
+                    DescripcionEmpresa = data.DescripcionEmpresa,
+                    CodigoPlanta = data.CodigoPlanta,
+                    DescripcionPlanta = data.DescripcionPlanta,
+                    DescripcionTipoExplotacion = data.DescripcionTipoExplotacion,
+                    DescripcionSubTipoExplotacion = data.DescripcionSubTipoExplotacion,
+                    IdSubTipoExplotacion = data.IdSubTipoExplotacion,
                     IdDocumento = 0,
                     IdDocumentoReferencial = (int)data.IdVacunacionSpray,
                     FlgCerrado = true,
