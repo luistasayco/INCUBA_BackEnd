@@ -7,6 +7,7 @@
         public string NombreVacunador { get; set; }
         public string CodigoEquipo { get; set; }
         public int IdIrregularidad { get; set; }
+        public string DescripcionIrregularidad { get; set; }
         public decimal Valor { get; set; }
 
     }

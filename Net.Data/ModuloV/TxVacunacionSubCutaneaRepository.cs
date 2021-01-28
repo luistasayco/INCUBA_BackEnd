@@ -330,7 +330,6 @@ namespace Net.Data
                                 }
                             }
 
-
                             transaction.Commit();
                         }
                         catch (Exception ex)
@@ -362,6 +361,17 @@ namespace Net.Data
 
                         try
                         {
+                            using (SqlCommand cmd = new SqlCommand(SP_UPDATE, conn))
+                            {
+                                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                                cmd.Parameters.Add(new SqlParameter("@IdVacunacionSubCutanea", value.IdVacunacionSubCutanea));
+                                cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
+                                cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
+
+                                await cmd.ExecuteNonQueryAsync();
+                            }
+
                             if (value.ListarTxVacunacionSubCutaneaFotos.Count() > 0)
                             {
                                 using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE_FOTO, conn))
@@ -372,7 +382,7 @@ namespace Net.Data
                                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                                         cmd.Parameters.Add(new SqlParameter("@IdVacunacionSubCutaneaDetalle", item.IdVacunacionSubCutaneaDetalle));
-                                        cmd.Parameters.Add(new SqlParameter("@IdVacunacionSubCutanea", item.IdVacunacionSubCutanea));
+                                        cmd.Parameters.Add(new SqlParameter("@IdVacunacionSubCutanea", value.IdVacunacionSubCutanea));
                                         cmd.Parameters.Add(new SqlParameter("@Foto", item.Foto));
                                         cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
                                         cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
@@ -466,12 +476,12 @@ namespace Net.Data
                 var resultDocumentFile = await _repository.Create(new BE_TxRegistroDocumento
                 {
                     CodigoEmpresa = data.CodigoEmpresa,
-                    //DescripcionEmpresa = data.DescripcionEmpresa,
-                    //CodigoPlanta = data.CodigoPlanta,
-                    //DescripcionPlanta = data.DescripcionPlanta,
-                    //DescripcionTipoExplotacion = data.DescripcionTipoExplotacion,
-                    //DescripcionSubTipoExplotacion = data.DescripcionSubTipoExplotacion,
-                    //IdSubTipoExplotacion = data.IdSubTipoExplotacion,
+                    DescripcionEmpresa = data.DescripcionEmpresa,
+                    CodigoPlanta = data.CodigoPlanta,
+                    DescripcionPlanta = data.DescripcionPlanta,
+                    DescripcionTipoExplotacion = data.DescripcionTipoExplotacion,
+                    DescripcionSubTipoExplotacion = data.DescripcionSubTipoExplotacion,
+                    IdSubTipoExplotacion = data.IdSubTipoExplotacion,
                     IdDocumento = 0,
                     IdDocumentoReferencial = (int)data.IdVacunacionSubCutanea,
                     FlgCerrado = true,
