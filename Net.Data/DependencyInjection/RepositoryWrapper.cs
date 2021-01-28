@@ -36,6 +36,7 @@ namespace Net.Data
         private IProcesoDetalleSubCutaneaRepository _ProcesoDetalleSubCutanea;
         private ITxVacunacionSubCutaneaRepository _TxVacunacionSubCutanea;
         private IVacunaRepository _Vacuna;
+        private IIndiceEficienciaRepository _IndiceEficiencia;
 
         public RepositoryWrapper(IConnectionSQL repoContext)
         {
@@ -370,6 +371,17 @@ namespace Net.Data
                     _Vacuna = new VacunaRepository(_repoContext);
                 }
                 return _Vacuna;
+            }
+        }
+        public IIndiceEficienciaRepository IndiceEficiencia
+        {
+            get
+            {
+                if (_IndiceEficiencia == null)
+                {
+                    _IndiceEficiencia = new IndiceEficienciaRepository(_repoContext);
+                }
+                return _IndiceEficiencia;
             }
         }
     }

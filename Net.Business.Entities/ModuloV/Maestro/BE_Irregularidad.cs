@@ -9,5 +9,7 @@ namespace Net.Business.Entities
         public int IdIrregularidad { get; set; }
         [DBParameter(SqlDbType.NVarChar, 200, ActionType.Everything)]
         public string DescripcionIrregularidad { get; set; }
+        [DBParameter(SqlDbType.Decimal, 0, ActionType.Everything)]
+        public decimal? Valor { get; set; }
     }
 }

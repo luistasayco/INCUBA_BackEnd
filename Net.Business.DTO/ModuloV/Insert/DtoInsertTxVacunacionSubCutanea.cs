@@ -10,8 +10,8 @@ namespace Net.Business.DTO
         public string CodigoEmpresa { get; set; }
         public string CodigoPlanta { get; set; }
         public string Unidad { get; set; }
-        public DateTime FecRegistro { get; set; }
-        public DateTime FecHoraRegistro { get; set; }
+        public DateTime? FecRegistro { get; set; }
+        public DateTime? FecHoraRegistro { get; set; }
         public string ResponsableInvetsa { get; set; }
         public string ResponsableIncubadora { get; set; }
         public Boolean FlgHyLine { get; set; }
@@ -40,7 +40,7 @@ namespace Net.Business.DTO
         public string FirmaPlanta { get; set; }
         public Boolean FlgCerrado { get; set; }
         public int IdUsuarioCierre { get; set; }
-        public DateTime FecCierre { get; set; }
+        public DateTime? FecCierre { get; set; }
         public string EmailFrom { get; set; }
         public string EmailTo { get; set; }
         public string NombreArchivo { get; set; }
@@ -50,6 +50,7 @@ namespace Net.Business.DTO
         public IEnumerable<BE_TxVacunacionSubCutaneaMaquina> ListarTxVacunacionSubCutaneaMaquina { get; set; }
         public IEnumerable<BE_TxVacunacionSubCutaneaVacuna> ListarTxVacunacionSubCutaneaVacuna { get; set; }
         public IEnumerable<BE_TxVacunacionSubCutaneaControlEficiencia> ListarTxVacunacionSubCutaneaControlEficiencia { get; set; }
+        public IEnumerable<BE_TxVacunacionSubCutaneaResultado> ListarTxVacunacionSubCutaneaResultado { get; set; }
         public BE_TxVacunacionSubCutanea RetornaTxVacunacionSubCutanea()
         {
             return new BE_TxVacunacionSubCutanea
@@ -97,6 +98,7 @@ namespace Net.Business.DTO
                 ListarTxVacunacionSubCutaneaIrregularidad = this.ListarTxVacunacionSubCutaneaIrregularidad,
                 ListarTxVacunacionSubCutaneaMaquina = this.ListarTxVacunacionSubCutaneaMaquina,
                 ListarTxVacunacionSubCutaneaVacuna = this.ListarTxVacunacionSubCutaneaVacuna,
+                ListarTxVacunacionSubCutaneaResultado = this.ListarTxVacunacionSubCutaneaResultado,
                 RegUsuario = this.RegUsuario,
                 RegEstacion = this.RegEstacion
             };

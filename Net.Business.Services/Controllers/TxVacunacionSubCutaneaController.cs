@@ -51,21 +51,21 @@ namespace Net.Business.Services.Controllers
         /// <returns>Lista del maestro de mantenimiento registrado</returns>
         /// <response code="200">Devuelve el listado completo </response>
         /// <response code="404">Si no existen datos</response>   
-        //[HttpGet]
-        //[ProducesResponseType(200)]
-        //[ProducesResponseType(404)]
-        //public async Task<IActionResult> GetByDetalleNew()
-        //{
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetByDetalleNew()
+        {
 
-        //    var objectGetAll = await _repository.TxExamenFisicoPollito.GetByDetalleNew(new DtoFindTxExamenFisicoPollitoPorId { IdExamenFisico = 0 }.RetornaTxExamenFisicoPollito());
+            var objectGetAll = await _repository.TxVacunacionSubCutanea.GetByIdNew(new DtoFindTxVacunacionSubCutaneaPorId { IdVacunacionSubCutanea = 0 }.RetornaTxVacunacionSubCutanea());
 
-        //    if (objectGetAll == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (objectGetAll == null)
+            {
+                return NotFound();
+            }
 
-        //    return Ok(objectGetAll);
-        //}
+            return Ok(objectGetAll);
+        }
 
         /// <summary>
         /// Obtener un TxRegistro Equipo
@@ -78,7 +78,7 @@ namespace Net.Business.Services.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> GetByIdTxVacunacionSpray(int id)
+        public async Task<IActionResult> GetByIdTxVacunacionSubCutanea(int id)
         {
             var objectGetById = await _repository.TxVacunacionSubCutanea.GetById(new DtoFindTxVacunacionSubCutaneaPorId { IdVacunacionSubCutanea = id }.RetornaTxVacunacionSubCutanea());
 

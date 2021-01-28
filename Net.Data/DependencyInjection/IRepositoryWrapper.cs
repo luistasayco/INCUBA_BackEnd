@@ -32,5 +32,6 @@
         IProcesoDetalleSubCutaneaRepository ProcesoDetalleSubCutanea { get; }
         ITxVacunacionSubCutaneaRepository TxVacunacionSubCutanea { get; }
         IVacunaRepository Vacuna { get; }
+        IIndiceEficienciaRepository IndiceEficiencia { get; }
     }
 }

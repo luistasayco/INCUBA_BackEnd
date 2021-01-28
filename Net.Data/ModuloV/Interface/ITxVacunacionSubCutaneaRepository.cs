@@ -10,6 +10,7 @@ namespace Net.Data
     {
         Task<IEnumerable<BE_TxVacunacionSubCutanea>> GetAll(FE_TxVacunacionSubCutanea entidad);
         Task<BE_TxVacunacionSubCutanea> GetById(BE_TxVacunacionSubCutanea entidad);
+        Task<BE_TxVacunacionSubCutanea> GetByIdNew(BE_TxVacunacionSubCutanea entidad);
         Task<int> Create(BE_TxVacunacionSubCutanea entidad);
         Task Update(BE_TxVacunacionSubCutanea entidad);
         Task<BE_ResultadoTransaccion> UpdateStatus(BE_TxVacunacionSubCutanea entidad);

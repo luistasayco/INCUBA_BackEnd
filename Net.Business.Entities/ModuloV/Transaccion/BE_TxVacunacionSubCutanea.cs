@@ -35,7 +35,7 @@ namespace Net.Business.Entities
         public string NombreAntibiotico { get; set; }
         public string DosisAntibiotico { get; set; }
         public Boolean? FlgPorcentajeViabilidad { get; set; }
-        public decimal PuntajePorcentajeViabilidad { get; set; }
+        public decimal? PuntajePorcentajeViabilidad { get; set; }
         public string ObservacionInvetsa { get; set; }
         public string ObservacionPlanta { get; set; }
         public decimal? PromedioPollos { get; set; }
@@ -62,5 +62,6 @@ namespace Net.Business.Entities
         public IEnumerable<BE_TxVacunacionSubCutaneaMaquina> ListarTxVacunacionSubCutaneaMaquina { get; set; }
         public IEnumerable<BE_TxVacunacionSubCutaneaVacuna> ListarTxVacunacionSubCutaneaVacuna { get; set; }
         public IEnumerable<BE_TxVacunacionSubCutaneaControlEficiencia> ListarTxVacunacionSubCutaneaControlEficiencia { get; set; }
+        public IEnumerable<BE_TxVacunacionSubCutaneaResultado> ListarTxVacunacionSubCutaneaResultado { get; set; }
     }
 }

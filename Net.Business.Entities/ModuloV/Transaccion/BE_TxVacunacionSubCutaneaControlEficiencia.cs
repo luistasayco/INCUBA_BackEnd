@@ -15,5 +15,7 @@
         public int Mojados { get; set; }
         public int MalaPosicion { get; set; }
         public int VacunadoCorrectos { get; set; }
+        public decimal PorcentajeEficiencia { get; set; }
+        public decimal PuntajeEficiencia { get; set; }
     }
 }
