@@ -115,17 +115,16 @@ namespace Net.Business.Services.Controllers
                 return BadRequest("Invalid model object");
             }
 
-            int ObjectNew = await _repository.TxRegistroEquipo.Create(value.TxRegistroEquipo());
+            var response = await _repository.TxRegistroEquipo.Create(value.TxRegistroEquipo());
 
-            if (ObjectNew == 0)
+            if (response.ResultadoCodigo < 0)
             {
-                ModelState.AddModelError("", $"Algo salio mal guardando el registro");
-                return StatusCode(500, ModelState);
+                return BadRequest(response);
             } else
             {
                 if (value.FlgCerrado)
                 {
-                    var updateStatus = new DtoUpdateStatusTxRegistroEquipo { IdRegistroEquipo = ObjectNew, RegUsuario = value.RegUsuario, RegEstacion = value.RegEstacion };
+                    var updateStatus = new DtoUpdateStatusTxRegistroEquipo { IdRegistroEquipo = response.IdRegistro, RegUsuario = value.RegUsuario, RegEstacion = value.RegEstacion };
                     var data = await _repository.TxRegistroEquipo.UpdateStatus(updateStatus.TxRegistroEquipo());
 
                     if (data.ResultadoCodigo == -1)
@@ -135,7 +134,7 @@ namespace Net.Business.Services.Controllers
                 }
             }
 
-            return CreatedAtRoute("GetByIdTxRegistroEquipo", new { id = ObjectNew }, ObjectNew);
+            return Ok(response);
         }
         /// <summary>
         /// Actualizar una calidad existente

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -18,6 +19,11 @@ namespace Net.Data
 {
     public class TxRegistroEquipoRepository : RepositoryBase<BE_TxRegistroEquipo>, ITxRegistroEquipoRepository
     {
+
+        private string _aplicacionName;
+        private string _metodoName;
+        private readonly Regex regex = new Regex(@"<(\w+)>.*");
+
         const string DB_ESQUEMA = "DBO.";
         const string SP_GET = DB_ESQUEMA + "INC_GetTxRegistroEquipoPorFiltros";
 
@@ -34,6 +40,7 @@ namespace Net.Data
         const string SP_GET_ID = DB_ESQUEMA + "INC_GetTxRegistroEquipoPorId";
         const string SP_GET_ID_DETALLE_1 = DB_ESQUEMA + "INC_GetTxRegistroEquipoDetalle1PorId";
         const string SP_GET_ID_DETALLE_2 = DB_ESQUEMA + "INC_GetTxRegistroEquipoDetalle2PorId";
+        const string SP_GET_ID_DETALLE_2_PDF = DB_ESQUEMA + "INC_GetTxRegistroEquipoDetalle2PorIdPdf";
         const string SP_GET_ID_DETALLE_3 = DB_ESQUEMA + "INC_GetTxRegistroEquipoDetalle3PorId";
         const string SP_GET_ID_DETALLE_4 = DB_ESQUEMA + "INC_GetTxRegistroEquipoDetalle4PorId";
         const string SP_GET_ID_DETALLE_5 = DB_ESQUEMA + "INC_GetTxRegistroEquipoDetalle5PorId";
@@ -125,7 +132,7 @@ namespace Net.Data
             if (p != null)
             {
                 p.TxRegistroEquipoDetalle1 = context.ExecuteSqlViewFindByCondition<BE_TxRegistroEquipoDetalle1>(SP_GET_ID_DETALLE_1, entidad).ToList();
-                p.TxRegistroEquipoDetalle2 = context.ExecuteSqlViewFindByCondition<BE_TxRegistroEquipoDetalle2>(SP_GET_ID_DETALLE_2, entidad).ToList();
+                p.TxRegistroEquipoDetalle2 = context.ExecuteSqlViewFindByCondition<BE_TxRegistroEquipoDetalle2>(SP_GET_ID_DETALLE_2_PDF, entidad).ToList();
                 p.TxRegistroEquipoDetalle3 = context.ExecuteSqlViewFindByCondition<BE_TxRegistroEquipoDetalle3>(SP_GET_ID_DETALLE_3, entidad).ToList();
                 p.TxRegistroEquipoDetalle4 = context.ExecuteSqlViewFindByCondition<BE_TxRegistroEquipoDetalle4>(SP_GET_ID_DETALLE_4, entidad).ToList();
                 p.TxRegistroEquipoDetalle5 = context.ExecuteSqlViewFindByCondition<BE_TxRegistroEquipoDetalle5>(SP_GET_ID_DETALLE_5, entidad).ToList();
@@ -139,10 +146,17 @@ namespace Net.Data
             }
             return p;
         }
-        public async Task<int> Create(BE_TxRegistroEquipo value)
+        public async Task<BE_ResultadoTransaccion> Create(BE_TxRegistroEquipo value)
         {
+            BE_ResultadoTransaccion vResultadoTransaccion = new BE_ResultadoTransaccion();
+            _metodoName = regex.Match(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name).Groups[1].Value.ToString();
+
+            vResultadoTransaccion.ResultadoMetodo = _metodoName;
+            vResultadoTransaccion.ResultadoAplicacion = _aplicacionName;
+
             try
             {
+                
                 using (SqlConnection conn = new SqlConnection(context.DevuelveConnectionSQL()))
                 {
                     using (CommittableTransaction transaction = new CommittableTransaction())
@@ -174,6 +188,9 @@ namespace Net.Data
                                 cmd.Parameters.Add(new SqlParameter("@ResponsablePlanta", value.ResponsablePlanta));
                                 cmd.Parameters.Add(new SqlParameter("@EmailFrom", value.EmailFrom));
                                 cmd.Parameters.Add(new SqlParameter("@EmailTo", value.EmailTo));
+                                cmd.Parameters.Add(new SqlParameter("@JefePlanta", value.JefePlanta));
+                                cmd.Parameters.Add(new SqlParameter("@ObservacionesInvetsa", value.ObservacionesInvetsa));
+                                cmd.Parameters.Add(new SqlParameter("@ObservacionesPlanta", value.ObservacionesPlanta));
                                 cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
                                 cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
 
@@ -348,13 +365,18 @@ namespace Net.Data
                                 }
                             }
 
-
-
                             transaction.Commit();
+
+                            vResultadoTransaccion.IdRegistro = (int)value.IdRegistroEquipo;
+                            vResultadoTransaccion.ResultadoCodigo = 0;
+                            vResultadoTransaccion.ResultadoDescripcion = "Se genero correctamente...!!!";
+
                         }
                         catch (Exception ex)
                         {
-                            value.IdRegistroEquipo = 0;
+                            vResultadoTransaccion.IdRegistro = -1;
+                            vResultadoTransaccion.ResultadoCodigo = -1;
+                            vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
                             transaction.Rollback();
                         }
                     }
@@ -362,10 +384,12 @@ namespace Net.Data
             }
             catch (Exception ex)
             {
-                value.IdRegistroEquipo = 0;
+                vResultadoTransaccion.IdRegistro = -1;
+                vResultadoTransaccion.ResultadoCodigo = -1;
+                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
             }
 
-            return int.Parse(value.IdRegistroEquipo.ToString());
+            return vResultadoTransaccion;
         }
         public async Task Update(BE_TxRegistroEquipo value)
         {
@@ -526,6 +550,8 @@ namespace Net.Data
         {
             BE_TxRegistroEquipo item = GetByIdPDF(entidad);
 
+            var fontWebdings = "resources/font/webdings.ttf";
+
             return await Task.Run(() =>
             {
                 Document doc = new Document();
@@ -542,11 +568,14 @@ namespace Net.Data
                 write.PageEvent = pe;
                 // Colocamos la fuente que deseamos que tenga el documento
                 BaseFont helvetica = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1250, true);
+                BaseFont webdings = BaseFont.CreateFont(fontWebdings, BaseFont.CP1250, true);
                 // Titulo
                 iTextSharp.text.Font titulo = new iTextSharp.text.Font(helvetica, 20f, iTextSharp.text.Font.BOLD, new BaseColor(103, 93, 152));
                 iTextSharp.text.Font subTitulo = new iTextSharp.text.Font(helvetica, 14f, iTextSharp.text.Font.BOLD, new BaseColor(103, 93, 152));
                 iTextSharp.text.Font parrafoBlanco = new iTextSharp.text.Font(helvetica, 10f, iTextSharp.text.Font.BOLD, BaseColor.White);
                 iTextSharp.text.Font parrafoNegro = new iTextSharp.text.Font(helvetica, 10f, iTextSharp.text.Font.NORMAL, BaseColor.Black);
+                iTextSharp.text.Font parrafoNegroWebdings = new iTextSharp.text.Font(webdings, 10f, iTextSharp.text.Font.NORMAL, BaseColor.Black);
+                iTextSharp.text.Font parrafoNegrita = new iTextSharp.text.Font(helvetica, 10f, iTextSharp.text.Font.BOLD, BaseColor.Black);
                 pe.HeaderLeft = " ";
                 pe.HeaderFont = parrafoBlanco;
                 pe.HeaderRight = " ";
@@ -590,7 +619,7 @@ namespace Net.Data
                 //tbl.AddCell(c2);
 
                 c1.Phrase = new Phrase("Jefe de Planta", parrafoNegro);
-                c2.Phrase = new Phrase(item.ResponsablePlanta, parrafoNegro);
+                c2.Phrase = new Phrase(item.JefePlanta, parrafoNegro);
                 tbl.AddCell(c1);
                 tbl.AddCell(c2);
 
@@ -642,21 +671,28 @@ namespace Net.Data
                 }
 
                 xFila = 1;
-
+                var xSecuencia = 1;
                 foreach (var detalle1 in item.TxRegistroEquipoDetalle1)
                 {
                     
                     if (xFila == 1)
                     {
-                        CellMaster = new PdfPCell(new Phrase("1", parrafoNegro)) {  HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        CellMaster = new PdfPCell(new Phrase(xSecuencia.ToString(), parrafoNegro)) {  HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                         tbl.AddCell(CellMaster);
                         CellMaster = new PdfPCell(new Phrase(detalle1.Descripcion, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
                         CellMaster.Colspan = 6;
                         CellMaster.FixedHeight = 25f;
                         tbl.AddCell(CellMaster);
+                        xSecuencia = xSecuencia + 1;
                     }
 
-                    CellMaster = new PdfPCell(new Phrase(detalle1.FlgValor ? "X" : "", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    CellMaster = new PdfPCell(new Phrase(detalle1.FlgValor ? "a" : "", parrafoNegroWebdings)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    if (!detalle1.FlgValor)
+                    {
+                        CellMaster.BackgroundColor = BaseColor.Red;
+                    }
+                    
+
                     CellMaster.Rotation = 0;
                     tbl.AddCell(CellMaster);
 
@@ -714,12 +750,12 @@ namespace Net.Data
                 }
 
                 xFila = 1;
-
+                xSecuencia = 1;
                 foreach (var detalle2 in item.TxRegistroEquipoDetalle2)
                 {
                     if (xFila == 1)
                     {
-                        CellMaster = new PdfPCell(new Phrase("1", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        CellMaster = new PdfPCell(new Phrase(xSecuencia.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                         tbl.AddCell(CellMaster);
                         CellMaster = new PdfPCell(new Phrase(detalle2.CodigoRepuesto, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
                         CellMaster.Colspan = 2;
@@ -732,10 +768,15 @@ namespace Net.Data
                         tbl.AddCell(CellMaster);
                         CellMaster = new PdfPCell(new Phrase(detalle2.Rfc, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                         tbl.AddCell(CellMaster);
+                        xSecuencia = xSecuencia + 1;
                     }
 
-                    CellMaster = new PdfPCell(new Phrase(detalle2.FlgValor ? "X" : "", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    CellMaster = new PdfPCell(new Phrase(detalle2.FlgValor ? "a" : "", parrafoNegroWebdings)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                     CellMaster.Rotation = 0;
+                    if (!detalle2.FlgValor)
+                    {
+                        CellMaster.BackgroundColor = BaseColor.Red;
+                    }
                     tbl.AddCell(CellMaster);
 
                     if (xFila == CountItemHeader)
@@ -765,10 +806,10 @@ namespace Net.Data
                 tbl.AddCell(CellMaster);
                 CellMaster = new PdfPCell(new Phrase("Observación", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                 tbl.AddCell(CellMaster);
-
+                xSecuencia = 1;
                 foreach (var detalle5 in item.TxRegistroEquipoDetalle5)
                 {
-                    CellMaster = new PdfPCell(new Phrase("1", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    CellMaster = new PdfPCell(new Phrase(xSecuencia.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                     tbl.AddCell(CellMaster);
                     CellMaster = new PdfPCell(new Phrase(detalle5.CodigoRepuesto, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
                     tbl.AddCell(CellMaster);
@@ -776,6 +817,7 @@ namespace Net.Data
                     tbl.AddCell(CellMaster);
                     CellMaster = new PdfPCell(new Phrase(detalle5.Observacion, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
                     tbl.AddCell(CellMaster);
+                    xSecuencia = xSecuencia + 1;
                 }
 
                 doc.Add(tbl);
@@ -846,7 +888,7 @@ namespace Net.Data
 
                 doc.Add(new Phrase(" "));
 
-                tbl = new PdfPTable(new float[] { 8f, 15f, 52f, 15f, 15f, 15f }) { WidthPercentage = 100f };
+                tbl = new PdfPTable(new float[] { 6f, 15f, 63f, 12f, 12f, 12f }) { WidthPercentage = 100f };
                 CellMaster = new PdfPCell();
 
                 CellMaster = new PdfPCell(new Phrase("Item", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
@@ -862,22 +904,44 @@ namespace Net.Data
                 CellMaster = new PdfPCell(new Phrase("Entregado", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                 tbl.AddCell(CellMaster);
 
+                xSecuencia = 1;
                 foreach (var detalle6 in item.TxRegistroEquipoDetalle6)
                 {
-                    CellMaster = new PdfPCell(new Phrase("1", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    CellMaster = new PdfPCell(new Phrase(xSecuencia.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                     tbl.AddCell(CellMaster);
                     CellMaster = new PdfPCell(new Phrase(detalle6.CodigoRepuesto, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                     tbl.AddCell(CellMaster);
                     CellMaster = new PdfPCell(new Phrase(detalle6.Descripcion, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
                     tbl.AddCell(CellMaster);
-                    CellMaster = new PdfPCell(new Phrase(detalle6.StockActual.ToString("N"), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_RIGHT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    CellMaster = new PdfPCell(new Phrase(detalle6.StockActual.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_RIGHT, VerticalAlignment = Element.ALIGN_MIDDLE };
                     tbl.AddCell(CellMaster);
-                    CellMaster = new PdfPCell(new Phrase(detalle6.CambioPorMantenimiento.ToString("N"), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_RIGHT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    CellMaster = new PdfPCell(new Phrase(detalle6.CambioPorMantenimiento.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_RIGHT, VerticalAlignment = Element.ALIGN_MIDDLE };
                     tbl.AddCell(CellMaster);
-                    CellMaster = new PdfPCell(new Phrase(detalle6.Entregado.ToString("N"), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_RIGHT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    CellMaster = new PdfPCell(new Phrase(detalle6.Entregado.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_RIGHT, VerticalAlignment = Element.ALIGN_MIDDLE };
                     tbl.AddCell(CellMaster);
+
+                    xSecuencia = xSecuencia + 1;
                 }
 
+                doc.Add(tbl);
+
+                doc.Add(new Phrase("\n"));
+
+                doc.Add(new Phrase("E. Observaciones", subTitulo));
+
+                doc.Add(new Phrase(" "));
+
+                tbl = new PdfPTable(new float[] { 100f }) { WidthPercentage = 100f };
+                c1 = new PdfPCell();
+                c1.Phrase = new Phrase("Observaciones Invetsa:", parrafoNegrita);
+                c1.Border = 0;
+                tbl.AddCell(c1);
+                c1.Phrase = new Phrase(item.ObservacionesInvetsa, parrafoNegro);
+                tbl.AddCell(c1);
+                c1.Phrase = new Phrase("Observaciones Planta:", parrafoNegrita);
+                tbl.AddCell(c1);
+                c1.Phrase = new Phrase(item.ObservacionesPlanta, parrafoNegro);
+                tbl.AddCell(c1);
                 doc.Add(tbl);
 
                 // Validamos si ingresaron imanes
@@ -889,7 +953,7 @@ namespace Net.Data
                 {
                     doc.Add(new Phrase("\n"));
 
-                    doc.Add(new Phrase("E. Fotos", subTitulo));
+                    doc.Add(new Phrase("F. Fotos", subTitulo));
 
                     doc.Add(new Phrase(" "));
 

@@ -63,5 +63,6 @@ namespace Net.Business.Entities
         public IEnumerable<BE_TxVacunacionSubCutaneaVacuna> ListarTxVacunacionSubCutaneaVacuna { get; set; }
         public IEnumerable<BE_TxVacunacionSubCutaneaControlEficiencia> ListarTxVacunacionSubCutaneaControlEficiencia { get; set; }
         public IEnumerable<BE_TxVacunacionSubCutaneaResultado> ListarTxVacunacionSubCutaneaResultado { get; set; }
+        public IEnumerable<BE_TxVacunacionSubCutaneaPromedio> ListarTxVacunacionSubCutaneaPromedio { get; set; }
     }
 }

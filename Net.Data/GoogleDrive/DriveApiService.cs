@@ -18,7 +18,7 @@ namespace Net.Data
     {
         protected static string[] scopes = { DriveService.Scope.Drive };
         protected readonly UserCredential credential;
-        static string ApplicationName = "MyProjectExtranet";
+        static string ApplicationName = "AuditoriaExtranet";
         protected readonly DriveService service;
         protected readonly FileExtensionContentTypeProvider fileExtensionProvider;
 
@@ -35,7 +35,7 @@ namespace Net.Data
                 credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.Load(stream).Secrets,
                     scopes,
-                    "ing.luis.tasayco@gmail.com", // use a const or read it from a config file
+                    "auditoria@invetsa.com", // use a const or read it from a config file
                     CancellationToken.None,
                     new FileDataStore(credPath, true)).Result;
 
@@ -131,7 +131,7 @@ namespace Net.Data
             FilesResource.ListRequest listRequest = service.Files.List();
             listRequest.Q = "('" + id + "' in parents)";
             //listRequest.PageSize = 10;
-            listRequest.Fields = "nextPageToken, files(id, name, mimeType)";
+            listRequest.Fields = "nextPageToken, files(id, name, mimeType, parents)";
 
             // List files.
             IList<Google.Apis.Drive.v3.Data.File> files = listRequest.Execute().Files;

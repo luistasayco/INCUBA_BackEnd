@@ -14,5 +14,6 @@ namespace Net.Business.Entities
         public decimal ValorProcesoSpray { get; set; }
         public decimal ValorProcesoDetalleSpray { get; set; }
         public Boolean Valor { get; set; }
+        public int NroQuiebre { get; set; }
     }
 }

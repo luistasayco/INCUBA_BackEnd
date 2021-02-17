@@ -119,6 +119,12 @@ namespace Net.Business.Entities
         public string EmailTo { get; set; }
         [DBParameter(SqlDbType.VarChar, 300, ActionType.Everything)]
         public string NombreArchivo { get; set; }
+        [DBParameter(SqlDbType.VarChar, 100, ActionType.Everything)]
+        public string JefePlanta { get; set; }
+        [DBParameter(SqlDbType.VarChar, 200, ActionType.Everything)]
+        public string ObservacionesInvetsa { get; set; }
+        [DBParameter(SqlDbType.VarChar, 200, ActionType.Everything)]
+        public string ObservacionesPlanta { get; set; }
         public List<BE_TxRegistroEquipoDetalle1> TxRegistroEquipoDetalle1 { get; set; }
         public List<BE_TxRegistroEquipoDetalle2> TxRegistroEquipoDetalle2 { get; set; }
         public List<BE_TxRegistroEquipoDetalle2> TxRegistroEquipoDetalle2NoPredeterminado { get; set; }

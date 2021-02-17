@@ -10,9 +10,11 @@ namespace Net.Business.Entities
         public string DescripcionProcesoDetalleSubCutanea { get; set; }
         public int? IdProcesoSubCutanea { get; set; }
         public string DescripcionProcesoSubCutanea { get; set; }
-        public Boolean? Valor { get; set; }
+        public Boolean Valor { get; set; }
         public int? IdProcesoAgrupador { get; set; }
         public decimal? ValorProcesoDetalleSubCutanea { get; set; }
         public decimal? ValorProcesoSubCutanea { get; set; }
+
+        public int NroQuiebre { get; set; }
     }
 }

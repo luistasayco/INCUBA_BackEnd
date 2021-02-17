@@ -20,6 +20,9 @@ namespace Net.Business.DTO
         public DateTime? FecCierre { get; set; }
         public string EmailTo { get; set; }
         public string EmailFrom { get; set; }
+        public string JefePlanta { get; set; }
+        public string ObservacionesInvetsa { get; set; }
+        public string ObservacionesPlanta { get; set; }
         public List<BE_TxRegistroEquipoDetalle1> TxRegistroEquipoDetalle1 { get; set; }
         public List<BE_TxRegistroEquipoDetalle2> TxRegistroEquipoDetalle2 { get; set; }
         public List<BE_TxRegistroEquipoDetalle3> TxRegistroEquipoDetalle3 { get; set; }
@@ -47,6 +50,9 @@ namespace Net.Business.DTO
                 FecCierre = this.FecCierre,
                 EmailTo = this.EmailTo,
                 EmailFrom =this.EmailFrom,
+                JefePlanta = this.JefePlanta,
+                ObservacionesInvetsa = this.ObservacionesInvetsa,
+                ObservacionesPlanta = this.ObservacionesPlanta,
                 TxRegistroEquipoDetalle1 = this.TxRegistroEquipoDetalle1,
                 TxRegistroEquipoDetalle2 = this.TxRegistroEquipoDetalle2,
                 TxRegistroEquipoDetalle3 = this.TxRegistroEquipoDetalle3,
