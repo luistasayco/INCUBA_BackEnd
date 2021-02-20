@@ -51,6 +51,17 @@ namespace Net.Business.Entities
         public string DescripcionTipoExplotacion { get; set; }
         public string DescripcionSubTipoExplotacion { get; set; }
         public int? IdSubTipoExplotacion { get; set; }
+        //public IEnumerable<BE_TxVacunacionSprayDetalle> ListarTxVacunacionSprayDetalle { get { return listarTxVacunacionSprayDetalle; } set { } }
+        //public IEnumerable<BE_TxVacunacionSprayFotos> ListarTxVacunacionSprayFotos { get { return listarTxVacunacionSprayFotos; } set { } }
+        //public IEnumerable<BE_TxVacunacionSprayMaquina> ListarTxVacunacionSprayMaquina { get { return listarTxVacunacionSprayMaquina; } set { } }
+        //public IEnumerable<BE_TxVacunacionSprayVacuna> ListarTxVacunacionSprayVacuna { get { return listarTxVacunacionSprayVacuna; } set { } }
+        //public IEnumerable<BE_TxVacunacionSprayResultado> ListarTxVacunacionSprayResultado { get { return listarTxVacunacionSprayResultado; } set { } }
+
+        //public IEnumerable<BE_TxVacunacionSprayDetalle> listarTxVacunacionSprayDetalle = new List<BE_TxVacunacionSprayDetalle>();
+        //public IEnumerable<BE_TxVacunacionSprayFotos> listarTxVacunacionSprayFotos = new List<BE_TxVacunacionSprayFotos>();
+        //public IEnumerable<BE_TxVacunacionSprayMaquina> listarTxVacunacionSprayMaquina = new List<BE_TxVacunacionSprayMaquina>();
+        //public IEnumerable<BE_TxVacunacionSprayVacuna> listarTxVacunacionSprayVacuna = new List<BE_TxVacunacionSprayVacuna>();
+        //public IEnumerable<BE_TxVacunacionSprayResultado> listarTxVacunacionSprayResultado = new List<BE_TxVacunacionSprayResultado>();
         public IEnumerable<BE_TxVacunacionSprayDetalle> ListarTxVacunacionSprayDetalle { get; set; }
         public IEnumerable<BE_TxVacunacionSprayFotos> ListarTxVacunacionSprayFotos { get; set; }
         public IEnumerable<BE_TxVacunacionSprayMaquina> ListarTxVacunacionSprayMaquina { get; set; }

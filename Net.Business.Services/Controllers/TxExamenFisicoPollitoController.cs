@@ -154,7 +154,7 @@ namespace Net.Business.Services.Controllers
                     if (bool.Parse(value.FlgCerrado.ToString()))
                     {
                         var updateStatus = new DtoUpdateStatusTxExamenFisicoPollito { IdExamenFisico = ObjectNew, IdUsuarioCierre = int.Parse(value.RegUsuario.ToString()), RegUsuario = value.RegUsuario, RegEstacion = value.RegEstacion };
-                        var result = await _repository.TxExamenFisicoPollito.UpdateStatus(value.RetornaTxExamenFisicoPollito());
+                        var result = await _repository.TxExamenFisicoPollito.UpdateStatus(updateStatus.RetornaTxExamenFisicoPollito());
 
                         if (result.ResultadoCodigo == -1)
                         {

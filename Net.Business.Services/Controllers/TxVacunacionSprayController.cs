@@ -152,7 +152,7 @@ namespace Net.Business.Services.Controllers
                     if (bool.Parse(value.FlgCerrado.ToString()))
                     {
                         var updateStatus = new DtoUpdateStatusTxVacunacionSpray { IdVacunacionSpray = ObjectNew, IdUsuarioCierre = int.Parse(value.RegUsuario.ToString()), RegUsuario = value.RegUsuario, RegEstacion = value.RegEstacion };
-                        var result = await _repository.TxVacunacionSpray.UpdateStatus(value.RetornaTxVacunacionSpray());
+                        var result = await _repository.TxVacunacionSpray.UpdateStatus(updateStatus.RetornaTxVacunacionSpray());
 
                         if (result.ResultadoCodigo == -1)
                         {
