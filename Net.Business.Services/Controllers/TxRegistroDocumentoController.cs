@@ -257,5 +257,17 @@ namespace Net.Business.Services.Controllers
             return pdf;
         }
 
+        
+        [HttpGet(Name = "GetUrlFilePorId")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesDefaultResponseType]
+        public async Task<bool> GetUrlFilePorId([FromQuery]string id, string permissionValue, string userRule)
+        {
+            var objectGetById = await _repository.TxRegistroDocumento.GetUrlFileGoogleDrive(id, permissionValue, userRule);
+
+            return objectGetById;
+        }
+
     }
 }

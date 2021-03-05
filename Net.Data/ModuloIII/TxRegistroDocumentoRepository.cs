@@ -388,5 +388,14 @@ namespace Net.Data
                 Delete(entidad, SP_DELETE);
             });
         }
+
+        public Task<bool> GetUrlFileGoogleDrive(string id, string permissionValue, string userRule)
+        {
+            return Task.Run(() => {
+                DriveApiService googleApiDrive = new DriveApiService();
+                var data =  googleApiDrive.FileSharePermission(id, permissionValue, userRule);
+                return data;
+            });
+        }
     }
 }

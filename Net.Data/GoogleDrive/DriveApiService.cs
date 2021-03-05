@@ -19,6 +19,7 @@ namespace Net.Data
         protected static string[] scopes = { DriveService.Scope.Drive };
         protected readonly UserCredential credential;
         static string ApplicationName = "AuditoriaExtranet";
+        static string urlMaster = "https://drive.google.com/open?id=";
         protected readonly DriveService service;
         protected readonly FileExtensionContentTypeProvider fileExtensionProvider;
 
@@ -80,6 +81,7 @@ namespace Net.Data
         {
             var fileMetadata = new Google.Apis.Drive.v3.Data.File()
             {
+                WritersCanShare = false,
                 Name = name,
                 MimeType = "application/vnd.google-apps.folder",
                 Parents = new[] { id }
@@ -88,7 +90,7 @@ namespace Net.Data
             // Define parameters of request.
             FilesResource.ListRequest listRequest = service.Files.List();
             listRequest.Q = "('" + id + "' in parents)";
-            listRequest.PageSize = 10;
+            //listRequest.PageSize = 10;
             listRequest.Fields = "nextPageToken, files(id, name, mimeType)";
 
             // List files.
@@ -151,7 +153,54 @@ namespace Net.Data
                 }
             }
 
+            //GetPremissionDetails(id);
+
             return list;
+        }
+
+        public IList<Google.Apis.Drive.v3.Data.Permission> GetPremissionDetails(string fileId)
+        {
+            FilesResource.GetRequest getReq = service.Files.Get(fileId);
+            getReq.Fields = "permissions";
+
+            Google.Apis.Drive.v3.Data.File file = getReq.Execute();
+
+            return file.Permissions;
+        }
+
+        public bool FileSharePermission(string fileId, string permissionValue, string userRule)
+        {
+            //GetPremissionDetails(fileId);
+
+            bool message = false;
+            try
+            {
+
+                if (string.IsNullOrEmpty(userRule))
+                {
+                    userRule = "reader";
+                }
+                
+                Google.Apis.Drive.v3.Data.Permission permission = new Google.Apis.Drive.v3.Data.Permission();
+                permission.Type = "anyone"; // "user, anyone"
+                //permission.EmailAddress = permissionValue;
+                permission.Role = userRule;
+
+                permission =  service.Permissions.Create(permission, fileId).Execute();
+
+                if (permission != null)
+                {
+                    message = true;
+                }
+
+                return message;
+            }
+            catch (Exception ex)
+            {
+                message = false;
+            }
+
+            return message;
         }
 
         public async Task<int> MoveFile(string fileId, string FolderId)
@@ -192,6 +241,8 @@ namespace Net.Data
 
             var fileMetadata = new Google.Apis.Drive.v3.Data.File()
             {
+                CopyRequiresWriterPermission = true,
+                WritersCanShare = false,
                 Name = name,
                 MimeType = mimeType,
                 Parents = new[] { documentId }
@@ -295,14 +346,17 @@ namespace Net.Data
                 {".txt", "text/plain"},
                 {".pdf", "application/pdf"},
                 {".doc", "application/vnd.ms-word"},
-                {".docx", "application/vnd.ms-word"},
+                {".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
                 {".xls", "application/vnd.ms-excel"},
-                {".xlsx", "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"},
+                {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+                {".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation" },
                 {".png", "image/png"},
                 {".jpg", "image/jpeg"},
                 {".jpeg", "image/jpeg"},
                 {".gif", "image/gif"},
-                {".csv", "text/csv"}
+                {".csv", "text/csv"},
+                {".mp3", "audio/mpeg"},
+                {".mp4", "video/mp4"}
             };
         }
 

@@ -1287,7 +1287,7 @@ namespace Net.Data
                 tbl = new PdfPTable(new float[] { 45f, 10f, 45f }) { WidthPercentage = 100f };
                 c1 = new PdfPCell();
 
-                foto = ImagenBase64ToImagen(item.FirmaInvetsa, 270f, 100f);
+                foto = ImagenBase64ToImagen(item.FirmaPlanta, 270f, 100f);
 
                 c1 = new PdfPCell(foto);
                 c1.HorizontalAlignment = Element.ALIGN_CENTER;
@@ -1299,7 +1299,7 @@ namespace Net.Data
                 c1.Border = 0;
                 tbl.AddCell(c1);
 
-                foto = ImagenBase64ToImagen(item.FirmaPlanta, 270f, 100f);
+                foto = ImagenBase64ToImagen(item.FirmaInvetsa, 270f, 100f);
 
                 c1 = new PdfPCell(foto);
                 c1.HorizontalAlignment = Element.ALIGN_CENTER;
