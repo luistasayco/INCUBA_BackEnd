@@ -138,7 +138,7 @@ namespace Net.Business.Services.Controllers
                 return BadRequest("Invalid model object");
             }
 
-            var ObjectNew = await _repository.TxRegistroDocumento.Create(myObj.RetornaTxRegistroDocumento(), archivo);
+            var ObjectNew = await _repository.TxRegistroDocumento.Create(myObj.RetornaTxRegistroDocumento(), archivo, false);
 
             if (ObjectNew.ResultadoCodigo == -1)
             {
@@ -179,7 +179,7 @@ namespace Net.Business.Services.Controllers
             //IList<x.RetornaTxRegistroDocumento() > myObj;
             foreach (var item in myObj)
             {
-                var ObjectNew = await _repository.TxRegistroDocumento.Create(item.RetornaTxRegistroDocumento(), archivo);
+                var ObjectNew = await _repository.TxRegistroDocumento.Create(item.RetornaTxRegistroDocumento(), archivo, false);
             } 
 
             //if (ObjectNew.ResultadoCodigo == -1)

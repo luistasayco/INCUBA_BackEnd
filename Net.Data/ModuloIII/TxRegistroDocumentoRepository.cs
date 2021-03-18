@@ -71,7 +71,7 @@ namespace Net.Data
         {
             return Task.Run(() => FindById(entidad, SP_GET_ID));
         }
-        public async Task<BE_ResultadoTransaccion> Create(BE_TxRegistroDocumento entidad, IList<IFormFile> lista_anexo)
+        public async Task<BE_ResultadoTransaccion> Create(BE_TxRegistroDocumento entidad, IList<IFormFile> lista_anexo, bool generaNombre = true)
         {
             BE_ResultadoTransaccion vResultadoTransaccion = new BE_ResultadoTransaccion();
             vResultadoTransaccion.ResultadoCodigo = 1;
@@ -158,6 +158,8 @@ namespace Net.Data
                                     {
 
                                         extension = _lista.FileName.Split('.').Last();
+                                        nombre_archivo = string.Empty;
+                                        nombre_archivo = _lista.FileName.Replace("." + extension,string.Empty);
 
                                         cmd.Parameters.Clear();
                                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -171,6 +173,9 @@ namespace Net.Data
                                         cmd.Parameters.Add(new SqlParameter("@CodigoEmpresa", entidad.CodigoEmpresa));
                                         cmd.Parameters.Add(new SqlParameter("@DescripcionEmpresa", entidad.DescripcionEmpresa));
                                         cmd.Parameters.Add(new SqlParameter("@CodigoPlanta", entidad.CodigoPlanta));
+                                        
+                                        cmd.Parameters.Add(new SqlParameter("@GeneraNombre", generaNombre));
+                                        cmd.Parameters.Add(new SqlParameter("@NombreOriginal", nombre_archivo));
 
                                         SqlParameter oParamNombreArchivo = new SqlParameter("@NombreArchivo", SqlDbType.VarChar, 300)
                                         {

@@ -182,8 +182,8 @@ namespace Net.Data
                 }
                 
                 Google.Apis.Drive.v3.Data.Permission permission = new Google.Apis.Drive.v3.Data.Permission();
-                permission.Type = "anyone"; // "user, anyone"
-                //permission.EmailAddress = permissionValue;
+                permission.Type = "user"; // "user, anyone"
+                permission.EmailAddress = permissionValue;
                 permission.Role = userRule;
 
                 permission =  service.Permissions.Create(permission, fileId).Execute();
