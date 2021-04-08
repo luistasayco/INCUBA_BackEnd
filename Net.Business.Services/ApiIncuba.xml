@@ -1170,6 +1170,99 @@
             <response code="200">Devuelve el listado completo </response>
             <response code="404">Si no existen datos</response>  
         </member>
+        <member name="M:Net.Business.Services.Controllers.TxSIMConsolidadoController.GetByIdTxSIMConsolidado(System.Int32)">
+            <summary>
+            Obtener un TxRegistro Equipo
+            </summary>
+            <param name="id">Id</param>g
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSIMConsolidadoController.Update(Net.Business.DTO.DtoUpdateTxSIMConsolidado)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSIMConsolidadoController.Delete(Net.Business.DTO.DtoDeleteTxSIMConsolidado)">
+             <summary>
+             Eliminar registro de Mantenimiento Por Modelo 
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSIMController.GetAll(Net.Business.DTO.DtoFindTxSim)">
+            <summary>
+            Obtener lista de registro de equipo
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSIMController.GetByIdTxSIM(System.Int32)">
+            <summary>
+            Obtener un TxRegistro Equipo
+            </summary>
+            <param name="id">Id</param>g
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSIMController.Create(Net.Business.DTO.DtoInsertTxSim)">
+            <summary>
+            Crear un informe de registro de equipo
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSIMController.Update(Net.Business.DTO.DtoUpdateTxSim)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSIMController.UpdateStatus(Net.Business.DTO.DtoUpdateStatusTxSim)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSIMController.Delete(Net.Business.DTO.DtoDeleteTxSim)">
+             <summary>
+             Eliminar registro de Mantenimiento Por Modelo 
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSIMController.GetGeneraPdfByIdTxSIM(System.Int32)">
+            <summary>
+            Obtener un TxRegistro Equipo
+            </summary>
+            <param name="id">Id</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
         <member name="M:Net.Business.Services.Controllers.TxVacunacionSprayController.GetAll(Net.Business.DTO.DtoFindTxVacunacionSpray)">
             <summary>
             Obtener lista de registro de equipo

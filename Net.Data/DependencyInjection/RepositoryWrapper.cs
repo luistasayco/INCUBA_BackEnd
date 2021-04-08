@@ -37,6 +37,8 @@ namespace Net.Data
         private ITxVacunacionSubCutaneaRepository _TxVacunacionSubCutanea;
         private IVacunaRepository _Vacuna;
         private IIndiceEficienciaRepository _IndiceEficiencia;
+        private ITxSIMRepository _TxSIM;
+        private ITxSIMConsolidadoRepository _TxSIMConsolidado;
 
         public RepositoryWrapper(IConnectionSQL repoContext)
         {
@@ -382,6 +384,29 @@ namespace Net.Data
                     _IndiceEficiencia = new IndiceEficienciaRepository(_repoContext);
                 }
                 return _IndiceEficiencia;
+            }
+        }
+        public ITxSIMRepository TxSIM
+        {
+            get
+            {
+                if (_TxSIM == null)
+                {
+                    _TxSIM = new TxSIMRepository(_repoContext);
+                }
+                return _TxSIM;
+            }
+        }
+
+        public ITxSIMConsolidadoRepository TxSIMConsolidado
+        {
+            get
+            {
+                if (_TxSIMConsolidado == null)
+                {
+                    _TxSIMConsolidado = new TxSIMConsolidadoRepository(_repoContext);
+                }
+                return _TxSIMConsolidado;
             }
         }
     }

@@ -33,5 +33,7 @@
         ITxVacunacionSubCutaneaRepository TxVacunacionSubCutanea { get; }
         IVacunaRepository Vacuna { get; }
         IIndiceEficienciaRepository IndiceEficiencia { get; }
+        ITxSIMRepository TxSIM { get; }
+        ITxSIMConsolidadoRepository TxSIMConsolidado { get; }
     }
 }

@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Data", "Net.Data\Net.Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.Business.Services", "Net.Business.Services\Net.Business.Services.csproj", "{4072D80F-B4C7-4163-856E-6DF52A625AF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.CrossCotting", "Net.CrossCotting\Net.CrossCotting.csproj", "{1744F006-7CEB-4B11-A61A-29EE2965E69E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net.CrossCotting", "Net.CrossCotting\Net.CrossCotting.csproj", "{1744F006-7CEB-4B11-A61A-29EE2965E69E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

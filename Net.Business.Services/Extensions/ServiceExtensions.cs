@@ -16,11 +16,15 @@ namespace Net.Business.Services
         {
             services.AddCors(opt =>
             {
+                //opt.AddPolicy("CorsPolicy",
+                //    builder => builder.WithOrigins("https://auditoria.invetsa.com")
+                //                      .AllowAnyHeader()
+                //                      .AllowAnyMethod());
+
                 opt.AddPolicy("CorsPolicy",
-                    builder => builder.WithOrigins("http://localhost:4201,http://131.107.40.220:8083")
+                    builder => builder.AllowAnyOrigin()
                                       .AllowAnyHeader()
-                                      .AllowAnyMethod()
-                                      .AllowAnyOrigin());
+                                      .AllowAnyMethod());
 
                 //opt.AddPolicy("CorsPolicy",
                 //    builder => builder.WithOrigins("http://131.107.40.220:8083")
