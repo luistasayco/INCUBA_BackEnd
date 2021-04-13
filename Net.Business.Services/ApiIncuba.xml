@@ -425,6 +425,100 @@
             <response code="200">Devuelve el listado completo </response>
             <response code="404">Si no existen datos</response>   
         </member>
+        <member name="M:Net.Business.Services.Controllers.OrganoController.GetAll(Net.Business.DTO.DtoFindOrgano)">
+            <summary>
+            Obtener lista
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de Calidad registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.OrganoController.GetbyIdOrgano(System.Int32)">
+            <summary>
+            Obtener una calidad individual
+            </summary>
+            <param name="id">Id de Calidad</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.OrganoController.Create(Net.Business.DTO.DtoInsertOrgano)">
+            <summary>
+            Crear una nueva calidad
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.OrganoController.Update(Net.Business.DTO.DtoUpdateOrgano)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.OrganoController.Delete(Net.Business.DTO.DtoDeleteOrgano)">
+             <summary>
+             Eliminar logicamente una calidad
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.OrganoDetalleController.GetAll(Net.Business.DTO.DtoFindOrganoDetalle)">
+            <summary>
+            Obtener lista
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de Calidad registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.OrganoDetalleController.GetbyIdOrganoDetalle(System.Int32)">
+            <summary>
+            Obtener una calidad individual
+            </summary>
+            <param name="id">Id de Calidad</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.OrganoDetalleController.Create(Net.Business.DTO.DtoInsertOrganoDetalle)">
+            <summary>
+            Crear una nueva calidad
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.OrganoDetalleController.Update(Net.Business.DTO.DtoUpdateOrganoDetalle)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.OrganoDetalleController.Delete(Net.Business.DTO.DtoDeleteOrganoDetalle)">
+             <summary>
+             Eliminar logicamente una calidad
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
         <member name="M:Net.Business.Services.Controllers.PlantaController.GetAllPlantaPorEmpesa(Net.Business.DTO.DtoFindPlanta)">
             <summary>
             Obtener lista de Planta
@@ -1255,6 +1349,99 @@
             <response code="409">Si ocurrio un conflicto</response>
         </member>
         <member name="M:Net.Business.Services.Controllers.TxSIMController.GetGeneraPdfByIdTxSIM(System.Int32)">
+            <summary>
+            Obtener un TxRegistro Equipo
+            </summary>
+            <param name="id">Id</param>
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSINMIConsolidadoController.GetByIdTxSINMIConsolidado(System.Int32)">
+            <summary>
+            Obtener un TxRegistro Equipo
+            </summary>
+            <param name="id">Id</param>g
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSINMIConsolidadoController.Update(Net.Business.DTO.DtoUpdateTxSINMIConsolidado)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSINMIConsolidadoController.Delete(Net.Business.DTO.DtoDeleteTxSINMIConsolidado)">
+             <summary>
+             Eliminar registro de Mantenimiento Por Modelo 
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSINMIController.GetAll(Net.Business.DTO.DtoFindTxSINMI)">
+            <summary>
+            Obtener lista de registro de equipo
+            </summary>
+            <param name="value">Este es el cuerpo para enviar los parametros</param>
+            <returns>Lista del maestro de mantenimiento registrado</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>   
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSINMIController.GetByIdTxSINMI(System.Int32)">
+            <summary>
+            Obtener un TxRegistro Equipo
+            </summary>
+            <param name="id">Id</param>g
+            <returns>Devuelve un solo registro</returns>
+            <response code="200">Devuelve el listado completo </response>
+            <response code="404">Si no existen datos</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSINMIController.Create(Net.Business.DTO.DtoInsertTxSINMI)">
+            <summary>
+            Crear un informe de registro de equipo
+            </summary>
+            <param name="value"></param>
+            <returns>Id del registro creado</returns>
+            <response code="201">Devuelve el elemento recién creado</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>  
+            <response code="500">Algo salio mal guardando el registro</response>  
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSINMIController.Update(Net.Business.DTO.DtoUpdateTxSINMI)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSINMIController.UpdateStatus(Net.Business.DTO.DtoUpdateStatusTxSINMI)">
+            <summary>
+            Actualizar una calidad existente
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+            <response code="204">Actualizado Satisfactoriamente</response>
+            <response code="404">Si el objeto enviado es nulo o invalido</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSINMIController.Delete(Net.Business.DTO.DtoDeleteTxSINMI)">
+             <summary>
+             Eliminar registro de Mantenimiento Por Modelo 
+             </summary>
+             <param name="value"></param>
+             <returns></returns>
+            <response code="204">Eliminado Satisfactoriamente</response>
+            <response code="400">Si el objeto enviado es nulo o invalido</response>
+            <response code="409">Si ocurrio un conflicto</response>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.TxSINMIController.GetGeneraPdfByIdTxSINMI(System.Int32)">
             <summary>
             Obtener un TxRegistro Equipo
             </summary>

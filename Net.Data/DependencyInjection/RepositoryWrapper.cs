@@ -2,7 +2,7 @@
 
 namespace Net.Data
 {
-    public class RepositoryWrapper: IRepositoryWrapper
+    public class RepositoryWrapper : IRepositoryWrapper
     {
         private IConnectionSQL _repoContext;
 
@@ -39,6 +39,10 @@ namespace Net.Data
         private IIndiceEficienciaRepository _IndiceEficiencia;
         private ITxSIMRepository _TxSIM;
         private ITxSIMConsolidadoRepository _TxSIMConsolidado;
+        private IOrganoRepository _Organo;
+        private IOrganoDetalleRepository _OrganoDetalle;
+        private ITxSINMIRepository _TxSINMI;
+        private ITxSINMIConsolidadoRepository _TxSINMIConsolidado;
 
         public RepositoryWrapper(IConnectionSQL repoContext)
         {
@@ -397,7 +401,6 @@ namespace Net.Data
                 return _TxSIM;
             }
         }
-
         public ITxSIMConsolidadoRepository TxSIMConsolidado
         {
             get
@@ -407,6 +410,51 @@ namespace Net.Data
                     _TxSIMConsolidado = new TxSIMConsolidadoRepository(_repoContext);
                 }
                 return _TxSIMConsolidado;
+            }
+        }
+        public IOrganoRepository Organo
+        {
+            get
+            {
+                if (_Organo == null)
+                {
+                    _Organo = new OrganoRepository(_repoContext);
+                }
+                return _Organo;
+            }
+        }
+        public IOrganoDetalleRepository OrganoDetalle
+        {
+            get
+            {
+                if (_OrganoDetalle == null)
+                {
+                    _OrganoDetalle = new OrganoDetalleRepository(_repoContext);
+                }
+                return _OrganoDetalle;
+            }
+        }
+        public ITxSINMIRepository TxSINMI
+        {
+            get
+            {
+                if (_TxSINMI == null)
+                {
+                    _TxSINMI = new TxSINMIRepository(_repoContext);
+                }
+                return _TxSINMI;
+            }
+        }
+
+        public ITxSINMIConsolidadoRepository TxSINMIConsolidado
+        {
+            get
+            {
+                if (_TxSINMIConsolidado == null)
+                {
+                    _TxSINMIConsolidado = new TxSINMIConsolidadoRepository(_repoContext);
+                }
+                return _TxSINMIConsolidado;
             }
         }
     }

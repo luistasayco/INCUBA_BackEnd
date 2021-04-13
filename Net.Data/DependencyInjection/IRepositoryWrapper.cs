@@ -35,5 +35,9 @@
         IIndiceEficienciaRepository IndiceEficiencia { get; }
         ITxSIMRepository TxSIM { get; }
         ITxSIMConsolidadoRepository TxSIMConsolidado { get; }
+        IOrganoRepository Organo { get; }
+        IOrganoDetalleRepository OrganoDetalle { get; }
+        ITxSINMIRepository TxSINMI { get; }
+        ITxSINMIConsolidadoRepository TxSINMIConsolidado { get; }
     }
 }
