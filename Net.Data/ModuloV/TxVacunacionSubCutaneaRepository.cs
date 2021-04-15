@@ -32,6 +32,7 @@ namespace Net.Data
         const string SP_GET_ID_DETALLE_VACUNA = DB_ESQUEMA + "INC_GetTxVacunacionSubCutaneaVacunaPorId";
         const string SP_GET_ID_DETALLE_CONTROL_EFICIENCIA = DB_ESQUEMA + "INC_GetTxVacunacionSubCutaneaControlEficienciaPorId";
         const string SP_GET_ID_DETALLE_IRREGULARIDAD = DB_ESQUEMA + "INC_GetTxVacunacionSubCutaneaIrregularidadPorId";
+        const string SP_GET_ID_DETALLE_IRREGULARIDAD_PDF = DB_ESQUEMA + "INC_GetTxVacunacionSubCutaneaIrregularidadPorIdPdf";
         const string SP_GET_ID_DETALLE_RESULTADO_NEW = DB_ESQUEMA + "INC_GetTxVacunacionSubCutaneaResultadoPorIdNew";
         const string SP_GET_ID_DETALLE_RESULTADO = DB_ESQUEMA + "INC_GetINC_TxVacunacionSubCutaneaResultadoPorId";
         const string SP_GET_ID_DETALLE_PROMEDIO = DB_ESQUEMA + "INC_GetTxVacunacionSubCutaneaPromedioPorId";
@@ -50,6 +51,8 @@ namespace Net.Data
         const string SP_UPDATE_STATUS = DB_ESQUEMA + "INC_SetTxVacunacionSubCutaneaStatusUpdate";
         const string SP_DELETE = DB_ESQUEMA + "INC_SetTxVacunacionSubCutaneaDelete";
 
+
+        const string SP_GET_MAESTRO_IRREGULARIDAD = DB_ESQUEMA + "INC_GetIrregularidadAll";
         public TxVacunacionSubCutaneaRepository(IConnectionSQL context)
             : base(context)
         {
@@ -552,6 +555,9 @@ namespace Net.Data
         {
             BE_TxVacunacionSubCutanea item = await GetById(entidad);
 
+            var listaIrregularidad = context.ExecuteSqlViewFindByCondition<BE_TxVacunacionSubCutaneaIrregularidadPDF>(SP_GET_ID_DETALLE_IRREGULARIDAD_PDF, entidad).ToList();
+            var listaIrregularidadMaestro = context.ExecuteSqlViewFindByCondition<BE_Irregularidad>(SP_GET_MAESTRO_IRREGULARIDAD, new BE_Irregularidad { DescripcionIrregularidad = "" }).ToList();
+
             return await Task.Run(() =>
             {
                 Document doc = new Document();
@@ -574,6 +580,7 @@ namespace Net.Data
                 iTextSharp.text.Font subTitulo = new iTextSharp.text.Font(helvetica, 10f, iTextSharp.text.Font.BOLD, BaseColor.White);
                 iTextSharp.text.Font parrafoBlanco = new iTextSharp.text.Font(helvetica, 10f, iTextSharp.text.Font.BOLD, BaseColor.White);
                 iTextSharp.text.Font parrafoNegrita = new iTextSharp.text.Font(helvetica, 10f, iTextSharp.text.Font.BOLD, BaseColor.Black);
+                iTextSharp.text.Font parrafoNegroLeyenda = new iTextSharp.text.Font(helvetica, 8f, iTextSharp.text.Font.NORMAL, BaseColor.Black);
                 iTextSharp.text.Font parrafoNegro = new iTextSharp.text.Font(helvetica, 10f, iTextSharp.text.Font.NORMAL, BaseColor.Black);
                 iTextSharp.text.Font parrafoRojo = new iTextSharp.text.Font(helvetica, 10f, iTextSharp.text.Font.NORMAL, BaseColor.Red);
                 pe.HeaderLeft = " ";
@@ -923,22 +930,66 @@ namespace Net.Data
                 c1.Phrase = new Phrase(Boolean.Parse(item.FlgPorcentajeViabilidad.ToString()) ? "SI" : "NO", parrafoNegro);
                 c1.HorizontalAlignment = Element.ALIGN_CENTER;
                 tbl.AddCell(c1);
+                c1 = new PdfPCell();
+                c1.Colspan = 2;
+                tbl.AddCell(c1);
                 doc.Add(tbl);
 
-                tbl = new PdfPTable(new float[] { 17f, 15f, 60f, 8f }) { WidthPercentage = 100f };
+                tbl = new PdfPTable(new float[] { 17f, 15f, 6f, 6f, 6f, 6f, 6f, 6f, 6f, 6f, 6f, 6f, 8f }) { WidthPercentage = 100f };
                 c1 = new PdfPCell();
                 c1.Phrase = new Phrase("3.- MANTENIMIENTO DE LIMPIEZA DE LA VACUNADORAS SUBCUTÁNEA", subTitulo);
                 c1.BackgroundColor = new BaseColor(103, 93, 152);
                 c1.PaddingBottom = 8f;
                 c1.VerticalAlignment = Element.ALIGN_MIDDLE;
-                c1.Colspan = 4;
+                c1.Colspan = 13;
                 tbl.AddCell(c1);
                 c1.Phrase = new Phrase("Puntaje Máximo 1.0", parrafoNegro);
                 c1.HorizontalAlignment = Element.ALIGN_LEFT;
-                c1.Colspan = 4;
+                c1.Colspan = 13;
                 tbl.AddCell(c1);
 
-                foreach (BE_TxVacunacionSubCutaneaIrregularidad itemControl in item.ListarTxVacunacionSubCutaneaIrregularidad)
+                c1 = new PdfPCell();
+                c1.Phrase = new Phrase("", parrafoNegro);
+                c1.HorizontalAlignment = Element.ALIGN_LEFT;
+                c1.Colspan = 13;
+                tbl.AddCell(c1);
+
+                c1 = new PdfPCell();
+                c1 = new PdfPCell(new Phrase("Nombre Vacunador", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Rowspan = 2;
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("N° de", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Rowspan = 2;
+                tbl.AddCell(c1);
+
+                c1 = new PdfPCell(new Phrase("*Irregularidades", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Colspan = 10;
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("Puntaje", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Rowspan = 2;
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("1", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("2", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("3", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("4", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("5", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("6", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("7", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("8", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("9", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("10", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+
+                foreach (BE_TxVacunacionSubCutaneaIrregularidadPDF itemControl in listaIrregularidad)
                 {
                     c1 = new PdfPCell();
                     c1.Phrase = new Phrase(itemControl.NombreVacunador.ToString(), parrafoNegro);
@@ -947,10 +998,37 @@ namespace Net.Data
                     c1.Phrase = new Phrase(itemControl.CodigoEquipo.ToString(), parrafoNegro);
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
                     tbl.AddCell(c1);
-                    c1.Phrase = new Phrase(itemControl.DescripcionIrregularidad.ToString(), parrafoNegro);
-                    c1.HorizontalAlignment = Element.ALIGN_LEFT;
+                    c1.Phrase = new Phrase(itemControl.Irregularidad_1 > 0 ? "X" : "", parrafoNegro);
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
                     tbl.AddCell(c1);
-                    c1.Phrase = new Phrase(itemControl.Valor.ToString(), parrafoNegro);
+                    c1.Phrase = new Phrase(itemControl.Irregularidad_2 > 0 ? "X" : "", parrafoNegro);
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
+                    c1.Phrase = new Phrase(itemControl.Irregularidad_3 > 0 ? "X" : "", parrafoNegro);
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
+                    c1.Phrase = new Phrase(itemControl.Irregularidad_4 > 0 ? "X" : "", parrafoNegro);
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
+                    c1.Phrase = new Phrase(itemControl.Irregularidad_5 > 0 ? "X" : "", parrafoNegro);
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
+                    c1.Phrase = new Phrase(itemControl.Irregularidad_6 > 0 ? "X" : "", parrafoNegro);
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
+                    c1.Phrase = new Phrase(itemControl.Irregularidad_7 > 0 ? "X" : "", parrafoNegro);
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
+                    c1.Phrase = new Phrase(itemControl.Irregularidad_8 > 0 ? "X" : "", parrafoNegro);
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
+                    c1.Phrase = new Phrase(itemControl.Irregularidad_9 > 0 ? "X" : "", parrafoNegro);
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
+                    c1.Phrase = new Phrase(itemControl.Irregularidad_10 > 0 ? "X" : "", parrafoNegro);
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
+                    c1.Phrase = new Phrase(itemControl.Puntaje.ToString(), parrafoNegro);
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
                     tbl.AddCell(c1);
                 }
@@ -959,7 +1037,26 @@ namespace Net.Data
                 c1 = new PdfPCell();
                 c1.Phrase = new Phrase(" ", parrafoNegro);
                 c1.Border = 0;
-                c1.Colspan = 4;
+                c1.Colspan = 13;
+                tbl.AddCell(c1);
+                doc.Add(tbl);
+
+                tbl = new PdfPTable(new float[] { 100f }) { WidthPercentage = 100f };
+                c1 = new PdfPCell();
+                c1.Phrase = new Phrase("*Irregularidades", parrafoNegrita);
+                c1.Border = 0;
+                c1.HorizontalAlignment = Element.ALIGN_LEFT;
+                tbl.AddCell(c1);
+
+                foreach (BE_Irregularidad item in listaIrregularidadMaestro)
+                {
+                    c1.Phrase = new Phrase(string.Format("{0} - {1}", item.IdIrregularidad.ToString() , item.DescripcionIrregularidad), parrafoNegroLeyenda);
+                    c1.Border = 0;
+                    tbl.AddCell(c1);
+                }
+                c1 = new PdfPCell();
+                c1.Phrase = new Phrase(" ", parrafoNegro);
+                c1.Border = 0;
                 tbl.AddCell(c1);
                 doc.Add(tbl);
 
