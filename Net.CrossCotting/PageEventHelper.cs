@@ -55,6 +55,13 @@ namespace Net.CrossCotting
             get { return _FlagCerrado; }
             set { _FlagCerrado = value; }
         }
+
+        private string _FlagModulo;
+        public string FlagModulo
+        {
+            get { return _FlagModulo; }
+            set { _FlagModulo = value; }
+        }
         #endregion
         // we override the onOpenDocument method
         public override void OnOpenDocument(PdfWriter writer, Document document)
@@ -115,7 +122,20 @@ namespace Net.CrossCotting
                 //HeaderTable.WriteSelectedRows(0, -1, pageSize.GetLeft(0), pageSize.GetTop(0), cb);
             }
 
-            iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(Path.Combine(Environment.CurrentDirectory, "img", "header.png"));
+            iTextSharp.text.Image logo = null;
+
+            if (_FlagModulo == "SIM")
+            {
+                logo = iTextSharp.text.Image.GetInstance(Path.Combine(Environment.CurrentDirectory, "img", "header-sim.png"));
+            }
+            else if (_FlagModulo == "SINMI")
+            {
+                logo = iTextSharp.text.Image.GetInstance(Path.Combine(Environment.CurrentDirectory, "img", "header-sinmi.png"));
+            } else
+            {
+                logo = iTextSharp.text.Image.GetInstance(Path.Combine(Environment.CurrentDirectory, "img", "header.png"));
+            }
+            
             float w = document.PageSize.Width;
             float h = 80;
             logo.Alignment = Element.ALIGN_CENTER;

@@ -8,7 +8,7 @@ namespace Net.Business.Entities
     public class BE_TxSIM: EntityBase
     {
         [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
-        public int IdSIM { get; set; }
+        public int? IdSIM { get; set; }
         public string CodigoEmpresa { get; set; }
         public string CodigoPlanta { get; set; }
         public int? Edad { get; set; }
@@ -36,7 +36,8 @@ namespace Net.Business.Entities
         public DateTime? FecCierre { get; set; }
         public string EmailFrom { get; set; }
         public string EmailTo { get; set; }
-
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int? IdSIMConsolidado { get; set; }
         // Extras
         public string UsuarioCreacion { get; set; }
         public string UsuarioCierre { get; set; }

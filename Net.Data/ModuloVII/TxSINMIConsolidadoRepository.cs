@@ -1,6 +1,8 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
+using Moq;
 using Net.Business.Entities;
 using Net.Connection;
 using Net.CrossCotting;
@@ -24,6 +26,10 @@ namespace Net.Data
         const string SP_GET_DETALLE_POR_ID = DB_ESQUEMA + "INC_GetTxSINMIConsolidadoDetallePorId";
         const string SP_GET_CONSOLIDADO_FOTOS = DB_ESQUEMA + "INC_GetTxSINMIFotosPorIdConsolidado";
         const string SP_GET_CONSOLIDADO_DETALLE = DB_ESQUEMA + "INC_GetTxSINMIConsolidadoDetallePorId";
+
+        const string SP_GET_CONSOLIDADO_SINMI = DB_ESQUEMA + "INC_GetTxSINMIPorIdConsolidado";
+
+        const string SP_GET_ID_GOOGLE_DRIVE = DB_ESQUEMA + "INC_GetTxSINMIPorIdGoogleDriveConsolidado";
 
         const string SP_UPDATE = DB_ESQUEMA + "INC_SetTxSINMIConsolidadoUpdate";
         const string SP_UPDATE_STATUS = DB_ESQUEMA + "INC_SetTxSINMIConsolidadoStatusUpdate";
@@ -60,8 +66,6 @@ namespace Net.Data
             });
             return objListPrincipal;
         }
-
-
 
         public async Task<int> Create(BE_TxSINMIConsolidado value)
         {
@@ -143,7 +147,6 @@ namespace Net.Data
 
             return int.Parse(value.IdSINMIConsolidado.ToString());
         }
-
         public async Task Update(BE_TxSINMIConsolidado value)
         {
             try
@@ -205,7 +208,6 @@ namespace Net.Data
                 value.IdSINMIConsolidado = 0;
             }
         }
-
         public async Task<BE_ResultadoTransaccion> UpdateStatus(BE_TxSINMIConsolidado entidad)
         {
             BE_ResultadoTransaccion vResultadoTransaccion = new BE_ResultadoTransaccion();
@@ -213,11 +215,90 @@ namespace Net.Data
 
             try
             {
+                entidad.FecCierre = DateTime.Now;
                 Update(entidad, SP_UPDATE_STATUS);
             }
             catch (Exception ex)
             {
 
+                vResultadoTransaccion.ResultadoCodigo = -1;
+                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                return vResultadoTransaccion;
+            }
+
+            var memory = new MemoryStream();
+            try
+            {
+                var memoryPDF = await GenerarPDF(entidad.IdSINMIConsolidado, entidad.DescripcionEmpresa );
+                memory = memoryPDF;
+            }
+            catch (Exception ex)
+            {
+                vResultadoTransaccion.ResultadoCodigo = -1;
+                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                return vResultadoTransaccion;
+            }
+
+            var data = context.ExecuteSqlViewId<BE_TxSINMI>(SP_GET_ID_GOOGLE_DRIVE, new BE_TxSINMI { IdSINMIConsolidado = entidad.IdSINMIConsolidado });
+            var nameFile = string.Format("{0}.{1}", data.NombreArchivo, "pdf");
+
+            try
+            {
+                EmailSenderRepository emailSenderRepository = new EmailSenderRepository(context);
+                var mensaje = string.Format("Se envía Consolidado del Sistema Integral de Monitoreo Intestinal - N° {0}", entidad.IdSINMIConsolidado);
+                await emailSenderRepository.SendEmailAsync(data.EmailTo, "Correo Automatico - Sistema Integral de Monitoreo Intestinal", mensaje, new BE_MemoryStream { FileMemoryStream = memory }, nameFile);
+            }
+            catch (Exception ex)
+            {
+                vResultadoTransaccion.ResultadoCodigo = -1;
+                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                return vResultadoTransaccion;
+            }
+
+            MemoryStream ms = memory;
+
+            TxRegistroDocumentoRepository _repository = new TxRegistroDocumentoRepository(context);
+            List<IFormFile> files = new List<IFormFile>();
+
+            var fileMock = new Mock<IFormFile>();
+
+            fileMock.Setup(_ => _.FileName).Returns(nameFile);
+            fileMock.Setup(_ => _.ContentType).Returns("application/pdf");
+            fileMock.Setup(_ => _.Length).Returns(ms.Length);
+            fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
+            fileMock.Setup(_ => _.ContentDisposition).Returns(string.Format("inline; filename={0}", nameFile));
+
+            files.Add(fileMock.Object);
+
+            try
+            {
+                var resultDocumentFile = await _repository.Create(new BE_TxRegistroDocumento
+                {
+                    CodigoEmpresa = data.CodigoEmpresa,
+                    DescripcionEmpresa = data.DescripcionEmpresa,
+                    CodigoPlanta = data.CodigoPlanta,
+                    DescripcionPlanta = data.DescripcionPlanta,
+                    DescripcionTipoExplotacion = data.DescripcionTipoExplotacion,
+                    DescripcionSubTipoExplotacion = data.DescripcionSubTipoExplotacion,
+                    IdSubTipoExplotacion = data.IdSubTipoExplotacion,
+                    IdDocumento = 0,
+                    IdDocumentoReferencial = (int)data.IdSINMIConsolidado,
+                    FlgCerrado = true,
+                    FecCerrado = DateTime.Now,
+                    IdUsuarioCierre = entidad.RegUsuario,
+                    RegUsuario = entidad.RegUsuario,
+                    RegEstacion = entidad.RegEstacion
+                }, files);
+
+                if (resultDocumentFile.ResultadoCodigo == -1)
+                {
+                    vResultadoTransaccion.ResultadoCodigo = -1;
+                    vResultadoTransaccion.ResultadoDescripcion = resultDocumentFile.ResultadoDescripcion;
+                    return vResultadoTransaccion;
+                }
+            }
+            catch (Exception ex)
+            {
                 vResultadoTransaccion.ResultadoCodigo = -1;
                 vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
                 return vResultadoTransaccion;
@@ -229,9 +310,10 @@ namespace Net.Data
         {
             return Task.Run(() => Delete(entidad, SP_DELETE));
         }
-
         public async Task<MemoryStream> GenerarPDF(int id, string descripcionEmpresa)
         {
+            BE_TxSINMIConsolidado p = context.ExecuteSqlViewId<BE_TxSINMIConsolidado>(SP_GET_POR_ID, new BE_TxSINMIConsolidado { IdSINMIConsolidado = id });
+            var listaDocumentoSINMI = context.ExecuteSqlViewFindByCondition<BE_TxSINMI>(SP_GET_CONSOLIDADO_SINMI, new BE_TxSINMIConsolidado { IdSINMIConsolidado = id }).ToList();
             var listaDetalle = context.ExecuteSqlViewFindByCondition<BE_TxSINMIDetalle>(SP_GET_CONSOLIDADO_DETALLE, new BE_TxSINMIConsolidado { IdSINMIConsolidado = id }).ToList();
             var listaFotos = context.ExecuteSqlViewFindByCondition<BE_TxSINMIFotos>(SP_GET_CONSOLIDADO_FOTOS, new BE_TxSINMIConsolidado { IdSINMIConsolidado = id }).ToList();
 
@@ -248,13 +330,14 @@ namespace Net.Data
 
                 var pe = new PageEventHelper();
                 pe.FlagCerrado = true;
+                pe.FlagModulo = "SINMI";
                 write.PageEvent = pe;
                 // Colocamos la fuente que deseamos que tenga el documento
                 BaseFont helvetica = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1250, true);
                 // Titulo
                 iTextSharp.text.Font titulo = new iTextSharp.text.Font(helvetica, 16f, iTextSharp.text.Font.BOLD, new BaseColor(103, 93, 152));
                 iTextSharp.text.Font tituloBlanco = new iTextSharp.text.Font(helvetica, 18f, iTextSharp.text.Font.NORMAL, BaseColor.White);
-                iTextSharp.text.Font subTitulo = new iTextSharp.text.Font(helvetica, 14f, iTextSharp.text.Font.BOLD, new BaseColor(103, 93, 152));
+                iTextSharp.text.Font subTitulo = new iTextSharp.text.Font(helvetica, 10f, iTextSharp.text.Font.BOLD, new BaseColor(103, 93, 152));
                 iTextSharp.text.Font subTituloParticiones = new iTextSharp.text.Font(helvetica, 10f, iTextSharp.text.Font.BOLD, new BaseColor(103, 93, 152));
                 iTextSharp.text.Font parrafoBlanco = new iTextSharp.text.Font(helvetica, 10f, iTextSharp.text.Font.BOLD, BaseColor.White);
                 iTextSharp.text.Font parrafoNegrita = new iTextSharp.text.Font(helvetica, 10f, iTextSharp.text.Font.BOLD, BaseColor.Black);
@@ -272,7 +355,7 @@ namespace Net.Data
                 c1.HorizontalAlignment = Element.ALIGN_CENTER;
                 c1.VerticalAlignment = Element.ALIGN_MIDDLE;
                 tbl.AddCell(c1);
-                c1 = new PdfPCell(new Phrase(descripcionEmpresa, titulo)) { Border = 0 };
+                c1 = new PdfPCell(new Phrase(p.DescripcionEmpresa, titulo)) { Border = 0 };
                 c1.HorizontalAlignment = Element.ALIGN_CENTER;
                 c1.VerticalAlignment = Element.ALIGN_MIDDLE;
                 tbl.AddCell(c1);
@@ -282,7 +365,47 @@ namespace Net.Data
                 tbl.AddCell(c1);
                 doc.Add(tbl);
 
-                tbl = new PdfPTable(new float[] { 5f, 10f, 50f, 5f, 5f, 5f, 5f, 5f, 5f, 5f }) { WidthPercentage = 100 };
+                tbl = new PdfPTable(new float[] { 7f, 20f, 30f, 43f}) { WidthPercentage = 100f };
+                c1 = new PdfPCell();
+                c1.Phrase = new Phrase("LISTA DE SISTEMA INTEGRADO DE MONITOREO INTESTINAL", subTitulo);
+                c1.Border = 0;
+                c1.Colspan = 4;
+                tbl.AddCell(c1);
+                c1 = new PdfPCell();
+                c1.Phrase = new Phrase("", parrafoNegro);
+                c1.Border = 0;
+                c1.Colspan = 4;
+                tbl.AddCell(c1);
+                c1 = new PdfPCell();
+                c1 = new PdfPCell(new Phrase("Edad", parrafoBlanco)) { BackgroundColor = new BaseColor(51, 153, 68), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1.Phrase = new Phrase("Fecha/Hora", parrafoBlanco);
+                tbl.AddCell(c1);
+                c1.Phrase = new Phrase("Granja", parrafoBlanco);
+                tbl.AddCell(c1);
+                c1.Phrase = new Phrase("Motivo Visita", parrafoBlanco);
+                tbl.AddCell(c1);
+                foreach (BE_TxSINMI item in listaDocumentoSINMI)
+                {
+                    c1 = new PdfPCell();
+                    c1.Phrase = new Phrase(item.Edad.ToString(), parrafoNegro);
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
+                    c1.Phrase = new Phrase(item.FecHoraRegistro.ToString(), parrafoNegro);
+                    tbl.AddCell(c1);
+                    c1.Phrase = new Phrase(item.CodigoPlanta, parrafoNegro);
+                    tbl.AddCell(c1);
+                    c1.Phrase = new Phrase(item.MotivoVisita, parrafoNegro);
+                    tbl.AddCell(c1);
+                }
+                c1 = new PdfPCell();
+                c1.Phrase = new Phrase("", parrafoNegro);
+                c1.Border = 0;
+                c1.Colspan = 4;
+                tbl.AddCell(c1);
+                doc.Add(tbl);
+
+                tbl = new PdfPTable(new float[] { 5f, 10f, 45f, 5f, 5f, 5f, 5f, 5f, 5f, 5f, 5f }) { WidthPercentage = 100 };
                 c1 = new PdfPCell();
                 c1 = new PdfPCell(new Phrase("Edad", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                 c1.Rowspan = 2;
@@ -294,6 +417,9 @@ namespace Net.Data
                 c1.Rowspan = 2;
                 tbl.AddCell(c1);
                 c1 = new PdfPCell(new Phrase("Score", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Rowspan = 2;
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("Factor", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                 c1.Rowspan = 2;
                 tbl.AddCell(c1);
                 c1 = new PdfPCell();
@@ -332,7 +458,7 @@ namespace Net.Data
                         {
                             c1 = new PdfPCell(new Phrase("SCORE FINAL", parrafoBlanco)) { BackgroundColor = new BaseColor(51, 153, 68), HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
                             c1.HorizontalAlignment = Element.ALIGN_CENTER;
-                            c1.Colspan = 8;
+                            c1.Colspan = 9;
                             tbl.AddCell(c1);
 
                             c1 = new PdfPCell(new Phrase(v_TotScoreFinal.ToString("N"), parrafoBlanco)) { BackgroundColor = new BaseColor(51, 153, 68), HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
@@ -362,6 +488,9 @@ namespace Net.Data
                     c1 = new PdfPCell(new Phrase(detalle.Score, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
                     tbl.AddCell(c1);
+                    c1 = new PdfPCell(new Phrase(detalle.FactorImpacto.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
                     c1 = new PdfPCell(new Phrase(detalle.Ave1.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
                     tbl.AddCell(c1);
@@ -378,9 +507,17 @@ namespace Net.Data
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
                     tbl.AddCell(c1);
 
-                    v_Media = (detalle.Ave1 + detalle.Ave2 + detalle.Ave3 + detalle.Ave4 + detalle.Ave5) / 5;
+                    v_Media = 0;
 
-                    c1 = new PdfPCell(new Phrase(v_Media.ToString("N"), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    if (detalle.FlgMedia)
+                    {
+                        v_Media = ((detalle.Ave1 + detalle.Ave2 + detalle.Ave3 + detalle.Ave4 + detalle.Ave5) * detalle.FactorImpacto) / 5;
+                        c1 = new PdfPCell(new Phrase(v_Media.ToString("N"), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    } else
+                    {
+                        c1 = new PdfPCell(new Phrase("-", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    }
+
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
                     tbl.AddCell(c1);
 
@@ -392,7 +529,7 @@ namespace Net.Data
 
                 c1 = new PdfPCell(new Phrase("SCORE FINAL", parrafoBlanco)) { BackgroundColor = new BaseColor(51, 153, 68), HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
                 c1.HorizontalAlignment = Element.ALIGN_CENTER;
-                c1.Colspan = 8;
+                c1.Colspan = 9;
                 tbl.AddCell(c1);
 
                 c1 = new PdfPCell(new Phrase(v_TotScoreFinal.ToString("N"), parrafoBlanco)) { BackgroundColor = new BaseColor(51, 153, 68), HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
@@ -403,6 +540,21 @@ namespace Net.Data
                 c1 = new PdfPCell();
                 c1.Phrase = new Phrase(" ", parrafoNegro);
                 c1.Colspan = 10;
+                c1.Border = 0;
+                tbl.AddCell(c1);
+                doc.Add(tbl);
+
+                tbl = new PdfPTable(new float[] { 100f }) { WidthPercentage = 100f };
+                c1 = new PdfPCell();
+                c1.Phrase = new Phrase("COMENTARIO", subTitulo);
+                c1.Border = 0;
+                c1.VerticalAlignment = Element.ALIGN_MIDDLE;
+                tbl.AddCell(c1);
+                c1.Phrase = new Phrase(p.Observacion, parrafoNegro);
+                tbl.AddCell(c1);
+
+                c1 = new PdfPCell();
+                c1.Phrase = new Phrase("", parrafoNegro);
                 c1.Border = 0;
                 tbl.AddCell(c1);
                 doc.Add(tbl);
@@ -434,6 +586,13 @@ namespace Net.Data
                         c1.Border = 0;
                         tbl.AddCell(c1);
                     }
+                }
+
+                if ((countFotos % 2) != 0)
+                {
+                    c1 = new PdfPCell(new Phrase(" "));
+                    c1.Border = 0;
+                    tbl.AddCell(c1);
                 }
 
                 c1 = new PdfPCell();

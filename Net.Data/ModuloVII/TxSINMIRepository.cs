@@ -269,87 +269,6 @@ namespace Net.Data
                 return vResultadoTransaccion;
             }
 
-            var memory = new MemoryStream();
-            try
-            {
-                var memoryPDF = await GenerarPDF(new BE_TxSINMI { IdSINMI = entidad.IdSINMI });
-                memory = memoryPDF;
-            }
-            catch (Exception ex)
-            {
-                vResultadoTransaccion.ResultadoCodigo = -1;
-                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
-                return vResultadoTransaccion;
-            }
-
-
-
-            //Obtiene informacion del examen fisicion del pollito bebe
-            var data = context.ExecuteSqlViewId<BE_TxSINMI>(SP_GET_ID_GOOGLE_DRIVE, new BE_TxSINMI { IdSINMI = entidad.IdSINMI });
-            var nameFile = string.Format("{0}.{1}", data.NombreArchivo, "pdf");
-
-            try
-            {
-                EmailSenderRepository emailSenderRepository = new EmailSenderRepository(context);
-                var mensaje = string.Format("Se envía informe del Sistema Integral de Monitoreo Intestinal - N° {0}", entidad.IdSINMI);
-                await emailSenderRepository.SendEmailAsync(data.EmailTo, "Correo Automatico - Sistema Integral de Monitoreo Intestinal", mensaje, new BE_MemoryStream { FileMemoryStream = memory }, nameFile);
-            }
-            catch (Exception ex)
-            {
-                vResultadoTransaccion.ResultadoCodigo = -1;
-                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
-                return vResultadoTransaccion;
-            }
-
-            MemoryStream ms = memory;
-
-            TxRegistroDocumentoRepository _repository = new TxRegistroDocumentoRepository(context);
-            List<IFormFile> files = new List<IFormFile>();
-
-            var fileMock = new Mock<IFormFile>();
-
-            fileMock.Setup(_ => _.FileName).Returns(nameFile);
-            fileMock.Setup(_ => _.ContentType).Returns("application/pdf");
-            fileMock.Setup(_ => _.Length).Returns(ms.Length);
-            fileMock.Setup(_ => _.OpenReadStream()).Returns(ms);
-            fileMock.Setup(_ => _.ContentDisposition).Returns(string.Format("inline; filename={0}", nameFile));
-
-            files.Add(fileMock.Object);
-
-            try
-            {
-                var resultDocumentFile = await _repository.Create(new BE_TxRegistroDocumento
-                {
-                    CodigoEmpresa = data.CodigoEmpresa,
-                    DescripcionEmpresa = data.DescripcionEmpresa,
-                    CodigoPlanta = data.CodigoPlanta,
-                    DescripcionPlanta = data.DescripcionPlanta,
-                    DescripcionTipoExplotacion = data.DescripcionTipoExplotacion,
-                    DescripcionSubTipoExplotacion = data.DescripcionSubTipoExplotacion,
-                    IdSubTipoExplotacion = data.IdSubTipoExplotacion,
-                    IdDocumento = 0,
-                    IdDocumentoReferencial = (int)data.IdSINMI,
-                    FlgCerrado = true,
-                    FecCerrado = DateTime.Now,
-                    IdUsuarioCierre = entidad.RegUsuario,
-                    RegUsuario = entidad.RegUsuario,
-                    RegEstacion = entidad.RegEstacion
-                }, files);
-
-                if (resultDocumentFile.ResultadoCodigo == -1)
-                {
-                    vResultadoTransaccion.ResultadoCodigo = -1;
-                    vResultadoTransaccion.ResultadoDescripcion = resultDocumentFile.ResultadoDescripcion;
-                    return vResultadoTransaccion;
-                }
-            }
-            catch (Exception ex)
-            {
-                vResultadoTransaccion.ResultadoCodigo = -1;
-                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
-                return vResultadoTransaccion;
-            }
-
             return vResultadoTransaccion;
         }
         public Task Delete(BE_TxSINMI entidad)
@@ -373,6 +292,7 @@ namespace Net.Data
 
                 var pe = new PageEventHelper();
                 pe.FlagCerrado = Boolean.Parse(item.FlgCerrado.ToString());
+                pe.FlagModulo = "SINMI";
                 write.PageEvent = pe;
                 // Colocamos la fuente que deseamos que tenga el documento
                 BaseFont helvetica = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1250, true);
@@ -417,13 +337,18 @@ namespace Net.Data
                 c1.Phrase = new Phrase("Edad:", parrafoNegro);
                 c2.Phrase = new Phrase(item.Edad.ToString(), parrafoNegro);
                 c3.Phrase = new Phrase("", parrafoNegro);
-                c4.Phrase = new Phrase("Motivo Visita:", parrafoNegro);
-                c5.Phrase = new Phrase(item.MotivoVisita, parrafoNegro);
+                c4.Phrase = new Phrase("Fecha:", parrafoNegro);
+                c5.Phrase = new Phrase(item.FecHoraRegistro.ToString(), parrafoNegro);
                 tbl.AddCell(c1);
                 tbl.AddCell(c2);
                 tbl.AddCell(c3);
                 tbl.AddCell(c4);
                 tbl.AddCell(c5);
+                c1.Phrase = new Phrase("Motivo Visita:", parrafoNegro);
+                tbl.AddCell(c1);
+                c1.Phrase = new Phrase(item.MotivoVisita, parrafoNegro);
+                c1.Colspan = 4;
+                tbl.AddCell(c1);
                 c1.Phrase = new Phrase(" ", parrafoNegro);
                 c1.Colspan = 5;
                 tbl.AddCell(c1);

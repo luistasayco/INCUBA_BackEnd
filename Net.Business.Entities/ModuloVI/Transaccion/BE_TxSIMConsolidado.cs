@@ -19,6 +19,7 @@ namespace Net.Business.Entities
         public string UsuarioCierre { get; set; }
         public DateTime? FecCierre { get; set; }
         public Boolean? FlgCerrado { get; set; }
+        public string NombreArchivo { get; set; }
         public IEnumerable<BE_TxSIMConsolidadoDetalle> ListaTxSIMConsolidadoDetalle { get; set; }
     }
 }

@@ -19,5 +19,9 @@
         public decimal Ave3 { get; set; }
         public decimal Ave4 { get; set; }
         public decimal Ave5 { get; set; }
+        public int FactorImpacto { get; set; }
+        public bool FlgMedia { get; set; }
+        public int ScoreInicio { get; set; }
+        public int ScoreFin { get; set; }
     }
 }

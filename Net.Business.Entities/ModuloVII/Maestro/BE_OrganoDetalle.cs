@@ -14,6 +14,14 @@ namespace Net.Business.Entities
         [DBParameter(SqlDbType.NVarChar, 10, ActionType.Everything)]
         public string Score { get; set; }
         [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int? ScoreInicio { get; set; }
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int? ScoreFin { get; set; }
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
         public int? OrdenDetalle { get; set; }
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int? FactorImpacto { get; set; }
+        [DBParameter(SqlDbType.Bit, 0, ActionType.Everything)]
+        public bool? FlgMedia { get; set; }
     }
 }
