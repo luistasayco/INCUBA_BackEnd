@@ -617,9 +617,10 @@ namespace Net.Data
                 tbl.AddCell(c1);
                 doc.Add(tbl);
 
-                tbl = new PdfPTable(new float[] { 12f, 11f, 11f, 11f, 11f, 11f, 11f, 11f, 11f }) { WidthPercentage = 100 };
+                tbl = new PdfPTable(new float[] { 8f, 11f, 10f, 10f, 10f, 10f, 10f, 10f, 11f, 11f }) { WidthPercentage = 100 };
                 c1 = new PdfPCell();
-
+                c1 = new PdfPCell(new Phrase("Ave", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
                 c1 = new PdfPCell(new Phrase("Peso Corporal (g)", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                 tbl.AddCell(c1);
                 c1 = new PdfPCell(new Phrase("Peso de Bursa(g)", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
@@ -641,6 +642,16 @@ namespace Net.Data
 
                 foreach (var detalle in item.ListaTxSIMIndiceBursal)
                 {
+                    if (detalle.FlgPromedio)
+                    {
+                        c1 = new PdfPCell(new Phrase("Prom.", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    } else
+                    {
+                        c1 = new PdfPCell(new Phrase(detalle.Ave.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    }
+                    
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
                     c1 = new PdfPCell(new Phrase(((int)detalle.PesoCorporal).ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
                     tbl.AddCell(c1);

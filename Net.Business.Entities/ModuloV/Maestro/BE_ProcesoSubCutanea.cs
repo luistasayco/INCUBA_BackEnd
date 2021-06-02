@@ -11,5 +11,7 @@ namespace Net.Business.Entities
         public string DescripcionProcesoSubCutanea { get; set; }
         [DBParameter(SqlDbType.Decimal, 0, ActionType.Everything)]
         public decimal? Valor { get; set; }
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int? IdProcesoAgrupador { get; set; }
     }
 }

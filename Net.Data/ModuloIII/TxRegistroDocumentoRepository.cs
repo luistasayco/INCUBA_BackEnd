@@ -5,6 +5,7 @@ using Net.Connection;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -94,6 +95,9 @@ namespace Net.Data
                             var _anio = DateTime.Now.Year;
                             var _mes = DateTime.Now.Month;
 
+                            DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CurrentCulture.DateTimeFormat;
+                            string nombreMes = dateTimeFormatInfo.GetMonthName(_mes);
+
                             entidad.Ano = _anio;
                             entidad.Mes = _mes;
                             try
@@ -129,7 +133,7 @@ namespace Net.Data
 
                                 if (string.IsNullOrEmpty(IdFolderGoogleDrive))
                                 {
-                                    IdFolderGoogleDrive = googleApiDrive.GenerateDirectory(entidad.DescripcionEmpresa, entidad.DescripcionPlanta, entidad.DescripcionTipoExplotacion, entidad.DescripcionSubTipoExplotacion, entidad.Ano.ToString(), entidad.Mes.ToString());
+                                    IdFolderGoogleDrive = googleApiDrive.GenerateDirectory(entidad.DescripcionEmpresa, entidad.DescripcionPlanta, entidad.DescripcionTipoExplotacion, entidad.DescripcionSubTipoExplotacion, entidad.Ano.ToString(), nombreMes);
 
                                     using (SqlCommand cmd = new SqlCommand(SP_GOOGLE_DRIVE_INSERT, conn))
                                     {
