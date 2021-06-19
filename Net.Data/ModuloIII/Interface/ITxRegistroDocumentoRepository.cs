@@ -18,6 +18,9 @@ namespace Net.Data
         Task<BE_ResultadoTransaccion> Update(BE_TxRegistroDocumento entidad);
         Task Delete(BE_TxRegistroDocumento entidad);
         Task<BE_MemoryStream> GetDownloadFileGoogleDrive(BE_TxRegistroDocumento entidad);
+
+        //Task<BE_File> GetDownloadFileGoogleDriveBase64(BE_TxRegistroDocumento entidad);
+        Task<BE_File> GetDownloadFileGoogleDriveSave(BE_TxRegistroDocumento entidad);
         Task<bool> GetUrlFileGoogleDrive(string id, string permissionValue, string userRule);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
+using Moq;
 using Net.Business.Entities;
 using Net.Connection;
 using System;
@@ -8,6 +9,7 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -287,7 +289,83 @@ namespace Net.Data
         {
             DriveApiService googleApiDrive = new DriveApiService();
             var data = await googleApiDrive.Download(entidad.IdGoogleDrive);
+
+
             return data;
+        }
+
+        //public async Task<BE_File> GetDownloadFileGoogleDriveBase64(BE_TxRegistroDocumento entidad)
+        //{
+        //    DriveApiService googleApiDrive = new DriveApiService();
+        //    var data = await googleApiDrive.Download(entidad.IdGoogleDrive);
+
+        //    byte[] bytes;
+        //    bytes = data.FileMemoryStream.ToArray();
+
+        //    string base64 = Convert.ToBase64String(bytes);
+
+        //    return new BE_File { 
+        //        FileBase64 = base64,
+        //        Name = data.NameFile,
+        //        Type = data.TypeFile
+        //    };
+        //}
+
+        public async Task<BE_File> GetDownloadFileGoogleDriveSave(BE_TxRegistroDocumento entidad)
+        {
+            DriveApiService googleApiDrive = new DriveApiService();
+            var data = await googleApiDrive.Download(entidad.IdGoogleDrive);
+
+            byte[] bytes;
+            bytes = data.FileMemoryStream.ToArray();
+
+            var nombreAleatorio = GenerarCodigo();
+
+            /*
+                Desarrollo
+                    \\\\SERVIDOR95\\Users\\InvetsaNet\\Documents\\Auditoria\\INCUBA-FrontEnd\\src\\assets\\file-pdf\\
+                Produccion
+                    \\\\SERVIDOR96\\Users\\adminauditoria\\Documents\\Auditoria\\Invetsa\\assets\\file-pdf\\
+             */
+
+            using (FileStream
+            fileStream = new FileStream("\\\\SERVIDOR96\\Users\\adminauditoria\\Documents\\Auditoria\\Invetsa\\assets\\file-pdf\\" + nombreAleatorio + ".pdf", FileMode.Create))
+            {
+                // Write the data to the file, byte by byte.
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    fileStream.WriteByte(bytes[i]);
+                }
+
+                // Set the stream position to the beginning of the file.
+                fileStream.Seek(0, SeekOrigin.Begin);
+ 
+            }
+
+            return new BE_File
+            {
+                Name = data.NameFile,
+                NameAleatorio = nombreAleatorio,
+                Type = data.TypeFile
+            };
+        }
+
+        private string GenerarCodigo()
+        {
+            Random obj = new Random();
+            string sCadena = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            int longitud = sCadena.Length;
+            char cletra;
+            int nlongitud = 30;
+            string sNuevacadena = string.Empty;
+
+            for (int i = 0; i < nlongitud; i++)
+            {
+                cletra = sCadena[obj.Next(nlongitud)];
+                sNuevacadena += cletra.ToString();
+            }
+            return sNuevacadena;
+
         }
 
         public async Task<BE_MemoryStream> GetDownloadFileServidorLocal(BE_TxRegistroDocumento entidad)

@@ -257,7 +257,34 @@ namespace Net.Business.Services.Controllers
             return pdf;
         }
 
-        
+        //[HttpGet("{id}", Name = "GetDownloadFileBase64")]
+        //[ProducesResponseType(200)]
+        //[ProducesResponseType(404)]
+        //[ProducesDefaultResponseType]
+        //public async Task<IActionResult> GetDownloadFileBase64(string id)
+        //{
+        //    var objectGetById = await _repository.TxRegistroDocumento.GetDownloadFileGoogleDriveBase64(new DtoFindTxRegistroDocumentoId { IdGoogleDrive = id }.RetornaTxRegistroDocumento());
+
+        //    return Ok(objectGetById);
+        //}
+
+        [HttpGet("{id}", Name = "GetDownloadFileSave")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> GetDownloadFileSave(string id)
+        {
+            var objectGetById = await _repository.TxRegistroDocumento.GetDownloadFileGoogleDriveSave(new DtoFindTxRegistroDocumentoId { IdGoogleDrive = id }.RetornaTxRegistroDocumento());
+
+            if (objectGetById == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(objectGetById);
+        }
+
+
         [HttpGet(Name = "GetUrlFilePorId")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
