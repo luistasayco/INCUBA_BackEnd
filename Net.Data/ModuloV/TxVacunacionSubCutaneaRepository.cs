@@ -394,9 +394,7 @@ namespace Net.Data
                         }
                         catch (Exception ex)
                         {
-                            value.IdVacunacionSubCutanea = 0;
                             transaction.Rollback();
-
                             vResultadoTransaccion.IdRegistro = -1;
                             vResultadoTransaccion.ResultadoCodigo = -1;
                             vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
@@ -406,7 +404,6 @@ namespace Net.Data
             }
             catch (Exception ex)
             {
-                value.IdVacunacionSubCutanea = 0;
                 vResultadoTransaccion.IdRegistro = -1;
                 vResultadoTransaccion.ResultadoCodigo = -1;
                 vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();

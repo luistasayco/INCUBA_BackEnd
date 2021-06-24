@@ -333,7 +333,7 @@ namespace Net.Data
                 pe.FlagModulo = "SINMI";
                 write.PageEvent = pe;
                 // Colocamos la fuente que deseamos que tenga el documento
-                BaseFont helvetica = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1250, true);
+                BaseFont helvetica = BaseFont.CreateFont(BaseFont.COURIER, BaseFont.WINANSI, true);
                 // Titulo
                 iTextSharp.text.Font titulo = new iTextSharp.text.Font(helvetica, 16f, iTextSharp.text.Font.BOLD, new BaseColor(103, 93, 152));
                 iTextSharp.text.Font tituloBlanco = new iTextSharp.text.Font(helvetica, 18f, iTextSharp.text.Font.NORMAL, BaseColor.White);

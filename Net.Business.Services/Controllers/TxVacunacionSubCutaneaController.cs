@@ -141,7 +141,6 @@ namespace Net.Business.Services.Controllers
 
             if (ObjectNew.ResultadoCodigo == -1)
             {
-                //ModelState.AddModelError("", $"Algo salio mal guardando el registro");
                 return BadRequest(ObjectNew);
             }
             else
