@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -22,6 +23,10 @@ namespace Net.Data
 {
     public class TxExamenFisicoPollitoRepository : RepositoryBase<BE_TxExamenFisicoPollito>, ITxExamenFisicoPollitoRepository
     {
+        private string _aplicacionName;
+        private string _metodoName;
+        private readonly Regex regex = new Regex(@"<(\w+)>.*");
+
         const string DB_ESQUEMA = "DBO.";
         const string SP_GET = DB_ESQUEMA + "INC_GetTxExamenFisicoPollitoPorFiltros";
         const string SP_GET_ID = DB_ESQUEMA + "INC_GetTxExamenFisicoPollitoPorId";
@@ -42,6 +47,7 @@ namespace Net.Data
         public TxExamenFisicoPollitoRepository(IConnectionSQL context)
             : base(context)
         {
+            _aplicacionName = this.GetType().Name;
         }
 
         public Task<IEnumerable<BE_TxExamenFisicoPollito>> GetAll(FE_TxExamenFisicoPollito entidad)
@@ -112,8 +118,14 @@ namespace Net.Data
             return vExiste;
         }
 
-        public async Task<int> Create(BE_TxExamenFisicoPollito value)
+        public async Task<BE_ResultadoTransaccion> Create(BE_TxExamenFisicoPollito value)
         {
+            BE_ResultadoTransaccion vResultadoTransaccion = new BE_ResultadoTransaccion();
+            _metodoName = regex.Match(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name).Groups[1].Value.ToString();
+
+            vResultadoTransaccion.ResultadoMetodo = _metodoName;
+            vResultadoTransaccion.ResultadoAplicacion = _aplicacionName;
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(context.DevuelveConnectionSQL()))
@@ -232,21 +244,29 @@ namespace Net.Data
                             }
 
                             transaction.Commit();
+
+                            vResultadoTransaccion.IdRegistro = (int)value.IdExamenFisico;
+                            vResultadoTransaccion.ResultadoCodigo = 0;
+                            vResultadoTransaccion.ResultadoDescripcion = "Se realizo correctamente";
                         }
                         catch (Exception ex)
                         {
-                            value.IdExamenFisico = 0;
                             transaction.Rollback();
+                            vResultadoTransaccion.ResultadoCodigo = -1;
+                            vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                            return vResultadoTransaccion;
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                value.IdExamenFisico = 0;
+                vResultadoTransaccion.ResultadoCodigo = -1;
+                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                return vResultadoTransaccion;
             }
 
-            return int.Parse(value.IdExamenFisico.ToString());
+            return vResultadoTransaccion;
         }
 
         public async Task Update(BE_TxExamenFisicoPollito value)

@@ -75,15 +75,14 @@ namespace Net.Business.Services.Controllers
                 return BadRequest("Invalid model object");
             }
 
-            int ObjectNew = await _repository.TxSIMConsolidado.Create(value.RetornaTxSIMConsolidado());
+            var ObjectNew = await _repository.TxSIMConsolidado.Create(value.RetornaTxSIMConsolidado());
 
-            if (ObjectNew == 0)
+            if (ObjectNew.ResultadoCodigo == -1)
             {
-                ModelState.AddModelError("", $"Algo salio mal guardando el registro");
-                return StatusCode(500, ModelState);
+                return BadRequest(ObjectNew);
             }
 
-            return CreatedAtRoute("GetByIdTxSIMConsolidado", new { id = ObjectNew }, ObjectNew);
+            return Ok(ObjectNew);
         }
         /// <summary>
         /// Actualizar una calidad existente

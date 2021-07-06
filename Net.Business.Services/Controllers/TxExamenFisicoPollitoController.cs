@@ -140,12 +140,11 @@ namespace Net.Business.Services.Controllers
                 return BadRequest("Invalid model object");
             }
 
-            int ObjectNew = await _repository.TxExamenFisicoPollito.Create(value.RetornaTxExamenFisicoPollito());
+            var ObjectNew = await _repository.TxExamenFisicoPollito.Create(value.RetornaTxExamenFisicoPollito());
 
-            if (ObjectNew == 0)
+            if (ObjectNew.ResultadoCodigo == -1)
             {
-                ModelState.AddModelError("", $"Algo salio mal guardando el registro");
-                return StatusCode(500, ModelState);
+                return BadRequest(ObjectNew);
             }
             else
             {
@@ -153,7 +152,7 @@ namespace Net.Business.Services.Controllers
                 {
                     if (bool.Parse(value.FlgCerrado.ToString()))
                     {
-                        var updateStatus = new DtoUpdateStatusTxExamenFisicoPollito { IdExamenFisico = ObjectNew, IdUsuarioCierre = int.Parse(value.RegUsuario.ToString()), RegUsuario = value.RegUsuario, RegEstacion = value.RegEstacion };
+                        var updateStatus = new DtoUpdateStatusTxExamenFisicoPollito { IdExamenFisico = ObjectNew.IdRegistro, IdUsuarioCierre = int.Parse(value.RegUsuario.ToString()), RegUsuario = value.RegUsuario, RegEstacion = value.RegEstacion };
                         var result = await _repository.TxExamenFisicoPollito.UpdateStatus(updateStatus.RetornaTxExamenFisicoPollito());
 
                         if (result.ResultadoCodigo == -1)
@@ -165,7 +164,7 @@ namespace Net.Business.Services.Controllers
                 
             }
 
-            return CreatedAtRoute("GetByIdTxExamenFisicoPollito", new { id = ObjectNew }, ObjectNew);
+            return Ok(ObjectNew);
         }
         /// <summary>
         /// Actualizar una calidad existente

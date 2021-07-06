@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -22,6 +23,10 @@ namespace Net.Data
 {
     public class TxSIMRepository : RepositoryBase<BE_TxSIM>, ITxSIMRepository
     {
+        private string _aplicacionName;
+        private string _metodoName;
+        private readonly Regex regex = new Regex(@"<(\w+)>.*");
+
         const string DB_ESQUEMA = "DBO.";
         const string SP_GET_POR_FILTRO = DB_ESQUEMA + "INC_GetTxSIMPorFiltros";
         const string SP_GET_POR_CONSOLIDADO = DB_ESQUEMA + "INC_GetTxSIMPorCodigoEmpresa";
@@ -52,6 +57,7 @@ namespace Net.Data
         public TxSIMRepository(IConnectionSQL context)
             : base(context)
         {
+            _aplicacionName = this.GetType().Name;
         }
 
         public Task<IEnumerable<BE_TxSIM>> GetAll(FE_TxSIM entidad)
@@ -101,8 +107,14 @@ namespace Net.Data
             return p;
         }
 
-        public async Task<int> Create(BE_TxSIM value)
+        public async Task<BE_ResultadoTransaccion> Create(BE_TxSIM value)
         {
+            BE_ResultadoTransaccion vResultadoTransaccion = new BE_ResultadoTransaccion();
+            _metodoName = regex.Match(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name).Groups[1].Value.ToString();
+
+            vResultadoTransaccion.ResultadoMetodo = _metodoName;
+            vResultadoTransaccion.ResultadoAplicacion = _aplicacionName;
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(context.DevuelveConnectionSQL()))
@@ -155,31 +167,38 @@ namespace Net.Data
                                 value.IdSIM = (int)cmd.Parameters["@IdSIM"].Value;
                             }
 
-                            using (SqlCommand cmd = new SqlCommand(SP_MERGE_DIGESTIVO, conn))
+                            if (value.ListaTxSIMDigestivos != null)
                             {
-                                foreach (BE_TxSIMDigestivo item in value.ListaTxSIMDigestivos)
+                                if (value.ListaTxSIMDigestivos.Any())
                                 {
-                                    cmd.Parameters.Clear();
-                                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                                    using (SqlCommand cmd = new SqlCommand(SP_MERGE_DIGESTIVO, conn))
+                                    {
+                                        foreach (BE_TxSIMDigestivo item in value.ListaTxSIMDigestivos)
+                                        {
+                                            cmd.Parameters.Clear();
+                                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                                    cmd.Parameters.Add(new SqlParameter("@IdSIMDigestivo", item.IdSIMDigestivo));
-                                    cmd.Parameters.Add(new SqlParameter("@IdSIM", value.IdSIM));
-                                    cmd.Parameters.Add(new SqlParameter("@Ave", item.Ave));
-                                    cmd.Parameters.Add(new SqlParameter("@Duademo", item.Duademo));
-                                    cmd.Parameters.Add(new SqlParameter("@Yeyuno", item.Yeyuno));
-                                    cmd.Parameters.Add(new SqlParameter("@Lleon", item.Lleon));
-                                    cmd.Parameters.Add(new SqlParameter("@Ciegos", item.Ciegos));
-                                    cmd.Parameters.Add(new SqlParameter("@Tonsillas", item.Tonsillas));
-                                    cmd.Parameters.Add(new SqlParameter("@Higados", item.Higados));
-                                    cmd.Parameters.Add(new SqlParameter("@Molleja", item.Molleja));
-                                    cmd.Parameters.Add(new SqlParameter("@Proventriculo", item.Proventriculo));
-                                    cmd.Parameters.Add(new SqlParameter("@FlgGradoLesion", item.FlgGradoLesion));
-                                    cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
-                                    cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
+                                            cmd.Parameters.Add(new SqlParameter("@IdSIMDigestivo", item.IdSIMDigestivo));
+                                            cmd.Parameters.Add(new SqlParameter("@IdSIM", value.IdSIM));
+                                            cmd.Parameters.Add(new SqlParameter("@Ave", item.Ave));
+                                            cmd.Parameters.Add(new SqlParameter("@Duademo", item.Duademo));
+                                            cmd.Parameters.Add(new SqlParameter("@Yeyuno", item.Yeyuno));
+                                            cmd.Parameters.Add(new SqlParameter("@Lleon", item.Lleon));
+                                            cmd.Parameters.Add(new SqlParameter("@Ciegos", item.Ciegos));
+                                            cmd.Parameters.Add(new SqlParameter("@Tonsillas", item.Tonsillas));
+                                            cmd.Parameters.Add(new SqlParameter("@Higados", item.Higados));
+                                            cmd.Parameters.Add(new SqlParameter("@Molleja", item.Molleja));
+                                            cmd.Parameters.Add(new SqlParameter("@Proventriculo", item.Proventriculo));
+                                            cmd.Parameters.Add(new SqlParameter("@FlgGradoLesion", item.FlgGradoLesion));
+                                            cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
+                                            cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
 
-                                    await cmd.ExecuteNonQueryAsync();
+                                            await cmd.ExecuteNonQueryAsync();
+                                        }
+                                    }
                                 }
                             }
+
                             if (value.ListaTxSIMFotos != null)
                             {
                                 if (value.ListaTxSIMFotos.Count() > 0)
@@ -341,21 +360,29 @@ namespace Net.Data
                             }
 
                             transaction.Commit();
+                            vResultadoTransaccion.IdRegistro = (int)value.IdSIM;
+                            vResultadoTransaccion.ResultadoCodigo = 0;
+                            vResultadoTransaccion.ResultadoDescripcion = string.Format("Se registro correctamente");
+
                         }
                         catch (Exception ex)
                         {
-                            value.IdSIM = 0;
                             transaction.Rollback();
+                            vResultadoTransaccion.IdRegistro = -1;
+                            vResultadoTransaccion.ResultadoCodigo = -1;
+                            vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                value.IdSIM = 0;
+                vResultadoTransaccion.IdRegistro = -1;
+                vResultadoTransaccion.ResultadoCodigo = -1;
+                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
             }
 
-            return int.Parse(value.IdSIM.ToString());
+            return vResultadoTransaccion;
         }
 
         public async Task Update(BE_TxSIM value)

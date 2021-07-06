@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -22,6 +23,10 @@ namespace Net.Data
 {
     public class TxSINMIRepository : RepositoryBase<BE_TxSINMI>, ITxSINMIRepository
     {
+        private string _aplicacionName;
+        private string _metodoName;
+        private readonly Regex regex = new Regex(@"<(\w+)>.*");
+
         const string DB_ESQUEMA = "DBO.";
         const string SP_GET_POR_FILTRO = DB_ESQUEMA + "INC_GetTxSINMIPorFiltros";
         const string SP_GET_POR_CONSOLIDADO = DB_ESQUEMA + "INC_GetTxSINMIPorCodigoEmpresa";
@@ -43,6 +48,7 @@ namespace Net.Data
         public TxSINMIRepository(IConnectionSQL context)
             : base(context)
         {
+            _aplicacionName = this.GetType().Name;
         }
 
         public Task<IEnumerable<BE_TxSINMI>> GetAll(FE_TxSINMI entidad)
@@ -85,8 +91,14 @@ namespace Net.Data
             return p;
         }
 
-        public async Task<int> Create(BE_TxSINMI value)
+        public async Task<BE_ResultadoTransaccion> Create(BE_TxSINMI value)
         {
+            BE_ResultadoTransaccion vResultadoTransaccion = new BE_ResultadoTransaccion();
+            _metodoName = regex.Match(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name).Groups[1].Value.ToString();
+
+            vResultadoTransaccion.ResultadoMetodo = _metodoName;
+            vResultadoTransaccion.ResultadoAplicacion = _aplicacionName;
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(context.DevuelveConnectionSQL()))
@@ -129,27 +141,35 @@ namespace Net.Data
                                 value.IdSINMI = (int)cmd.Parameters["@IdSINMI"].Value;
                             }
 
-                            using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE, conn))
+                            if (value.ListaTxSINMIDetalle != null)
                             {
-                                foreach (BE_TxSINMIDetalle item in value.ListaTxSINMIDetalle)
+                                if (value.ListaTxSINMIDetalle.Count() > 0)
                                 {
-                                    cmd.Parameters.Clear();
-                                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                                    cmd.Parameters.Add(new SqlParameter("@IdSINMIDetalle", item.IdSINMIDetalle));
-                                    cmd.Parameters.Add(new SqlParameter("@IdSINMI", value.IdSINMI));
-                                    cmd.Parameters.Add(new SqlParameter("@IdOrganoDetalle", item.IdOrganoDetalle));
-                                    cmd.Parameters.Add(new SqlParameter("@Ave1", item.Ave1));
-                                    cmd.Parameters.Add(new SqlParameter("@Ave2", item.Ave2));
-                                    cmd.Parameters.Add(new SqlParameter("@Ave3", item.Ave3));
-                                    cmd.Parameters.Add(new SqlParameter("@Ave4", item.Ave4));
-                                    cmd.Parameters.Add(new SqlParameter("@Ave5", item.Ave5));
-                                    cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
-                                    cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
+                                    using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE, conn))
+                                    {
+                                        foreach (BE_TxSINMIDetalle item in value.ListaTxSINMIDetalle)
+                                        {
+                                            cmd.Parameters.Clear();
+                                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                                    await cmd.ExecuteNonQueryAsync();
+                                            cmd.Parameters.Add(new SqlParameter("@IdSINMIDetalle", item.IdSINMIDetalle));
+                                            cmd.Parameters.Add(new SqlParameter("@IdSINMI", value.IdSINMI));
+                                            cmd.Parameters.Add(new SqlParameter("@IdOrganoDetalle", item.IdOrganoDetalle));
+                                            cmd.Parameters.Add(new SqlParameter("@Ave1", item.Ave1));
+                                            cmd.Parameters.Add(new SqlParameter("@Ave2", item.Ave2));
+                                            cmd.Parameters.Add(new SqlParameter("@Ave3", item.Ave3));
+                                            cmd.Parameters.Add(new SqlParameter("@Ave4", item.Ave4));
+                                            cmd.Parameters.Add(new SqlParameter("@Ave5", item.Ave5));
+                                            cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
+                                            cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
+
+                                            await cmd.ExecuteNonQueryAsync();
+                                        }
+                                    }
                                 }
                             }
+
                             if (value.ListaTxSINMIFotos != null)
                             {
                                 if (value.ListaTxSINMIFotos.Count() > 0)
@@ -174,21 +194,29 @@ namespace Net.Data
                             }
 
                             transaction.Commit();
+
+                            vResultadoTransaccion.IdRegistro = (int)value.IdSINMI;
+                            vResultadoTransaccion.ResultadoCodigo = 0;
+                            vResultadoTransaccion.ResultadoDescripcion = string.Format("Se registro correctamente");
                         }
                         catch (Exception ex)
                         {
-                            value.IdSINMI = 0;
                             transaction.Rollback();
+                            vResultadoTransaccion.IdRegistro = -1;
+                            vResultadoTransaccion.ResultadoCodigo = -1;
+                            vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                value.IdSINMI = 0;
+                vResultadoTransaccion.IdRegistro = -1;
+                vResultadoTransaccion.ResultadoCodigo = -1;
+                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
             }
 
-            return int.Parse(value.IdSINMI.ToString());
+            return vResultadoTransaccion;
         }
 
         public async Task Update(BE_TxSINMI value)

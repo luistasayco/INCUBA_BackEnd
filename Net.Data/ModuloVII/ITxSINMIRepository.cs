@@ -12,7 +12,7 @@ namespace Net.Data
         Task<IEnumerable<BE_TxSINMIDetalle>> GetAllDetalleNew();
         Task<IEnumerable<BE_TxSINMI>> GetByCodigoEmpresa(string codigoEmpresa);
         Task<BE_TxSINMI> GetById(BE_TxSINMI entidad);
-        Task<int> Create(BE_TxSINMI entidad);
+        Task<BE_ResultadoTransaccion> Create(BE_TxSINMI entidad);
         Task Update(BE_TxSINMI entidad);
         Task<BE_ResultadoTransaccion> UpdateStatus(BE_TxSINMI entidad);
         Task Delete(BE_TxSINMI entidad);

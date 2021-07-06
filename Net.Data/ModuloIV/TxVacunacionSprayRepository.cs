@@ -12,7 +12,9 @@ using System.Data;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -20,6 +22,10 @@ namespace Net.Data
 {
     public class TxVacunacionSprayRepository : RepositoryBase<BE_TxVacunacionSpray>, ITxVacunacionSprayRepository
     {
+        private string _aplicacionName;
+        private string _metodoName;
+        private readonly Regex regex = new Regex(@"<(\w+)>.*");
+
         const string DB_ESQUEMA = "DBO.";
         const string SP_GET = DB_ESQUEMA + "INC_GetTxVacunacionSprayPorFiltros";
         const string SP_GET_ID = DB_ESQUEMA + "INC_GetTxVacunacionSprayPorId";
@@ -47,6 +53,7 @@ namespace Net.Data
         public TxVacunacionSprayRepository(IConnectionSQL context)
             : base(context)
         {
+            _aplicacionName = this.GetType().Name;
         }
 
         public Task<IEnumerable<BE_TxVacunacionSpray>> GetAll(FE_TxVacunacionSpray entidad)
@@ -88,8 +95,14 @@ namespace Net.Data
             return objListPrincipal;
         }
 
-        public async Task<int> Create(BE_TxVacunacionSpray value)
+        public async Task<BE_ResultadoTransaccion> Create(BE_TxVacunacionSpray value)
         {
+            BE_ResultadoTransaccion vResultadoTransaccion = new BE_ResultadoTransaccion();
+            _metodoName = regex.Match(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name).Groups[1].Value.ToString();
+
+            vResultadoTransaccion.ResultadoMetodo = _metodoName;
+            vResultadoTransaccion.ResultadoAplicacion = _aplicacionName;
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(context.DevuelveConnectionSQL()))
@@ -150,46 +163,59 @@ namespace Net.Data
                                 value.IdVacunacionSpray = (int)cmd.Parameters["@IdVacunacionSpray"].Value;
                             }
 
-                            using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE, conn))
+                            if (value.ListarTxVacunacionSprayDetalle != null)
                             {
-                                foreach (BE_TxVacunacionSprayDetalle item in value.ListarTxVacunacionSprayDetalle)
+                                if (value.ListarTxVacunacionSprayDetalle.Any())
                                 {
-                                    cmd.Parameters.Clear();
-                                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                                    using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE, conn))
+                                    {
+                                        foreach (BE_TxVacunacionSprayDetalle item in value.ListarTxVacunacionSprayDetalle)
+                                        {
+                                            cmd.Parameters.Clear();
+                                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                                    cmd.Parameters.Add(new SqlParameter("@IdVacunacionSprayDetalle", item.IdVacunacionSprayDetalle));
-                                    cmd.Parameters.Add(new SqlParameter("@IdVacunacionSpray", value.IdVacunacionSpray));
-                                    cmd.Parameters.Add(new SqlParameter("@IdProcesoDetalleSpray", item.IdProcesoDetalleSpray));
-                                    cmd.Parameters.Add(new SqlParameter("@Valor", item.Valor));
-                                    cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
-                                    cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
+                                            cmd.Parameters.Add(new SqlParameter("@IdVacunacionSprayDetalle", item.IdVacunacionSprayDetalle));
+                                            cmd.Parameters.Add(new SqlParameter("@IdVacunacionSpray", value.IdVacunacionSpray));
+                                            cmd.Parameters.Add(new SqlParameter("@IdProcesoDetalleSpray", item.IdProcesoDetalleSpray));
+                                            cmd.Parameters.Add(new SqlParameter("@Valor", item.Valor));
+                                            cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
+                                            cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
 
-                                    await cmd.ExecuteNonQueryAsync();
+                                            await cmd.ExecuteNonQueryAsync();
+                                        }
+                                    }
                                 }
                             }
 
-                            using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE_RESULTADO, conn))
+                            if (value.ListarTxVacunacionSprayResultado != null)
                             {
-                                foreach (BE_TxVacunacionSprayResultado item in value.ListarTxVacunacionSprayResultado)
+                                if (value.ListarTxVacunacionSprayResultado.Any())
                                 {
-                                    cmd.Parameters.Clear();
-                                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                                    cmd.Parameters.Add(new SqlParameter("@IdVacunacionSprayDetalle", item.IdVacunacionSprayDetalle));
-                                    cmd.Parameters.Add(new SqlParameter("@IdVacunacionSpray", value.IdVacunacionSpray));
-                                    cmd.Parameters.Add(new SqlParameter("@IdProcesoAgrupador", item.IdProcesoAgrupador));
-                                    cmd.Parameters.Add(new SqlParameter("@ValorEsperado", item.ValorEsperado));
-                                    cmd.Parameters.Add(new SqlParameter("@ValorObtenido", item.ValorObtenido));
-                                    cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
-                                    cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
+                                    using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE_RESULTADO, conn))
+                                    {
+                                        foreach (BE_TxVacunacionSprayResultado item in value.ListarTxVacunacionSprayResultado)
+                                        {
+                                            cmd.Parameters.Clear();
+                                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                                    await cmd.ExecuteNonQueryAsync();
+                                            cmd.Parameters.Add(new SqlParameter("@IdVacunacionSprayDetalle", item.IdVacunacionSprayDetalle));
+                                            cmd.Parameters.Add(new SqlParameter("@IdVacunacionSpray", value.IdVacunacionSpray));
+                                            cmd.Parameters.Add(new SqlParameter("@IdProcesoAgrupador", item.IdProcesoAgrupador));
+                                            cmd.Parameters.Add(new SqlParameter("@ValorEsperado", item.ValorEsperado));
+                                            cmd.Parameters.Add(new SqlParameter("@ValorObtenido", item.ValorObtenido));
+                                            cmd.Parameters.Add(new SqlParameter("@RegUsuario", value.RegUsuario));
+                                            cmd.Parameters.Add(new SqlParameter("@RegEstacion", value.RegEstacion));
+
+                                            await cmd.ExecuteNonQueryAsync();
+                                        }
+                                    }
                                 }
                             }
 
                             if (value.ListarTxVacunacionSprayMaquina != null)
                             {
-                                if (value.ListarTxVacunacionSprayMaquina.Count() > 0)
+                                if (value.ListarTxVacunacionSprayMaquina.Any())
                                 {
                                     using (SqlCommand cmd = new SqlCommand(SP_MERGE_DETALLE_MAQUINA, conn))
                                     {
@@ -212,7 +238,7 @@ namespace Net.Data
                                     }
                                 }
                             }
-                                    
+
                             if (value.ListarTxVacunacionSprayVacuna != null)
                             {
                                 if (value.ListarTxVacunacionSprayVacuna.Count() > 0)
@@ -236,7 +262,7 @@ namespace Net.Data
                                     }
                                 }
                             }
-                                   
+
 
                             if (value.ListarTxVacunacionSprayFotos != null)
                             {
@@ -260,22 +286,30 @@ namespace Net.Data
                                     }
                                 }
                             }
+
                             transaction.Commit();
+                            vResultadoTransaccion.IdRegistro = (int)value.IdVacunacionSpray;
+                            vResultadoTransaccion.ResultadoCodigo = 0;
+                            vResultadoTransaccion.ResultadoDescripcion = "Se realizo correctamente";
                         }
                         catch (Exception ex)
                         {
-                            value.IdVacunacionSpray = 0;
                             transaction.Rollback();
+                            vResultadoTransaccion.ResultadoCodigo = -1;
+                            vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                            return vResultadoTransaccion;
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                value.IdVacunacionSpray = 0;
+                vResultadoTransaccion.ResultadoCodigo = -1;
+                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
+                return vResultadoTransaccion;
             }
 
-            return int.Parse(value.IdVacunacionSpray.ToString());
+            return vResultadoTransaccion;
         }
 
         public async Task Update(BE_TxVacunacionSpray value)

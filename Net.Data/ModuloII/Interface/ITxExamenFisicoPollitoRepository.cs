@@ -12,7 +12,7 @@ namespace Net.Data
         Task<IEnumerable<BE_TxExamenFisicoPollitoDetalleNew>> GetByDetalleNew(BE_TxExamenFisicoPollito entidad);
         Task<BE_TxExamenFisicoPollito> GetById(BE_TxExamenFisicoPollito entidad);
         Task<BE_TxExamenFisicoPollito> GetByIdNew(BE_TxExamenFisicoPollito entidad);
-        Task<int> Create(BE_TxExamenFisicoPollito entidad);
+        Task<BE_ResultadoTransaccion> Create(BE_TxExamenFisicoPollito entidad);
         Task Update(BE_TxExamenFisicoPollito entidad);
         Task<BE_ResultadoTransaccion> UpdateStatus(BE_TxExamenFisicoPollito entidad);
         Task Delete(BE_TxExamenFisicoPollito entidad);

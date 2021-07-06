@@ -13,6 +13,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -20,6 +21,10 @@ namespace Net.Data
 {
     public class TxSIMConsolidadoRepository : RepositoryBase<BE_TxSIMConsolidado>, ITxSIMConsolidadoRepository
     {
+        private string _aplicacionName;
+        private string _metodoName;
+        private readonly Regex regex = new Regex(@"<(\w+)>.*");
+
         const string DB_ESQUEMA = "DBO.";
         const string SP_GET_POR_FILTRO = DB_ESQUEMA + "INC_GetTxSIMConsolidadoPorFiltros";
         const string SP_GET_POR_ID = DB_ESQUEMA + "INC_GetTxSIMConsolidadoPorId";
@@ -45,6 +50,7 @@ namespace Net.Data
         public TxSIMConsolidadoRepository(IConnectionSQL context)
             : base(context)
         {
+            _aplicacionName = this.GetType().Name;
         }
 
         public Task<IEnumerable<BE_TxSIMConsolidado>> GetAll(FE_TxSIMConsolidado entidad)
@@ -72,8 +78,14 @@ namespace Net.Data
 
 
 
-        public async Task<int> Create(BE_TxSIMConsolidado value)
+        public async Task<BE_ResultadoTransaccion> Create(BE_TxSIMConsolidado value)
         {
+            BE_ResultadoTransaccion vResultadoTransaccion = new BE_ResultadoTransaccion();
+            _metodoName = regex.Match(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name).Groups[1].Value.ToString();
+
+            vResultadoTransaccion.ResultadoMetodo = _metodoName;
+            vResultadoTransaccion.ResultadoAplicacion = _aplicacionName;
+
             try
             {
                 using (SqlConnection conn = new SqlConnection(context.DevuelveConnectionSQL()))
@@ -136,21 +148,29 @@ namespace Net.Data
                             }
 
                             transaction.Commit();
+                            vResultadoTransaccion.IdRegistro = (int)value.IdSIMConsolidado;
+                            vResultadoTransaccion.ResultadoCodigo = 0;
+                            vResultadoTransaccion.ResultadoDescripcion = string.Format("Se registro correctamente");
+
                         }
                         catch (Exception ex)
                         {
-                            value.IdSIMConsolidado = 0;
                             transaction.Rollback();
+                            vResultadoTransaccion.IdRegistro = -1;
+                            vResultadoTransaccion.ResultadoCodigo = -1;
+                            vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                value.IdSIMConsolidado = 0;
+                vResultadoTransaccion.IdRegistro = -1;
+                vResultadoTransaccion.ResultadoCodigo = -1;
+                vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
             }
 
-            return int.Parse(value.IdSIMConsolidado.ToString());
+            return vResultadoTransaccion;
         }
 
         public async Task Update(BE_TxSIMConsolidado value)

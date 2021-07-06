@@ -161,7 +161,7 @@ namespace Net.Business.Services.Controllers
 
             }
 
-            return CreatedAtRoute("GetByIdTxVacunacionSubCutanea", new { id = ObjectNew }, ObjectNew);
+            return Ok(ObjectNew);
         }
         /// <summary>
         /// Actualizar una calidad existente

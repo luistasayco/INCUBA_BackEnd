@@ -10,7 +10,7 @@ namespace Net.Data
     {
         Task<IEnumerable<BE_TxSIMConsolidado>> GetAll(FE_TxSIMConsolidado entidad);
         Task<BE_TxSIMConsolidado> GetById(BE_TxSIMConsolidado entidad);
-        Task<int> Create(BE_TxSIMConsolidado entidad);
+        Task<BE_ResultadoTransaccion> Create(BE_TxSIMConsolidado entidad);
         Task Update(BE_TxSIMConsolidado entidad);
         Task<BE_ResultadoTransaccion> UpdateStatus(BE_TxSIMConsolidado entidad);
         Task Delete(BE_TxSIMConsolidado entidad);

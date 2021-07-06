@@ -117,10 +117,11 @@ namespace Net.Business.Services.Controllers
 
             var response = await _repository.TxRegistroEquipo.Create(value.TxRegistroEquipo());
 
-            if (response.ResultadoCodigo < 0)
+            if (response.ResultadoCodigo == -1)
             {
                 return BadRequest(response);
-            } else
+            } 
+            else
             {
                 if (value.FlgCerrado)
                 {
