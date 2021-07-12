@@ -8,7 +8,7 @@
         public int CantidadInicial { get; set; }
         public int CantidadFinal { get; set; }
         public int VacunadoPorHora { get; set; }
-        public int PuntajeProductividad { get; set; }
+        public decimal PuntajeProductividad { get; set; }
         public int Controlados { get; set; }
         public int SinVacunar { get; set; }
         public int Heridos { get; set; }
