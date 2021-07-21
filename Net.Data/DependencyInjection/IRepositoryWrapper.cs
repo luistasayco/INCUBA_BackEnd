@@ -7,6 +7,7 @@
         IEmpresaRepository Empresa { get; }
         IEquipoRepository Equipo { get; }
         IMantenimientoPorModeloRepository MantenimientoPorModelo { get; }
+        IDashboardMantenimientoRepository DashboardMantenimiento { get; }
         IMantenimientoRepository Mantenimiento { get; }
         IModeloRepository Modelo { get; }
         IPlantaRepository Planta { get; }

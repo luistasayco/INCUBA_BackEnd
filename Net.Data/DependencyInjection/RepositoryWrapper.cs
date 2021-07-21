@@ -6,6 +6,7 @@ namespace Net.Data
     {
         private IConnectionSQL _repoContext;
 
+        private IDashboardMantenimientoRepository _DashboardMantenimiento;
         private ICalidadRepository _Calidad;
         private ICondicionLimpiezaRepository _CondicionLimpieza;
         private IEmpresaRepository _Empresa;
@@ -455,6 +456,18 @@ namespace Net.Data
                     _TxSINMIConsolidado = new TxSINMIConsolidadoRepository(_repoContext);
                 }
                 return _TxSINMIConsolidado;
+            }
+        }
+
+        public IDashboardMantenimientoRepository DashboardMantenimiento
+        {
+            get 
+            {
+                if (_DashboardMantenimiento == null)
+                {
+                    _DashboardMantenimiento = new DashboardMantenimientoRepository(_repoContext);
+                }
+                return _DashboardMantenimiento;
             }
         }
     }

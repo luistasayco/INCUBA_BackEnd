@@ -10,6 +10,7 @@ namespace Net.Business.DTO
             return new BE_MantenimientoPorModelo
             {
                 CodigoModelo = this.CodigoModelo
+     
             };
         }
     }

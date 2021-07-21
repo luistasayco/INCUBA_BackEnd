@@ -111,6 +111,23 @@ namespace Net.Business.Services
                         Url = new Uri("https://www.invetsa.com/")
                     }
                 });
+                options.SwaggerDoc("ApiDashboardMantenimiento", new Microsoft.OpenApi.Models.OpenApiInfo()
+                {
+                    Title = "API (Dashboard)",
+                    Version = "1",
+                    Description = "BackEnd Generales",
+                    Contact = new Microsoft.OpenApi.Models.OpenApiContact()
+                    {
+                        Email = "luis.tasayco@sba.pe",
+                        Name = "Grupo SBA",
+                        Url = new Uri("https://www.invetsa.com/")
+                    },
+                    License = new Microsoft.OpenApi.Models.OpenApiLicense()
+                    {
+                        Name = "MIT License",
+                        Url = new Uri("https://www.invetsa.com/")
+                    }
+                });
 
                 var archivoXmlComentarios = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var rutaApiComentarios = Path.Combine(AppContext.BaseDirectory, archivoXmlComentarios);
@@ -161,6 +178,7 @@ namespace Net.Business.Services
                 options.SwaggerEndpoint("/swagger/ApiMaestroGeneral/swagger.json", "API General (Tabla Maestra)");
                 options.SwaggerEndpoint("/swagger/ApiMaestroRegistroEquipo/swagger.json", "API Registro Equipo (Tabla Maestra)");
                 options.SwaggerEndpoint("/swagger/ApiMaestroExamenPollito/swagger.json", "API Examen Pollito (Tabla Maestra)");
+                options.SwaggerEndpoint("/swagger/ApiDashboardMantenimiento/swagger.json", "API (Dashboard)");
                 options.RoutePrefix = "";
             });
 
