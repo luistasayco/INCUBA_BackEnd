@@ -6,6 +6,7 @@ namespace Net.Data
     {
         private IConnectionSQL _repoContext;
 
+        private IDashboardRepository _Dashboard;
         private IDashboardMantenimientoRepository _DashboardMantenimiento;
         private ICalidadRepository _Calidad;
         private ICondicionLimpiezaRepository _CondicionLimpieza;
@@ -468,6 +469,18 @@ namespace Net.Data
                     _DashboardMantenimiento = new DashboardMantenimientoRepository(_repoContext);
                 }
                 return _DashboardMantenimiento;
+            }
+        }
+
+        public IDashboardRepository Dashboard
+        {
+            get
+            {
+                if (_Dashboard == null)
+                {
+                    _Dashboard = new DashboardRepository(_repoContext);
+                }
+                return _Dashboard;
             }
         }
     }

@@ -13,8 +13,10 @@ namespace Net.Business.DTO
         public int IdDashboard { get; set; }
         public int Tecnico { get; set; }
         public string Empresa { get; set; }
+        public string Planta { get; set; }
         public string Modelo { get; set; }
         public string Equipo { get; set; }
+        public int IdUsuario { get; set; }
 
         public FE_DashboardMantenimientoPorFiltro DashboardMantenimientoPorFiltro() 
         {
@@ -25,8 +27,10 @@ namespace Net.Business.DTO
                 IdDashboard = this.IdDashboard,
                 Tecnico = this.Tecnico,
                 Empresa = this.Empresa,
+                Planta = this.Planta,
                 Modelo = this.Modelo,
-                Equipo = this.Equipo
+                Equipo = this.Equipo,
+                IdUsuario = this.IdUsuario
             };
         } 
         

@@ -8,32 +8,30 @@ namespace Net.Business.Entities
     public class BE_DashboardMantenimiento
     {
         /// <summary>
-        /// Cantidad de Visitias realizadas por el tecnico
+        /// Cantidad
         /// </summary>
-        [DBParameter(SqlDbType.Int,0, ActionType.Everything)]
-        public int CantidadVisitas { get; set; }
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int Cantidad { get; set; }
         /// <summary>
-        /// Año de visita
+        /// Periodo
         /// </summary>
-        [DBParameter(SqlDbType.NVarChar,20,ActionType.Everything)]
+        [DBParameter(SqlDbType.NVarChar, 20, ActionType.Everything)]
         public string Periodo { get; set; }
         /// <summary>
-        /// Codidgo de empresa
+        /// Descripción
         /// </summary>
-        [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
-        public string NombreEmpresa { get; set; }
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string Descripcion { get; set; }
         /// <summary>
-        /// Codigo de planta
+        /// Descripcion de Deshboard 
         /// </summary>
-        [DBParameter(SqlDbType.NVarChar,50, ActionType.Everything)]
-        public string NombrePlanta { get; set; }
+        [DBParameter(SqlDbType.NVarChar, 100, ActionType.Everything)]
+        public string DescripcionDashboard { get; set; }
         /// <summary>
-        /// Nombre del Modelo
+        /// Etiqueta
         /// </summary>
         [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
-        public string NombreModelo { get; set; }
-        [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
-        public string NombreRepuesto { get; set; }
+        public string Etiqueta { get; set; }
 
     }
 
@@ -64,10 +62,26 @@ namespace Net.Business.Entities
         /// </summary>
         [DBParameter(SqlDbType.NVarChar,50,ActionType.Everything)]
         public string Empresa { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
         public string Modelo { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
+        public string Planta { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
         public string Equipo { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
+        public int IdUsuario { get; set; }
 
     }
 }
