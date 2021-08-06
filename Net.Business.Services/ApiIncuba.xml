@@ -192,11 +192,25 @@
             <response code="400">Si el objeto enviado es nulo o invalido</response>
             <response code="409">Si ocurrio un conflicto</response>
         </member>
+        <member name="M:Net.Business.Services.Controllers.DashboardAuditoriaController.GetAll(Net.Business.DTO.DtoFindDashboardAuditoria)">
+            <summary>
+            Metodo que obtiene los datos de auditoria filtrados
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
         <member name="M:Net.Business.Services.Controllers.DashboardController.GetAll(Net.Business.DTO.DtoFindDashboard)">
             <summary>
             Médoto que obtiene los diferentes dashboards
             </summary>
             <param name="value">Recibe los paramtros de filtro</param>
+            <returns></returns>
+        </member>
+        <member name="M:Net.Business.Services.Controllers.DashboardFormularioController.GetAll(Net.Business.DTO.DtoFindDashboardFormulario)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
             <returns></returns>
         </member>
         <member name="M:Net.Business.Services.Controllers.DashboardMantenimientoController.GetAll(Net.Business.DTO.DtoFindDashboardMantenimiento)">

@@ -6,6 +6,8 @@ namespace Net.Data
     {
         private IConnectionSQL _repoContext;
 
+        private IDashboardFormularioRepository _DashboardFormulario;
+        private IDashboardAuditoriaRepository _DashboardAuditoria;
         private IDashboardRepository _Dashboard;
         private IDashboardMantenimientoRepository _DashboardMantenimiento;
         private ICalidadRepository _Calidad;
@@ -481,6 +483,30 @@ namespace Net.Data
                     _Dashboard = new DashboardRepository(_repoContext);
                 }
                 return _Dashboard;
+            }
+        }
+
+        public IDashboardAuditoriaRepository DashboardAuditoria
+        {
+            get
+            {
+                if (_DashboardAuditoria == null)
+                {
+                    _DashboardAuditoria = new DashboardAuditoriaRepository(_repoContext);
+                }
+                return _DashboardAuditoria;
+            }
+        }
+
+        public IDashboardFormularioRepository DashboardFormulario
+        {
+            get
+            {
+                if (_DashboardFormulario == null)
+                {
+                    _DashboardFormulario = new DashboardFormularioRepository(_repoContext);
+                }
+                return _DashboardFormulario;
             }
         }
     }

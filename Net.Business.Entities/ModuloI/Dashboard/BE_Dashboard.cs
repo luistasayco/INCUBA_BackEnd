@@ -19,8 +19,8 @@ namespace Net.Business.Entities
         /// <summary>
         /// Descripción opcional
         /// </summary>
-        [DBParameter(SqlDbType.NVarChar, 200 , ActionType.Everything)]
-        public string DashboardDescription { get; set; }
+        [DBParameter(SqlDbType.Int, 0 , ActionType.Everything)]
+        public int DashboardCategoryID { get; set; }
 
     }
 
