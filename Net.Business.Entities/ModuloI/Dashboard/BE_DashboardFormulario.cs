@@ -15,6 +15,11 @@ namespace Net.Business.Entities
         /// </summary>
         [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
         public string NombreVacunador { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [DBParameter(SqlDbType.NVarChar, 50, ActionType.Everything)]
+        public string Descripcion { get; set; }
     }
 
     public class FE_DashboardFormularioPorFiltro

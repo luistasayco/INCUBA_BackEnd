@@ -11,7 +11,10 @@ namespace Net.Business.Entities
         public int IdSINMIConsolidado { get; set; }
         public DateTime? FecHoraRegistro { get; set; }
         public string Descripcion { get; set; }
-        public string Observacion { get; set; }
+        public string Conclusion { get; set; }
+        public string Resultado { get; set; }
+        public string Linea { get; set; }
+        public string PersonaContacto { get; set; }
         public string DescripcionEmpresa { get; set; }
         public string UsuarioCreacion { get; set; }
         [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]

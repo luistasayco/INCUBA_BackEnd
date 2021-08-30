@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
     <PackageReference Include="Moq" Version="4.15.2" />
+    <PackageReference Include="ScottPlot" Version="4.1.16" />
   </ItemGroup>
 
   <ItemGroup>

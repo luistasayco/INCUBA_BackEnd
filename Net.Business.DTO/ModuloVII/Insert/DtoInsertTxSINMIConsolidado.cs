@@ -7,7 +7,10 @@ namespace Net.Business.DTO
     {
         public int IdSINMIConsolidado { get; set; }
         public string Descripcion { get; set; }
-        public string Observacion { get; set; }
+        public string Conclusion { get; set; }
+        public string Resultado { get; set; }
+        public string Linea { get; set; }
+        public string PersonaContacto { get; set; }
         public IEnumerable<BE_TxSINMIConsolidadoDetalle> ListaTxSINMIConsolidadoDetalle { get; set; }
 
         public BE_TxSINMIConsolidado RetornaTxSINMIConsolidado()
@@ -16,7 +19,10 @@ namespace Net.Business.DTO
             {
                 IdSINMIConsolidado = this.IdSINMIConsolidado,
                 Descripcion = this.Descripcion,
-                Observacion = this.Observacion,
+                Conclusion = this.Conclusion,
+                Resultado = this.Resultado,
+                Linea = this.Linea,
+                PersonaContacto = this.PersonaContacto,
                 ListaTxSINMIConsolidadoDetalle = this.ListaTxSINMIConsolidadoDetalle,
                 RegUsuario = this.RegUsuario,
                 RegEstacion = this.RegEstacion

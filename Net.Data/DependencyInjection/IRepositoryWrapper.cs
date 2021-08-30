@@ -11,6 +11,7 @@
         IDashboardRepository Dashboard { get; }
         IDashboardMantenimientoRepository DashboardMantenimiento { get; }
         IDashboardAuditoriaRepository DashboardAuditoria { get; }
+        IDashboardSINMIRepository DashboardSINMI { get; }
         IMantenimientoRepository Mantenimiento { get; }
         IModeloRepository Modelo { get; }
         IPlantaRepository Planta { get; }

@@ -382,7 +382,7 @@ namespace Net.Data
                 tbl.AddCell(c1);
                 doc.Add(tbl);
 
-                tbl = new PdfPTable(new float[] { 10f, 33f,  7f, 10f, 10f, 10f, 10f, 10f }) { WidthPercentage = 100 };
+                tbl = new PdfPTable(new float[] { 10f, 25f, 7f, 8f, 7f, 7f, 7f, 7f, 7f ,7f, 8f }) { WidthPercentage = 100 };
                 c1 = new PdfPCell();
 
                 c1 = new PdfPCell(new Phrase("Órgano", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
@@ -394,11 +394,20 @@ namespace Net.Data
                 c1 = new PdfPCell(new Phrase("Score", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                 c1.Rowspan = 2;
                 tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("Factor", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Rowspan = 2;
+                tbl.AddCell(c1);
                 c1 = new PdfPCell();
                 c1 = new PdfPCell(new Phrase("AVES", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                 c1.Colspan = 5;
                 tbl.AddCell(c1);
                 c1 = new PdfPCell();
+                c1 = new PdfPCell(new Phrase("Media", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Rowspan = 2;
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("Media x Factor", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Rowspan = 2;
+                tbl.AddCell(c1);
 
                 c1 = new PdfPCell(new Phrase("1", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                 tbl.AddCell(c1);
@@ -410,6 +419,14 @@ namespace Net.Data
                 tbl.AddCell(c1);
                 c1 = new PdfPCell(new Phrase("5", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                 tbl.AddCell(c1);
+
+                decimal media = 0;
+                decimal mediaFactor = 0;
+                decimal suma = 0;
+                decimal pesoHigadoTotal = 0;
+                decimal pesoTotal = 0;
+                BaseColor baseColorPrincipal;
+                string texto;
 
                 var v_DescripcionOrgano = string.Empty;
 
@@ -430,30 +447,338 @@ namespace Net.Data
                     c1 = new PdfPCell(new Phrase(detalle.Score, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
                     tbl.AddCell(c1);
-                    c1 = new PdfPCell(new Phrase(detalle.Ave1.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    c1 = new PdfPCell(new Phrase(detalle.FactorImpacto.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
                     tbl.AddCell(c1);
-                    c1 = new PdfPCell(new Phrase(detalle.Ave2.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+
+                    //Colores Tabla principal Duodeno, Yeyuno y Ciego
+                    if (detalle.DescripcionOrgano=="Duodeno" && detalle.DescripcionOrganoDetalle.Contains("Lesiones"))
+                    {
+                        baseColorPrincipal= new BaseColor(204, 236, 255);
+                    }
+                    else if (detalle.DescripcionOrgano == "Yeyuno" && detalle.DescripcionOrganoDetalle.Contains("Lesiones"))
+                    {
+                        baseColorPrincipal = new BaseColor(255, 192, 0);
+                    }
+                    else if (detalle.DescripcionOrgano == "Ciego" && detalle.DescripcionOrganoDetalle.Contains("Lesiones"))
+                    {
+                        baseColorPrincipal = new BaseColor(255, 255, 0);
+                    }
+                    else
+                    {
+                        baseColorPrincipal = null;
+                    }
+
+                    c1 = new PdfPCell(new Phrase(detalle.Ave1.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorPrincipal };
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
                     tbl.AddCell(c1);
-                    c1 = new PdfPCell(new Phrase(detalle.Ave3.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    c1 = new PdfPCell(new Phrase(detalle.Ave2.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorPrincipal };
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
                     tbl.AddCell(c1);
-                    c1 = new PdfPCell(new Phrase(detalle.Ave4.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    c1 = new PdfPCell(new Phrase(detalle.Ave3.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorPrincipal };
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
                     tbl.AddCell(c1);
-                    c1 = new PdfPCell(new Phrase(detalle.Ave5.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    c1 = new PdfPCell(new Phrase(detalle.Ave4.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorPrincipal };
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
+                    c1 = new PdfPCell(new Phrase(detalle.Ave5.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorPrincipal };
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
+                    //Calculo de la media - media x factor - Suma de media x factor
+                    media = ((detalle.Ave1 + detalle.Ave2 + detalle.Ave3 + detalle.Ave4 + detalle.Ave5) / 5);
+                    mediaFactor = media * detalle.FactorImpacto;
+                    suma += mediaFactor;
+                    //
+                    //Suma de pesos
+                    if (detalle.DescripcionOrgano == "Peso")
+                    {
+                        pesoTotal = (detalle.Ave1 + detalle.Ave2 + detalle.Ave3 + detalle.Ave4 + detalle.Ave5);
+                    }
+                    if (detalle.DescripcionOrgano == "Hígado" && detalle.DescripcionOrganoDetalle == "Peso (gr.)")
+                    {
+                        pesoHigadoTotal = (detalle.Ave1 + detalle.Ave2 + detalle.Ave3 + detalle.Ave4 + detalle.Ave5);
+                    }
+                    //
+                    texto = media.ToString();
+                    if (detalle.FlgMedia == false) texto = "-";
+                    c1 = new PdfPCell(new Phrase(texto, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                    tbl.AddCell(c1);
+                    texto = mediaFactor.ToString();
+                    if (detalle.FlgMedia == false) texto = "-";
+                    c1 = new PdfPCell(new Phrase(texto, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
                     c1.HorizontalAlignment = Element.ALIGN_CENTER;
                     tbl.AddCell(c1);
 
                     v_DescripcionOrgano = detalle.DescripcionOrgano;
                 }
-                // Agamos una lina en blanco
+                //Suma de media x factor
+                c1 = new PdfPCell(new Phrase("Score final(SUMA)", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Rowspan = 1;
+                c1.Colspan = 10;
+                c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                tbl.AddCell(c1);
+
+                c1 = new PdfPCell(new Phrase(suma.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Rowspan = 1;
+                c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                tbl.AddCell(c1);
+                //
+                // Hagamos una linea en blanco
                 c1.Phrase = new Phrase(" ", parrafoNegro);
                 c1.Colspan = 8;
                 c1.Border = 0;
                 tbl.AddCell(c1);
                 doc.Add(tbl);
+                
+                tbl = new PdfPTable(new float[] { 100f }) { WidthPercentage = 100f };
+                c1 = new PdfPCell();
+                c1.Phrase = new Phrase("A. ÍNDICE HEPÁTICO", subTitulo);
+                c1.PaddingBottom = 8f;
+                c1.Border = 0;
+                c1.VerticalAlignment = Element.ALIGN_MIDDLE;
+                tbl.AddCell(c1);
+                doc.Add(tbl);
+
+                //Tabla Indice Hepatico
+
+                const decimal INDICE_HEPATICO_ESPERADO = 3.00M;
+                BaseColor baseColor;
+                decimal indiceHepatico = pesoTotal == 0 ? 0.00M : decimal.Round((pesoHigadoTotal / pesoTotal) * 100,2);
+
+                tbl = new PdfPTable(new float[] { 35f , 15f  }) { WidthPercentage = 50f };
+                tbl.HorizontalAlignment = Element.ALIGN_LEFT;
+                c1 = new PdfPCell();
+
+                c1 = new PdfPCell(new Phrase("Suma de pesos corporal (g)", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Colspan = 1;
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase(pesoTotal.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+
+                c1 = new PdfPCell(new Phrase("Suma de peso hígado (g)", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Colspan = 1;
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase(pesoHigadoTotal.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+
+                if (indiceHepatico > INDICE_HEPATICO_ESPERADO)
+                {
+                    baseColor = new BaseColor(255,0,0);
+                }
+                else
+                {
+                    baseColor = new BaseColor(57,255,20);
+                }
+
+                c1 = new PdfPCell(new Phrase("Índice hepático", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Colspan = 1;
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase(indiceHepatico.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColor };
+                tbl.AddCell(c1);
+
+                c1 = new PdfPCell(new Phrase("Índice hepático esperado", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Colspan = 1;
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase(INDICE_HEPATICO_ESPERADO.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                doc.Add(tbl);
+                //
+
+                tbl = new PdfPTable(new float[] { 100f }) { WidthPercentage = 100f };
+                c1 = new PdfPCell();
+                c1.Phrase = new Phrase("B. LESIONES CAUSADAS POR EIMERIA SPP", subTitulo);
+                c1.PaddingBottom = 8f;
+                c1.Border = 0;
+                c1.VerticalAlignment = Element.ALIGN_MIDDLE;
+                tbl.AddCell(c1);
+                doc.Add(tbl);
+
+                //Tabla lesiones causadas por Eimera SPP
+                tbl = new PdfPTable(new float[] { 30f ,10f ,10f ,10f ,10f ,10f ,20f }) { WidthPercentage = 100f };
+                tbl.HorizontalAlignment = Element.ALIGN_LEFT;
+                c1 = new PdfPCell();
+
+                c1 = new PdfPCell(new Phrase("Aves", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("1", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("2", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("3", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("4", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("5", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("Total", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+
+                decimal totalEimera = 0;
+                decimal sumaEimera = 0;
+                BaseColor baseColorEimeria;
+                decimal[] especie = new decimal[3];
+
+                foreach (var detalle in item.ListaTxSINMIDetalle)
+                {
+                    if (detalle.DescripcionOrgano == "Duodeno" && detalle.DescripcionOrganoDetalle.Contains("Lesiones"))
+                    {
+                        baseColorEimeria = new BaseColor(204, 236, 255);
+                        c1 = new PdfPCell(new Phrase("Duodeno (I. anterior)", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave1.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave2.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave3.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave4.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave5.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+
+                        totalEimera = (detalle.Ave1 + detalle.Ave2 + detalle.Ave3 + detalle.Ave4 + detalle.Ave5);
+                        sumaEimera += totalEimera;
+                        especie[0] = totalEimera;
+                        
+
+                        c1 = new PdfPCell(new Phrase(totalEimera.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                    }
+
+                    if (detalle.DescripcionOrgano == "Yeyuno" && detalle.DescripcionOrganoDetalle.Contains("Lesiones"))
+                    {
+                        baseColorEimeria = new BaseColor(255, 192, 0);
+                        c1 = new PdfPCell(new Phrase("Yeyuno (I. medio)", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave1.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave2.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave3.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave4.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave5.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+
+                        totalEimera = (detalle.Ave1 + detalle.Ave2 + detalle.Ave3 + detalle.Ave4 + detalle.Ave5);
+                        sumaEimera += totalEimera;
+                        especie[1] = totalEimera;
+
+                        c1 = new PdfPCell(new Phrase(totalEimera.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                    }
+
+                    if (detalle.DescripcionOrgano == "Ciego" && detalle.DescripcionOrganoDetalle.Contains("Lesiones"))
+                    {
+                        baseColorEimeria = new BaseColor(255, 255, 0);
+                        c1 = new PdfPCell(new Phrase("Ciego (I. posterior)", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave1.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave2.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave3.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave4.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1 = new PdfPCell(new Phrase(detalle.Ave5.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE, BackgroundColor = baseColorEimeria };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+
+                        totalEimera = (detalle.Ave1 + detalle.Ave2 + detalle.Ave3 + detalle.Ave4 + detalle.Ave5);
+                        sumaEimera += totalEimera;
+                        especie[2] = totalEimera;
+
+                        c1 = new PdfPCell(new Phrase(totalEimera.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                    }
+                }
+                c1 = new PdfPCell(new Phrase("Suma", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Colspan = 6;
+                tbl.AddCell(c1);
+
+                c1 = new PdfPCell(new Phrase(sumaEimera.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Colspan = 6;
+                tbl.AddCell(c1);
+
+                c1 = new PdfPCell(new Phrase("Especie predominante*", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Colspan = 2;
+                tbl.AddCell(c1);
+
+                decimal duodeno = especie[0];
+                decimal yeyuno = especie[1];
+                decimal ciego = especie[2];
+                string especieEimeria = "";
+
+                Array.Sort(especie);
+
+                if (especie[2] == duodeno) especieEimeria += " E. acervulina ";
+                if (especie[2] == yeyuno) especieEimeria += " E. máxima ";
+                if (especie[2] == ciego) especieEimeria += " E. tenella ";
+
+
+                c1 = new PdfPCell(new Phrase(especieEimeria , parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Colspan = 2;
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("Score", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                c1.Colspan = 2;
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase((sumaEimera/15).ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+
+                doc.Add(tbl);
+                //
+
+                tbl = new PdfPTable(new float[] { 100f }) { WidthPercentage = 100f };
+                c1 = new PdfPCell();
+                c1.Phrase = new Phrase("EIMERIA SPP", subTitulo);
+                c1.PaddingBottom = 8f;
+                c1.Border = 0;
+                c1.VerticalAlignment = Element.ALIGN_MIDDLE;
+                tbl.AddCell(c1);
+                doc.Add(tbl);
+
+                //Tabla Especie predominante Eimeria
+                tbl = new PdfPTable(new float[] { 20f, 20f }) { WidthPercentage = 40f };
+                tbl.HorizontalAlignment = Element.ALIGN_LEFT;
+                c1 = new PdfPCell();
+
+                c1 = new PdfPCell(new Phrase("Duodeno", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("E. acervulina", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+
+                c1 = new PdfPCell(new Phrase("Yeyuno", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("E. máxima", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+
+                c1 = new PdfPCell(new Phrase("Ciego", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+                c1 = new PdfPCell(new Phrase("E. tenella", parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                tbl.AddCell(c1);
+
+                doc.Add(tbl);
+                //
 
                 tbl = new PdfPTable(new float[] { 100f }) { WidthPercentage = 100f };
                 c1 = new PdfPCell();
@@ -487,7 +812,7 @@ namespace Net.Data
                 {
 
                     tbl = new PdfPTable(new float[] { 50f, 50f }) { WidthPercentage = 100f };
-                    c1 = new PdfPCell();
+                    c1 = new PdfPCell(); 
                     c1.Phrase = new Phrase("FOTOS", subTitulo);
                     c1.Colspan = 2;
                     c1.Border = 0;

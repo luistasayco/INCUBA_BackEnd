@@ -8,6 +8,7 @@ namespace Net.Data
 
         private IDashboardFormularioRepository _DashboardFormulario;
         private IDashboardAuditoriaRepository _DashboardAuditoria;
+        private IDashboardSINMIRepository _DashboardSINMI;
         private IDashboardRepository _Dashboard;
         private IDashboardMantenimientoRepository _DashboardMantenimiento;
         private ICalidadRepository _Calidad;
@@ -507,6 +508,18 @@ namespace Net.Data
                     _DashboardFormulario = new DashboardFormularioRepository(_repoContext);
                 }
                 return _DashboardFormulario;
+            }
+        }
+
+        public IDashboardSINMIRepository DashboardSINMI
+        {
+            get
+            {
+                if (_DashboardSINMI == null)
+                {
+                    _DashboardSINMI = new DashboardSINMIRepository(_repoContext);
+                }
+                return _DashboardSINMI;
             }
         }
     }

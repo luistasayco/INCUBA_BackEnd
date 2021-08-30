@@ -220,6 +220,13 @@
             <param name="value">Recibe los paramtros de filtro</param>
             <returns></returns>
         </member>
+        <member name="M:Net.Business.Services.Controllers.DashboardSINMIController.GetAll(Net.Business.DTO.DtoFindDashboardSINMI)">
+            <summary>
+            Metodo que obtiene los datos de SIM/SINMI filtrados
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
         <member name="M:Net.Business.Services.Controllers.EmpresaController.GetAll(Net.Business.DTO.DtoFindEmpresa)">
             <summary>
             Obtener lista de Empresa
