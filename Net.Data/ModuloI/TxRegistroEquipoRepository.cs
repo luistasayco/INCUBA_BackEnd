@@ -717,80 +717,83 @@ namespace Net.Data
 
                 xFila = 1;
 
-                var itemRepuesto = item.TxRegistroEquipoDetalle2.FirstOrDefault().CodigoRepuesto;
-
-                List<BE_TxRegistroEquipoDetalle2> listHeader2 = item.TxRegistroEquipoDetalle2.FindAll(x => x.CodigoRepuesto == itemRepuesto);
-
-                foreach (var detalle2 in listHeader2)
+                if (item.TxRegistroEquipoDetalle2.Count > 0)
                 {
-                    if (xFila == 1)
+
+                    var itemRepuesto = item.TxRegistroEquipoDetalle2.FirstOrDefault().CodigoRepuesto;
+
+                    List<BE_TxRegistroEquipoDetalle2> listHeader2 = item.TxRegistroEquipoDetalle2.FindAll(x => x.CodigoRepuesto == itemRepuesto);
+
+                    foreach (var detalle2 in listHeader2)
                     {
-                        CellMaster = new PdfPCell(new Phrase("Item", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        if (xFila == 1)
+                        {
+                            CellMaster = new PdfPCell(new Phrase("Item", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                            CellMaster.Rotation = 90;
+                            tbl.AddCell(CellMaster);
+                            CellMaster = new PdfPCell(new Phrase("Código", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                            CellMaster.Colspan = 2;
+                            tbl.AddCell(CellMaster);
+                            CellMaster = new PdfPCell(new Phrase("Descripción", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                            CellMaster.Colspan = 6;
+                            tbl.AddCell(CellMaster);
+                            CellMaster = new PdfPCell(new Phrase("M/P", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                            CellMaster.Rotation = 90;
+                            tbl.AddCell(CellMaster);
+                            CellMaster = new PdfPCell(new Phrase("R/F/C", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                            CellMaster.Rotation = 90;
+                            tbl.AddCell(CellMaster);
+                        }
+
+                        CellMaster = new PdfPCell(new Phrase(detalle2.CodigoEquipo, parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
                         CellMaster.Rotation = 90;
                         tbl.AddCell(CellMaster);
-                        CellMaster = new PdfPCell(new Phrase("Código", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
-                        CellMaster.Colspan = 2;
-                        tbl.AddCell(CellMaster);
-                        CellMaster = new PdfPCell(new Phrase("Descripción", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
-                        CellMaster.Colspan = 6;
-                        tbl.AddCell(CellMaster);
-                        CellMaster = new PdfPCell(new Phrase("M/P", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
-                        CellMaster.Rotation = 90;
-                        tbl.AddCell(CellMaster);
-                        CellMaster = new PdfPCell(new Phrase("R/F/C", parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
-                        CellMaster.Rotation = 90;
-                        tbl.AddCell(CellMaster);
+
+                        xFila = xFila + 1;
                     }
 
-                    CellMaster = new PdfPCell(new Phrase(detalle2.CodigoEquipo, parrafoBlanco)) { BackgroundColor = new BaseColor(103, 93, 152), HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
-                    CellMaster.Rotation = 90;
-                    tbl.AddCell(CellMaster);
+                    xFila = 1;
+                    xSecuencia = 1;
+                    foreach (var detalle2 in item.TxRegistroEquipoDetalle2)
+                    {
+                        if (xFila == 1)
+                        {
+                            CellMaster = new PdfPCell(new Phrase(xSecuencia.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                            tbl.AddCell(CellMaster);
+                            CellMaster = new PdfPCell(new Phrase(detalle2.CodigoRepuesto, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                            CellMaster.Colspan = 2;
+                            tbl.AddCell(CellMaster);
+                            CellMaster = new PdfPCell(new Phrase(detalle2.Descripcion, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
+                            CellMaster.Colspan = 6;
+                            CellMaster.FixedHeight = 25f;
+                            tbl.AddCell(CellMaster);
+                            CellMaster = new PdfPCell(new Phrase(detalle2.Mp, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                            tbl.AddCell(CellMaster);
+                            CellMaster = new PdfPCell(new Phrase(detalle2.Rfc, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                            tbl.AddCell(CellMaster);
+                            xSecuencia = xSecuencia + 1;
+                        }
 
-                    xFila = xFila + 1;
+                        CellMaster = new PdfPCell(new Phrase(detalle2.FlgValor ? "a" : "", parrafoNegroWebdings)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
+                        CellMaster.Rotation = 0;
+                        if (!detalle2.FlgValor)
+                        {
+                            CellMaster.BackgroundColor = BaseColor.Red;
+                        }
+                        tbl.AddCell(CellMaster);
+
+                        if (xFila == CountItemHeader)
+                        {
+                            xFila = 0;
+                        }
+
+                        xFila = xFila + 1;
+                    }
+
+                    doc.Add(tbl);
+
+                    doc.Add(new Phrase(" "));
                 }
-
-                xFila = 1;
-                xSecuencia = 1;
-                foreach (var detalle2 in item.TxRegistroEquipoDetalle2)
-                {
-                    if (xFila == 1)
-                    {
-                        CellMaster = new PdfPCell(new Phrase(xSecuencia.ToString(), parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
-                        tbl.AddCell(CellMaster);
-                        CellMaster = new PdfPCell(new Phrase(detalle2.CodigoRepuesto, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
-                        CellMaster.Colspan = 2;
-                        tbl.AddCell(CellMaster);
-                        CellMaster = new PdfPCell(new Phrase(detalle2.Descripcion, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_LEFT, VerticalAlignment = Element.ALIGN_MIDDLE };
-                        CellMaster.Colspan = 6;
-                        CellMaster.FixedHeight = 25f;
-                        tbl.AddCell(CellMaster);
-                        CellMaster = new PdfPCell(new Phrase(detalle2.Mp, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
-                        tbl.AddCell(CellMaster);
-                        CellMaster = new PdfPCell(new Phrase(detalle2.Rfc, parrafoNegro)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
-                        tbl.AddCell(CellMaster);
-                        xSecuencia = xSecuencia + 1;
-                    }
-
-                    CellMaster = new PdfPCell(new Phrase(detalle2.FlgValor ? "a" : "", parrafoNegroWebdings)) { HorizontalAlignment = Element.ALIGN_CENTER, VerticalAlignment = Element.ALIGN_MIDDLE };
-                    CellMaster.Rotation = 0;
-                    if (!detalle2.FlgValor)
-                    {
-                        CellMaster.BackgroundColor = BaseColor.Red;
-                    }
-                    tbl.AddCell(CellMaster);
-
-                    if (xFila == CountItemHeader)
-                    {
-                        xFila = 0;
-                    }
-
-                    xFila = xFila + 1;
-                }
-
-                doc.Add(tbl);
-
-                doc.Add(new Phrase(" "));
-
                 doc.Add(new Phrase("Resumen de mantenimiento", subTitulo));
 
                 doc.Add(new Phrase(" "));

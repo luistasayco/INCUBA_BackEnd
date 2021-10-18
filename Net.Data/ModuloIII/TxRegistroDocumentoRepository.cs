@@ -23,6 +23,7 @@ namespace Net.Data
         const string DB_ESQUEMA = "DBO.";
         const string SP_GET = DB_ESQUEMA + "EXT_GetTxRegistroDocumentoPorFiltro";
         const string SP_GET_EMPRESA_X_USUARIO = DB_ESQUEMA + "EXT_GetTxRegistroDocumentoEmpresa";
+        const string SP_GET_PLANTA_X_USUARIO = DB_ESQUEMA + "SEG_GetPlantaPorIdUsuario";
         const string SP_GET_ID = DB_ESQUEMA + "EXT_GetTxRegistroDocumentoPorId";
         const string SP_GET_ID_DOCUMENTO = DB_ESQUEMA + "EXT_GetTxRegistroDocumentoPorIdDocumento";
         const string SP_INSERT = DB_ESQUEMA + "EXT_SetTxRegistroDocumentoInsert";

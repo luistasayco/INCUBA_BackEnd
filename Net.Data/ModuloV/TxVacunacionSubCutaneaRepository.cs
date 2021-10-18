@@ -1235,42 +1235,45 @@ namespace Net.Data
 
                 foreach (BE_TxVacunacionSubCutaneaPromedio itemControl in item.ListarTxVacunacionSubCutaneaPromedio)
                 {
-                    c1 = new PdfPCell();
-                    c1.Phrase = new Phrase(itemControl.NombreVacunador.ToString(), parrafoNegro);
-                    c1.BackgroundColor = new BaseColor(184, 182, 181);
-                    c1.HorizontalAlignment = Element.ALIGN_LEFT;
-                    tbl.AddCell(c1);
-                    c1.Phrase = new Phrase(decimal.Round(itemControl.VacunadoPorHora,1).ToString(), parrafoNegro);
-                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
-                    tbl.AddCell(c1);
-                    c1.Phrase = new Phrase(decimal.Round(itemControl.PuntajeProductividad,1).ToString(), parrafoNegro);
-                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
-                    tbl.AddCell(c1);
-                    c1.Phrase = new Phrase(decimal.Round(itemControl.Controlados,1).ToString(), parrafoNegro);
-                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
-                    tbl.AddCell(c1);
-                    c1.Phrase = new Phrase(decimal.Round(itemControl.SinVacunar,1).ToString(), parrafoNegro);
-                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
-                    tbl.AddCell(c1);
-                    c1.Phrase = new Phrase(decimal.Round(itemControl.Heridos,1).ToString(), parrafoNegro);
-                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
-                    tbl.AddCell(c1);
-                    c1.Phrase = new Phrase(decimal.Round(itemControl.Mojados,1).ToString(), parrafoNegro);
-                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
-                    tbl.AddCell(c1);
-                    c1.Phrase = new Phrase(decimal.Round(itemControl.MalaPosicion,1).ToString(), parrafoNegro);
-                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
-                    tbl.AddCell(c1);
-                    c1.Phrase = new Phrase(decimal.Round(itemControl.VacunadoCorrectos,1).ToString(), parrafoNegro);
-                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
-                    tbl.AddCell(c1);
-                    c1.Phrase = new Phrase(decimal.Round(itemControl.PorcentajeEficiencia,1).ToString(), parrafoNegro);
-                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
-                    tbl.AddCell(c1);
-                    c1.Phrase = new Phrase(decimal.Round(itemControl.PuntajeEficiencia,1).ToString(), parrafoNegro);
-                    c1.HorizontalAlignment = Element.ALIGN_CENTER;
-                    tbl.AddCell(c1);
+                    if (!itemControl.NombreVacunador.Trim().Equals("Sumatoria"))
+                    {
+                        c1 = new PdfPCell();
+                        c1.Phrase = new Phrase(itemControl.NombreVacunador.ToString(), parrafoNegro);
+                        c1.BackgroundColor = new BaseColor(184, 182, 181);
+                        c1.HorizontalAlignment = Element.ALIGN_LEFT;
+                        tbl.AddCell(c1);
+                        c1.Phrase = new Phrase(decimal.Round(itemControl.VacunadoPorHora, 1).ToString(), parrafoNegro);
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1.Phrase = new Phrase(decimal.Round(itemControl.PuntajeProductividad, 1).ToString(), parrafoNegro);
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1.Phrase = new Phrase(decimal.Round(itemControl.Controlados, 1).ToString(), parrafoNegro);
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1.Phrase = new Phrase(decimal.Round(itemControl.SinVacunar, 1).ToString(), parrafoNegro);
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1.Phrase = new Phrase(decimal.Round(itemControl.Heridos, 1).ToString(), parrafoNegro);
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1.Phrase = new Phrase(decimal.Round(itemControl.Mojados, 1).ToString(), parrafoNegro);
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1.Phrase = new Phrase(decimal.Round(itemControl.MalaPosicion, 1).ToString(), parrafoNegro);
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1.Phrase = new Phrase(decimal.Round(itemControl.VacunadoCorrectos, 1).ToString(), parrafoNegro);
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1.Phrase = new Phrase(decimal.Round(itemControl.PorcentajeEficiencia, 1).ToString(), parrafoNegro);
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
+                        c1.Phrase = new Phrase(decimal.Round(itemControl.PuntajeEficiencia, 1).ToString(), parrafoNegro);
+                        c1.HorizontalAlignment = Element.ALIGN_CENTER;
+                        tbl.AddCell(c1);
 
+                    }
                     if (itemControl.NombreVacunador.Trim().Equals("Promedio"))
                     {
                         modeloPromedio = itemControl;
@@ -1308,10 +1311,11 @@ namespace Net.Data
                 tbl.AddCell(c1);
 
                 c1 = new PdfPCell();
-                c1.Phrase = new Phrase("Resultado dentro de +50% y -10% de la media", parrafoNegro);
+                c1.Phrase = new Phrase("Resultado dentro de -10% de la media", parrafoNegro);
                 c1.HorizontalAlignment = Element.ALIGN_LEFT;
                 tbl.AddCell(c1);
-                c1.Phrase = new Phrase(string.Format("({0} - {1})", decimal.Round(modeloPromedio.VacunadoPorHora - (modeloPromedio.VacunadoPorHora * 0.1M),0), decimal.Round(modeloPromedio.VacunadoPorHora + (modeloPromedio.VacunadoPorHora * 0.5M)),0), parrafoNegro);
+                //c1.Phrase = new Phrase(string.Format("({0} - {1})", decimal.Round(modeloPromedio.VacunadoPorHora - (modeloPromedio.VacunadoPorHora * 0.1M),0), decimal.Round(modeloPromedio.VacunadoPorHora + (modeloPromedio.VacunadoPorHora * 0.5M)),0), parrafoNegro);
+                c1.Phrase = new Phrase(string.Format("({0}>)", decimal.Round(modeloPromedio.VacunadoPorHora - (modeloPromedio.VacunadoPorHora * 0.1M), 0)), parrafoNegro);
                 c1.HorizontalAlignment = Element.ALIGN_CENTER;
                 tbl.AddCell(c1);
                 c1.Phrase = new Phrase("1.0 punto", parrafoNegro);
