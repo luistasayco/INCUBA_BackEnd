@@ -7,6 +7,6 @@ namespace Net.Data
 {
     public interface IDashboardAuditoriaRepository : IRepositoryBase<BE_DashboardAuditoria>
     {
-        Task<IEnumerable<BE_DashboardAuditoria>> GetAll(FE_DashboardAuditoriaPorFiltro entidad);
+        Task<IEnumerable<BE_DashboardAuditoria>> GetAll(BE_Xml entidad);
     }
 }

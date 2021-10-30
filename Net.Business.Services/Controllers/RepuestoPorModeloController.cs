@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Net.Business.DTO;
 using Net.Data;
+using Newtonsoft.Json;
 
 namespace Net.Business.Services.Controllers
 {
@@ -57,6 +58,26 @@ namespace Net.Business.Services.Controllers
         {
 
             var objectGetAll = await _repository.RepuestoPorModelo.GetAllSeleccionado(value.RepuestoPorModelo());
+
+            if (objectGetAll == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(objectGetAll);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetXmlSeleccionado([FromQuery] string value)
+        {
+            DtoXmlRepuestoPorModelo data = new DtoXmlRepuestoPorModelo
+            {
+                ListCodigoModelo = JsonConvert.DeserializeObject<List<DtoModelo>>(value)
+            };
+
+            var objectGetAll = await _repository.RepuestoPorModelo.GetXmlSeleccionado(data.General());
 
             if (objectGetAll == null)
             {

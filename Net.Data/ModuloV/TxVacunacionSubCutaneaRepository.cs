@@ -490,7 +490,7 @@ namespace Net.Data
                 return vResultadoTransaccion;
             }
 
-            var memory = new MemoryStream();
+            MemoryStream memory = new MemoryStream();
             try
             {
                 var memoryPDF = await GenerarPDF(new BE_TxVacunacionSubCutanea { IdVacunacionSubCutanea = entidad.IdVacunacionSubCutanea });
@@ -503,7 +503,7 @@ namespace Net.Data
                 return vResultadoTransaccion;
             }
 
-
+            memory.Position = 0;
             var data = context.ExecuteSqlViewId<BE_TxVacunacionSubCutanea>(SP_GET_ID_GOOGLE_DRIVE, new BE_TxVacunacionSubCutanea { IdVacunacionSubCutanea = entidad.IdVacunacionSubCutanea });
             var nameFile = string.Format("{0}.{1}", data.NombreArchivo, "pdf");
 
@@ -511,7 +511,7 @@ namespace Net.Data
             {
                 EmailSenderRepository emailSenderRepository = new EmailSenderRepository(context);
                 var mensaje = string.Format("Se envía informe de Vacunación SubCutanea - N° {0}", entidad.IdVacunacionSubCutanea);
-                await emailSenderRepository.SendEmailAsync(data.EmailTo, "Correo Automatico - Vacunación SubCutanea", mensaje, new BE_MemoryStream { FileMemoryStream = memory }, nameFile);
+                await emailSenderRepository.SendEmailAsync(data.EmailTo, "Correo Automatico - Vacunación SubCutanea", mensaje, new BE_MemoryStream { FileMemoryStream = memory}, nameFile);
             }
             catch (Exception ex)
             {
@@ -713,7 +713,7 @@ namespace Net.Data
                 tbl.AddCell(c1);
                 c1.Phrase = new Phrase("D", Boolean.Parse(item.FlgDomingo.ToString()) ? parrafoNegrita : parrafoNegro);
                 tbl.AddCell(c1);
-                c1.Phrase = new Phrase("Pollos/dia(promedio)", parrafoNegro);
+                c1.Phrase = new Phrase("Pollos/día(promedio)", parrafoNegro);
                 tbl.AddCell(c1);
                 c1.Phrase = new Phrase(item.PromedioPollos.ToString(), parrafoNegro);
                 tbl.AddCell(c1);
@@ -810,7 +810,7 @@ namespace Net.Data
                 tbl.AddCell(c1);
                 c1.Phrase = new Phrase(item.NombreAntibiotico, parrafoNegro);
                 tbl.AddCell(c1);
-                c1.Phrase = new Phrase("Dósisi: ", parrafoNegro);
+                c1.Phrase = new Phrase("Dosis: ", parrafoNegro);
                 tbl.AddCell(c1);
                 c1.Phrase = new Phrase(item.DosisAntibiotico, parrafoNegro);
                 tbl.AddCell(c1);

@@ -330,7 +330,7 @@ namespace Net.Data
              */
 
             using (FileStream
-            fileStream = new FileStream("\\\\SERVIDOR96\\Users\\adminauditoria\\Documents\\Auditoria\\Invetsa\\assets\\file-pdf\\" + nombreAleatorio + ".pdf", FileMode.Create))
+            fileStream = new FileStream("\\\\SERVIDOR96\\Users\\adminauditoria\\Documents\\Auditoria\\fileExtranet\\" + nombreAleatorio + ".pdf", FileMode.Create))
             {
                 // Write the data to the file, byte by byte.
                 for (int i = 0; i < bytes.Length; i++)

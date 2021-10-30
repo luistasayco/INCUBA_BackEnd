@@ -10,6 +10,7 @@ namespace Net.Data
         const string DB_ESQUEMA = "DBO.";
         const string SP_GET = DB_ESQUEMA + "INC_GetEquipoAll";
         const string SP_GET_POR_FILTROS = DB_ESQUEMA + "INC_GetEquipoPorFiltro";
+        const string SP_GET_POR_FILTROS_XML = DB_ESQUEMA + "INC_GetEquipoPorFiltroXml";
 
         public EquipoRepository(IConnectionSQL context)
             : base(context)
@@ -23,6 +24,11 @@ namespace Net.Data
         public Task<IEnumerable<BE_Equipo>> GetAllPorFiltros(BE_General entidad)
         {
             return Task.Run(() => context.ExecuteSqlViewFindByCondition<BE_Equipo>(SP_GET_POR_FILTROS, entidad));
+        }
+
+        public Task<IEnumerable<BE_Equipo>> GetAllXmlPorFiltros(BE_Xml entidad)
+        {
+            return Task.Run(() => context.ExecuteSqlViewFindByCondition<BE_Equipo>(SP_GET_POR_FILTROS_XML, entidad));
         }
     }
 }

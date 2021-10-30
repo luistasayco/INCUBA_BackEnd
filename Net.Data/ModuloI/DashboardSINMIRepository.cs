@@ -15,7 +15,7 @@ namespace Net.Data
         {
         }
 
-        public Task<IEnumerable<BE_DashboardSINMI>> GetAll(FE_DashboardSINMIPorFiltro entidad)
+        public Task<IEnumerable<BE_DashboardSINMI>> GetAll(BE_Xml entidad)
         {
             return Task.Run(() => FindByCondition(entidad, SP_GET_ALL));
         }

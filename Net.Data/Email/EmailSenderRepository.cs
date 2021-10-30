@@ -2,8 +2,10 @@
 using Net.Connection;
 using Net.CrossCotting;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Mail;
+using System.Net.Mime;
 using System.Threading.Tasks;
 
 namespace Net.Data
@@ -124,10 +126,12 @@ namespace Net.Data
             {
                 correo.To.Add(item);
             }
+            
 
             correo.IsBodyHtml = true;
-            //correo.Attachments.Add(new Attachment(archivo.FileMemoryStream, archivo.NameFile));
-            correo.Attachments.Add(new Attachment(archivo.FileMemoryStream, nameFile, "application/pdf"));
+            //correo.Attachments.Add(new Attachment(archivo.FileMemoryStream, nameFile));
+            correo.Attachments.Add(new Attachment(new MemoryStream(archivo.FileMemoryStream.ToArray()), nameFile));
+            //correo.Attachments.Add(new Attachment(nameFile, archivo.FileMemoryStream.ToArray()));
             return Cliente.SendMailAsync(correo);
         }
     }

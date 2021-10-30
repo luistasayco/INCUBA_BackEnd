@@ -7,6 +7,6 @@ namespace Net.Data
 {
     public interface IDashboardMantenimientoRepository : IRepositoryBase<BE_DashboardMantenimiento>
     {
-        Task<IEnumerable<BE_DashboardMantenimiento>> GetAll(FE_DashboardMantenimientoPorFiltro entidad);
+        Task<IEnumerable<BE_DashboardMantenimiento>> GetAll(BE_Xml entidad);
     }
 }

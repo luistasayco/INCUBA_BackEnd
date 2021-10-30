@@ -15,7 +15,7 @@ namespace Net.Data
             : base(context) 
         {
         }
-        public Task<IEnumerable<BE_DashboardMantenimiento>> GetAll(FE_DashboardMantenimientoPorFiltro entidad) 
+        public Task<IEnumerable<BE_DashboardMantenimiento>> GetAll(BE_Xml entidad) 
         {
             return Task.Run(() => FindByCondition(entidad, SP_GET_ALL));
         }

@@ -7,6 +7,6 @@ namespace Net.Data
 {
     public interface IDashboardSINMIRepository : IRepositoryBase<BE_DashboardSINMI>
     {
-        Task<IEnumerable<BE_DashboardSINMI>> GetAll(FE_DashboardSINMIPorFiltro entidad);
+        Task<IEnumerable<BE_DashboardSINMI>> GetAll(BE_Xml entidad);
     }
 }

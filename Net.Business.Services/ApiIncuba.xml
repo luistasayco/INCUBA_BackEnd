@@ -192,13 +192,6 @@
             <response code="400">Si el objeto enviado es nulo o invalido</response>
             <response code="409">Si ocurrio un conflicto</response>
         </member>
-        <member name="M:Net.Business.Services.Controllers.DashboardAuditoriaController.GetAll(Net.Business.DTO.DtoFindDashboardAuditoria)">
-            <summary>
-            Metodo que obtiene los datos de auditoria filtrados
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
         <member name="M:Net.Business.Services.Controllers.DashboardController.GetAll(Net.Business.DTO.DtoFindDashboard)">
             <summary>
             Médoto que obtiene los diferentes dashboards
@@ -209,20 +202,6 @@
         <member name="M:Net.Business.Services.Controllers.DashboardFormularioController.GetAll(Net.Business.DTO.DtoFindDashboardFormulario)">
             <summary>
             
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Net.Business.Services.Controllers.DashboardMantenimientoController.GetAll(Net.Business.DTO.DtoFindDashboardMantenimiento)">
-            <summary>
-            Médoto que obtiene el conteo de cdocumento por perido
-            </summary>
-            <param name="value">Recibe los paramtros de filtro</param>
-            <returns></returns>
-        </member>
-        <member name="M:Net.Business.Services.Controllers.DashboardSINMIController.GetAll(Net.Business.DTO.DtoFindDashboardSINMI)">
-            <summary>
-            Metodo que obtiene los datos de SIM/SINMI filtrados
             </summary>
             <param name="value"></param>
             <returns></returns>

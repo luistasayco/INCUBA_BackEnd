@@ -9,6 +9,7 @@ namespace Net.Data
     {
         Task<IEnumerable<BE_Equipo>> GetAll(BE_General entidad);
         Task<IEnumerable<BE_Equipo>> GetAllPorFiltros(BE_General entidad);
+        Task<IEnumerable<BE_Equipo>> GetAllXmlPorFiltros(BE_Xml entidad);
     }
 }
 

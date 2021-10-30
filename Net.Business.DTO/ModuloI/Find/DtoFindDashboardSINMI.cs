@@ -1,38 +1,82 @@
 ﻿using Net.Business.Entities;
+using Net.CrossCotting;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Xml.Serialization;
 
 namespace Net.Business.DTO
 {
+    [DataContract]
+    [Serializable]
+    [XmlRoot("Lista")]
     public class DtoFindDashboardSINMI
     {
-        public string Empresa { get; set; }
-        public string Planta { get; set; }
-        public int ResponsableInvetsa { get; set; }
-        public string ResponsableCompañia { get; set; }
+        [DataMember]
+        [XmlElement(ElementName = "ListEmpresa", Type = typeof(List<DtoEmpresa>))]
+        public List<DtoEmpresa> ListEmpresa { get; set; }
+        [DataMember]
+        [XmlElement(ElementName = "ListPlanta", Type = typeof(List<DtoPlanta>))]
+        public List<DtoPlanta> ListPlanta { get; set; }
+        [DataMember]
+        [XmlElement(ElementName = "ListResponsableInvetsa", Type = typeof(List<DtoResponsableInvetsa>))]
+        public List<DtoResponsableInvetsa> ListResponsableInvetsa { get; set; }
+        [DataMember]
+        [XmlElement(ElementName = "ListResponsablePlanta", Type = typeof(List<DtoResponsablePlanta>))]
+        public List<DtoResponsablePlanta> ListResponsablePlanta { get; set; }
+        [DataMember]
+        [XmlElement(ElementName = "ListLinea", Type = typeof(List<DtoLinea>))]
+        public List<DtoLinea> ListLinea { get; set; }
+        [DataMember]
+        [XmlElement(ElementName = "ListEdad", Type = typeof(List<DtoEdad>))]
+        public List<DtoEdad> ListEdad { get; set; }
+        [DataMember, XmlAttribute]
         public int TipoModulo { get; set; }
-        public string Linea { get; set; }
-        public int Edad { get; set; }
+        [DataMember, XmlAttribute]
         public DateTime FechaInicio { get; set; }
+        [DataMember, XmlAttribute]
         public DateTime FechaFin { get; set; }
+        [DataMember, XmlAttribute]
         public int IdDashboard { get; set; }
+        [DataMember, XmlAttribute]
         public int IdUsuario { get; set; }
 
-        public FE_DashboardSINMIPorFiltro DashboardSINMIPorFiltro() 
+        public BE_Xml General()
         {
-            return new FE_DashboardSINMIPorFiltro
+            var entiDom = new BE_Xml();
+            var ser = new Serializador();
+            var ms = new MemoryStream();
+            ser.SerializarXml(this, ms);
+            entiDom.XmlData = Encoding.UTF8.GetString(ms.ToArray());
+            ms.Dispose();
+
+            return new BE_Xml
             {
-                Empresa = this.Empresa,
-                Planta = this.Planta,
-                ResponsableInvetsa = this.ResponsableInvetsa,
-                ResponsableCompañia = this.ResponsableCompañia,
-                TipoModulo = this.TipoModulo,
-                Linea = this.Linea,
-                Edad = this.Edad,
-                FechaInicio = this.FechaInicio,
-                FechaFin = this.FechaFin,
-                IdDashboard = this.IdDashboard,
-                IdUsuario = this.IdUsuario
+                XmlData = entiDom.XmlData
             };
         }
+    }
+
+    public class DtoEmpresa
+    {
+        [DataMember, XmlAttribute]
+        public string Empresa { get; set; }
+    }
+    public class DtoPlanta
+    {
+        [DataMember, XmlAttribute]
+        public string Planta { get; set; }
+    }
+    public class DtoLinea
+    {
+        [DataMember, XmlAttribute]
+        public string Linea { get; set; }
+    }
+    public class DtoEdad
+    {
+        [DataMember, XmlAttribute]
+        public int Edad { get; set; }
     }
 }

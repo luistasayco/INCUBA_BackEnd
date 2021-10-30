@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Net.Business.DTO;
 using Net.Data;
+using Newtonsoft.Json;
 
 namespace Net.Business.Services.Controllers
 {
@@ -50,6 +51,21 @@ namespace Net.Business.Services.Controllers
         public async Task<IActionResult> GetAllPorFiltros([FromQuery] DtoFindGeneral value)
         {
             var objectGetAll = await _repository.Equipo.GetAllPorFiltros(value.General());
+            return Ok(objectGetAll);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetAllXmlPorFiltros([FromQuery] string listaEmpresaPlanta, string listCodigoModelo)
+        {
+            DtoFindMasivoGeneral value = new DtoFindMasivoGeneral
+            {
+                ListaEmpresaPlanta = JsonConvert.DeserializeObject<List<DtoEmpresaPlanta>>(listaEmpresaPlanta),
+                ListCodigoModelo = JsonConvert.DeserializeObject<List<DtoModelo>>(listCodigoModelo),
+            };
+
+            var objectGetAll = await _repository.Equipo.GetAllXmlPorFiltros(value.General());
             return Ok(objectGetAll);
         }
     }

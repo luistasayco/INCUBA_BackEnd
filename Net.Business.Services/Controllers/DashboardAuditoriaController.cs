@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Net.Data;
+using System;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Net.Business.Services.Controllers
 {
@@ -21,17 +24,27 @@ namespace Net.Business.Services.Controllers
             this._repository = repository;
         }
 
-        /// <summary>
-        /// Metodo que obtiene los datos de auditoria filtrados
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAll([FromQuery] DtoFindDashboardAuditoria value) 
+        public async Task<IActionResult> GetAll([FromQuery]DateTime FechaInicio, DateTime FechaFin, int idDashboard, int tipo, string planta, string responsableInvetsa, string responsablePlanta, string lineaGenetica, string vacunador,int idUsuario) 
         {
-            var objectGetAll = await _repository.DashboardAuditoria.GetAll(value.DashboardAuditoriaPorFiltro());
+
+            DtoFindDashboardAuditoria value = new DtoFindDashboardAuditoria
+            {
+                FechaInicio = FechaInicio,
+                FechaFin = FechaFin,
+                IdDashboard = idDashboard,
+                Tipo = tipo,
+                ListResponsableInvetsa = JsonConvert.DeserializeObject<List<DtoResponsableInvetsa>>(responsableInvetsa),
+                ListResponsablePlanta = JsonConvert.DeserializeObject<List<DtoResponsablePlanta>>(responsablePlanta),
+                ListPlanta = JsonConvert.DeserializeObject<List<DtoEmpresaPlanta>>(planta),
+                ListLineaGenetica = JsonConvert.DeserializeObject<List<DtoLineaGenetica>>(lineaGenetica),
+                ListVacunador = JsonConvert.DeserializeObject<List<DtoVacunador>>(vacunador),
+                IdUsuario = idUsuario,
+            };
+
+            var objectGetAll = await _repository.DashboardAuditoria.GetAll(value.General());
             if (objectGetAll == null)
             {
                 return NotFound();

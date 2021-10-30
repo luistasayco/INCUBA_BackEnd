@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Net.Data;
+using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Net.Business.Services.Controllers
 {
@@ -21,17 +24,29 @@ namespace Net.Business.Services.Controllers
             this._repository = repository;
         }
 
-        /// <summary>
-        /// Metodo que obtiene los datos de SIM/SINMI filtrados
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAll([FromQuery] DtoFindDashboardSINMI value)
+        public async Task<IActionResult> GetAll([FromQuery] string empresa, string planta, string responsableInvetsa, string responsableCompania, 
+            string linea, string edad, int tipoModulo, DateTime fechaInicio, DateTime fechaFin, int idDashboard, int idUsuario)
         {
-            var objectGetAll = await _repository.DashboardSINMI.GetAll(value.DashboardSINMIPorFiltro());
+
+            DtoFindDashboardSINMI value = new DtoFindDashboardSINMI
+            {
+                FechaInicio = fechaInicio,
+                FechaFin = fechaFin,
+                IdDashboard = idDashboard,
+                TipoModulo = tipoModulo,
+                ListResponsableInvetsa = JsonConvert.DeserializeObject<List<DtoResponsableInvetsa>>(responsableInvetsa),
+                ListResponsablePlanta = JsonConvert.DeserializeObject<List<DtoResponsablePlanta>>(responsableCompania),
+                ListEmpresa = JsonConvert.DeserializeObject<List<DtoEmpresa>>(empresa),
+                ListPlanta = JsonConvert.DeserializeObject<List<DtoPlanta>>(planta),
+                ListLinea = JsonConvert.DeserializeObject<List<DtoLinea>>(linea),
+                ListEdad = JsonConvert.DeserializeObject<List<DtoEdad>>(edad),
+                IdUsuario = idUsuario,
+            };
+
+            var objectGetAll = await _repository.DashboardSINMI.GetAll(value.General());
             if (objectGetAll == null)
             {
                 return NotFound();

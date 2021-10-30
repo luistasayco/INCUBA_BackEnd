@@ -9,6 +9,7 @@ namespace Net.Data
     {
         Task<IEnumerable<BE_RepuestoPorModelo>> GetAll(BE_RepuestoPorModelo entidad);
         Task<IEnumerable<BE_RepuestoPorModelo>> GetAllSeleccionado(BE_RepuestoPorModelo entidad);
+        Task<IEnumerable<BE_RepuestoPorModelo>> GetXmlSeleccionado(BE_Xml entidad);
         Task<IEnumerable<BE_RepuestoPorModelo>> GetAllPorSeleccionar(BE_RepuestoPorModelo entidad);
         Task<int> Create(BE_RepuestoPorModelo entidad);
         Task Delete(BE_RepuestoPorModelo entidad);
