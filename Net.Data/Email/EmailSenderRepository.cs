@@ -130,7 +130,7 @@ namespace Net.Data
 
             correo.IsBodyHtml = true;
             //correo.Attachments.Add(new Attachment(archivo.FileMemoryStream, nameFile));
-            correo.Attachments.Add(new Attachment(new MemoryStream(archivo.FileMemoryStream.ToArray()), nameFile));
+            correo.Attachments.Add(new Attachment(new MemoryStream(archivo.FileMemoryStream.ToArray()), nameFile, "application/pdf"));
             //correo.Attachments.Add(new Attachment(nameFile, archivo.FileMemoryStream.ToArray()));
             return Cliente.SendMailAsync(correo);
         }

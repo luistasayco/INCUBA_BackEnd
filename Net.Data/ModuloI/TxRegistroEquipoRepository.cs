@@ -461,13 +461,10 @@ namespace Net.Data
                 return vResultadoTransaccion;
             }
 
-            //Obtiene informacion del examen fisicion del pollito bebe
-            var data = context.ExecuteSqlViewId<BE_TxRegistroEquipo>(SP_GET_ID_GOOGLE_DRIVE, new BE_TxRegistroEquipo { IdRegistroEquipo = entidad.IdRegistroEquipo });
-            var nameFile = string.Format("{0}.{1}", data.NombreArchivo, "pdf");
-            var memory = new MemoryStream();
+            MemoryStream memory = new MemoryStream();
             try
             {
-                var memoryPDF = await GenerarPDF(new BE_TxRegistroEquipo { IdRegistroEquipo = data.IdRegistroEquipo });
+                var memoryPDF = await GenerarPDF(new BE_TxRegistroEquipo { IdRegistroEquipo = entidad.IdRegistroEquipo });
                 memory = memoryPDF;
             }
             catch (Exception ex)
@@ -476,6 +473,11 @@ namespace Net.Data
                 vResultadoTransaccion.ResultadoDescripcion = ex.Message.ToString();
                 return vResultadoTransaccion;
             }
+
+            //Obtiene informacion del examen fisicion del pollito bebe
+            memory.Position = 0;
+            var data = context.ExecuteSqlViewId<BE_TxRegistroEquipo>(SP_GET_ID_GOOGLE_DRIVE, new BE_TxRegistroEquipo { IdRegistroEquipo = entidad.IdRegistroEquipo });
+            var nameFile = string.Format("{0}.{1}", data.NombreArchivo, "pdf");
 
             try
             {

@@ -31,5 +31,8 @@ namespace Net.Business.Entities
         [DBParameter(SqlDbType.Int, 0, ActionType.Everything)]
         public int Filtro { get; set; }
 
+        [DBParameter(SqlDbType.Xml, 0, ActionType.Everything)]
+        public string xmlData { get; set; }
+
     }
 }

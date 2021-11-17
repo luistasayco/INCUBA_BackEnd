@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Net.Data;
 using Net.Business.DTO;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Net.Business.Services.Controllers
 {
@@ -26,12 +28,21 @@ namespace Net.Business.Services.Controllers
         /// 
         /// </summary>
         /// <param name="value"></param>
+        /// <param name="planta"></param>
         /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetAll([FromQuery] DtoFindDashboardFormulario value)
+        public async Task<IActionResult> GetAll([FromQuery] DtoFindDashboardFormulario value, string planta)
         {
+
+            if (string.IsNullOrEmpty(planta))
+            {
+                value.ListPlanta = new List<DtoEmpresaPlanta>();
+            } else {
+                value.ListPlanta = JsonConvert.DeserializeObject<List<DtoEmpresaPlanta>>(planta);
+            }
+
             var objectGetAll = await _repository.DashboardFormulario.GetAll(value.DashboardFormularioPorFiltro());
 
             if (objectGetAll == null)
@@ -40,6 +51,7 @@ namespace Net.Business.Services.Controllers
             }
 
             return Ok(objectGetAll);
+
         }
     }
 }

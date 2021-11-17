@@ -199,11 +199,12 @@
             <param name="value">Recibe los paramtros de filtro</param>
             <returns></returns>
         </member>
-        <member name="M:Net.Business.Services.Controllers.DashboardFormularioController.GetAll(Net.Business.DTO.DtoFindDashboardFormulario)">
+        <member name="M:Net.Business.Services.Controllers.DashboardFormularioController.GetAll(Net.Business.DTO.DtoFindDashboardFormulario,System.String)">
             <summary>
             
             </summary>
             <param name="value"></param>
+            <param name="planta"></param>
             <returns></returns>
         </member>
         <member name="M:Net.Business.Services.Controllers.EmpresaController.GetAll(Net.Business.DTO.DtoFindEmpresa)">

@@ -503,6 +503,7 @@ namespace Net.Data
                 return vResultadoTransaccion;
             }
 
+
             memory.Position = 0;
             var data = context.ExecuteSqlViewId<BE_TxVacunacionSubCutanea>(SP_GET_ID_GOOGLE_DRIVE, new BE_TxVacunacionSubCutanea { IdVacunacionSubCutanea = entidad.IdVacunacionSubCutanea });
             var nameFile = string.Format("{0}.{1}", data.NombreArchivo, "pdf");
@@ -1325,7 +1326,7 @@ namespace Net.Data
                 c1.Phrase = new Phrase("10 - 20 % por debajo de la media", parrafoNegro);
                 c1.HorizontalAlignment = Element.ALIGN_LEFT;
                 tbl.AddCell(c1);
-                c1.Phrase = new Phrase(string.Format("({0} - {1})", decimal.Round(modeloPromedio.VacunadoPorHora - (modeloPromedio.VacunadoPorHora * 0.2M),0), decimal.Round(modeloPromedio.VacunadoPorHora + (modeloPromedio.VacunadoPorHora * 0.1M)),0), parrafoNegro);
+                c1.Phrase = new Phrase(string.Format("({0} - {1})", decimal.Round(modeloPromedio.VacunadoPorHora - (modeloPromedio.VacunadoPorHora * 0.2M),0), decimal.Round(modeloPromedio.VacunadoPorHora - (modeloPromedio.VacunadoPorHora * 0.1M)),0), parrafoNegro);
                 c1.HorizontalAlignment = Element.ALIGN_CENTER;
                 tbl.AddCell(c1);
                 c1.Phrase = new Phrase("0.5 punto", parrafoNegro);
