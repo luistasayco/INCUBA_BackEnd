@@ -134,5 +134,29 @@ namespace Net.Data
             //correo.Attachments.Add(new Attachment(nameFile, archivo.FileMemoryStream.ToArray()));
             return Cliente.SendMailAsync(correo);
         }
+
+        public Task SendEmailAsync(string email, string subject, string message, string rutaArchvio)
+        {
+
+            var listEmail = ListarEmail(email);
+            var emailTo = string.Empty;
+            if (listEmail.Count > 0)
+            {
+                emailTo = listEmail[0];
+            }
+
+            var correo = new MailMessage(from: Options.SendEmail, to: emailTo, subject: subject, body: message);
+
+            foreach (var item in listEmail)
+            {
+                correo.To.Add(item);
+            }
+
+            correo.IsBodyHtml = true;
+            //correo.Attachments.Add(new Attachment(archivo.FileMemoryStream, nameFile));
+            correo.Attachments.Add(new Attachment(rutaArchvio));
+            //correo.Attachments.Add(new Attachment(nameFile, archivo.FileMemoryStream.ToArray()));
+            return Cliente.SendMailAsync(correo);
+        }
     }
 }

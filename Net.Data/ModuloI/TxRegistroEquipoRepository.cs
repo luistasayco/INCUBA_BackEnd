@@ -475,7 +475,6 @@ namespace Net.Data
             }
 
             //Obtiene informacion del examen fisicion del pollito bebe
-            memory.Position = 0;
             var data = context.ExecuteSqlViewId<BE_TxRegistroEquipo>(SP_GET_ID_GOOGLE_DRIVE, new BE_TxRegistroEquipo { IdRegistroEquipo = entidad.IdRegistroEquipo });
             var nameFile = string.Format("{0}.{1}", data.NombreArchivo, "pdf");
 
